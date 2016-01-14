@@ -33,7 +33,6 @@ public class Game extends JPanel {
 	Game() {
 		addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
-				particleList.add(new Particle(e.getX(), e.getY(), 0, 0, 5));
 			}
 
 			public void mouseEntered(MouseEvent e) {
@@ -85,8 +84,7 @@ public class Game extends JPanel {
 		for (int i = 0; i < particleList.size(); i++) {
 			try {
 				Particle currentParticle = particleList.get(i);
-				if (currentParticle.getX() > width || currentParticle.getX() < 0
-						|| currentParticle.age > currentParticle.lifetime) {
+				if (currentParticle.getX() > width || currentParticle.getX() < 0 || currentParticle.age > currentParticle.lifetime) {
 					particleList.remove(i);
 				} else {
 					currentParticle.update();
