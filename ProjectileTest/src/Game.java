@@ -26,8 +26,7 @@ public class Game extends JPanel {
 	static int width = gd.getDisplayMode().getWidth();
 	static int height = gd.getDisplayMode().getHeight();
 	static ArrayList<Particle> particleList = new ArrayList<Particle>();
-	static int angle = 0;
-	static int TARGET_FPS = 120;
+	static int TARGET_FPS = 240;
 	static int initialX, initialY, distanceX, distanceY;
 	static boolean RAIN = false;
 	static boolean SNOW = false;
@@ -200,8 +199,16 @@ public class Game extends JPanel {
 						currentParticle.update();
 					}
 
-					if (currentParticle.getY() > height - 10 && currentParticle.getY() < height) {
-						particleList.add(new Particle(currentParticle.getX(), currentParticle.getY(), currentParticle.getxVelocity() + randDouble(1, -1), -currentParticle.getyVelocity() / 10, 2, 2, currentParticle.alpha, 3));
+					if (currentParticle.getY() > height - 15 && currentParticle.getY() < height) {
+						for (int x = 0; x <= 2; x++) {
+							double calculatedX = 0;
+							if (randInt(0, 2) == 1) {
+								calculatedX = -((currentParticle.getxVelocity() / 2) + randDouble(1, -1));
+							} else {
+								calculatedX = ((currentParticle.getxVelocity() / 2) + randDouble(1, -1));
+							}
+							particleList.add(new Particle(currentParticle.getX(), currentParticle.getY(), calculatedX, randDouble(0, -3.0), 1, 2, currentParticle.alpha, 3));
+						}
 					}
 				} else if (currentParticle.TYPE == 3) {
 					if (currentParticle.getX() > width || currentParticle.getX() < 0 || currentParticle.age > currentParticle.lifetime) {
