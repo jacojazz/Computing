@@ -29,15 +29,17 @@ public class Game extends JPanel {
 	static int angle = 0;
 	static int TARGET_FPS = 120;
 	static int initialX, initialY, distanceX, distanceY;
-	static boolean RAIN = true;
+	static boolean RAIN = false;
 	static boolean SNOW = false;
-	static int rainX = -2, rainY = -10;
-	static int snowX = 2, snowY = 2;
+	static int rainX = 4, rainY = 10;
+	static int snowX = 2, snowY = -2;
 	static int rainDelay = 1;
-	static int snowDelay = 20;
+	static int snowDelay = 10;
 	static boolean dragging = false;
 	static int mouseX, mouseY;
 	static Rectangle clearScreen = new Rectangle(width - 20, height - 20, 20, 20);
+	static Rectangle rainToggle = new Rectangle(width - 40, 0, 20, 20);
+	static Rectangle snowToggle = new Rectangle(width - 20, 0, 20, 20);
 
 	final static double GRAVITY = 0.10;
 
@@ -48,6 +50,14 @@ public class Game extends JPanel {
 
 				if (clearScreen.contains(p)) {
 					particleList.clear();
+				}
+
+				if (rainToggle.contains(p)) {
+
+				}
+
+				if (snowToggle.contains(p)) {
+					
 				}
 			}
 
@@ -106,34 +116,34 @@ public class Game extends JPanel {
 	}
 
 	public double offScreenCalculationRain() {
-		if (snowY < 0 || snowY == 0) {
-			double rainXVelocity = Math.abs(rainX);
-			double rainYVelocity = Math.abs(rainY);
 
-			double yV = Math.sqrt(Math.pow(rainYVelocity, 2) + (2 * GRAVITY * height));
-			double t = (yV - rainYVelocity) / GRAVITY;
-			double xS = ((rainXVelocity + rainXVelocity) / 2) * t;
-			
-			return xS;
-		} else {
-			double rainXVelocity1 = Math.abs(rainX);
-			double rainYVelocity1 = Math.abs(rainY);
+		double rainXVelocity = Math.abs(rainX);
+		double rainYVelocity = Math.abs(rainY);
 
-			double yS1 = (0 - Math.pow(rainYVelocity1, 2)) / (2 * GRAVITY);
-			double yT1 = (2 * yS1) / (rainYVelocity1 + 0);
-			
-			double xS1 = ((rainXVelocity1 + rainXVelocity1) / 2) * (2 * yT1);
+		double yV = Math.sqrt(Math.pow(rainYVelocity, 2) + (2 * GRAVITY * height));
+		double t = (yV - rainYVelocity) / GRAVITY;
+		double xS = ((rainXVelocity + rainXVelocity) / 2) * t;
 
-			double yV = Math.sqrt(Math.pow(rainYVelocity1, 2) + (2 * GRAVITY * height));
-			double t2 = (yV - rainYVelocity1) / GRAVITY;
-			double xS2 = ((rainXVelocity1 + rainXVelocity1) / 2) * t2;
-			
-			double xS = xS2 + (2 * xS1);
-			
-			return xS;
-		}
+		return xS;
 
-		
+		/*
+		 * } else { double rainXVelocity1 = Math.abs(rainX); double
+		 * rainYVelocity1 = Math.abs(rainY);
+		 * 
+		 * double yS1 = (0 - Math.pow(rainYVelocity1, 2)) / (2 * GRAVITY);
+		 * double yT1 = (2 * yS1) / (rainYVelocity1 + 0);
+		 * 
+		 * double xS1 = ((rainXVelocity1 + rainXVelocity1) / 2) * (2 * yT1);
+		 * 
+		 * double yV = Math.sqrt(Math.pow(rainYVelocity1, 2) + (2 * GRAVITY *
+		 * height)); double t2 = (yV - rainYVelocity1) / GRAVITY; double xS2 =
+		 * ((rainXVelocity1 + rainXVelocity1) / 2) * t2;
+		 * 
+		 * double xS = xS2 + (2 * xS1);
+		 * 
+		 * return xS; }
+		 */
+
 	}
 
 	public double offScreenCalculationSnow() {
@@ -204,7 +214,13 @@ public class Game extends JPanel {
 		g2d.setPaint(new GradientPaint(width / 2, height, new Color(0x212121), width / 2, 0, new Color(0x00263B)));
 		g2d.fillRect(0, 0, width, height);
 
+		g2d.setColor(Color.blue);
+		g2d.fill(rainToggle);
+
 		g2d.setColor(Color.white);
+		g2d.fill(snowToggle);
+
+		g2d.setColor(Color.red);
 		g2d.fill(clearScreen);
 
 		for (int i = 0; i < particleList.size(); i++) {
