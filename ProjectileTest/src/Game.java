@@ -31,13 +31,16 @@ public class Game extends JPanel {
 	static int initialX, initialY, distanceX, distanceY;
 	static boolean RAIN = false;
 	static boolean SNOW = false;
+	static boolean MANUAL = false;
 	static int rainX = 4, rainY = 10;
-	static int snowX = 2, snowY = -2;
-	static int rainDelay = 1;
+	static int snowX = 2, snowY = 2;
+	static int rainDelay = 2;
 	static int snowDelay = 10;
 	static boolean dragging = false;
 	static int mouseX, mouseY;
+	static Timer snowTimer, rainTimer;
 	static Rectangle clearScreen = new Rectangle(width - 20, height - 20, 20, 20);
+	static Rectangle manualToggle = new Rectangle(width - 60, 0, 20, 20);
 	static Rectangle rainToggle = new Rectangle(width - 40, 0, 20, 20);
 	static Rectangle snowToggle = new Rectangle(width - 20, 0, 20, 20);
 
@@ -47,17 +50,23 @@ public class Game extends JPanel {
 		addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
 				Point p = new Point(e.getX(), e.getY());
-
 				if (clearScreen.contains(p)) {
 					particleList.clear();
 				}
 
 				if (rainToggle.contains(p)) {
-
+					RAIN = !RAIN;
+					System.out.println(RAIN);
 				}
 
 				if (snowToggle.contains(p)) {
-					
+					SNOW = !SNOW;
+					System.out.println(SNOW);
+				}
+
+				if (manualToggle.contains(p)) {
+					MANUAL = !MANUAL;
+					System.out.println(MANUAL);
 				}
 			}
 
@@ -68,17 +77,20 @@ public class Game extends JPanel {
 			}
 
 			public void mousePressed(MouseEvent e) {
-				dragging = true;
-				initialX = e.getX();
-				initialY = e.getY();
+				if (MANUAL) {
+					dragging = true;
+					initialX = e.getX();
+					initialY = e.getY();
+				}
 			}
 
 			public void mouseReleased(MouseEvent e) {
-				dragging = false;
-				distanceX = initialX - e.getX();
-				distanceY = initialY - e.getY();
-				particleList.add(new Particle(initialX, initialY, distanceX / 20, distanceY / 20, 5, 8, 1f, 0));
-
+				if (MANUAL) {
+					dragging = false;
+					distanceX = initialX - e.getX();
+					distanceY = initialY - e.getY();
+					particleList.add(new Particle(initialX, initialY, distanceX / 20, distanceY / 20, 5, 8, 1f, 0));
+				}
 			}
 		});
 
@@ -96,23 +108,8 @@ public class Game extends JPanel {
 
 		setFocusable(true);
 
-		if (SNOW) {
-			Timer timer = new Timer();
-			timer.schedule(new TimerTask() {
-				public void run() {
-					particleList.add(new Particle(xSpawnPosition(1), 0, snowX, snowY, 5, randInt(2, 5), (float) randDouble(0.01, 1), 1));
-				}
-			}, 0, snowDelay);
-		}
-
-		if (RAIN) {
-			Timer timer = new Timer();
-			timer.schedule(new TimerTask() {
-				public void run() {
-					particleList.add(new Particle(xSpawnPosition(2), 0, rainX, rainY, 5, randInt(2, 3), (float) randDouble(0.01, 0.7), 2));
-				}
-			}, 0, rainDelay);
-		}
+		rainTimer = new Timer();
+		snowTimer = new Timer();
 	}
 
 	public double offScreenCalculationRain() {
@@ -179,6 +176,7 @@ public class Game extends JPanel {
 	}
 
 	public void update() {
+		frames++;
 		for (int i = 0; i < particleList.size(); i++) {
 			try {
 				Particle currentParticle = particleList.get(i);
@@ -204,6 +202,27 @@ public class Game extends JPanel {
 			} catch (Exception e) {
 			}
 		}
+
+		if (frames % TARGET_FPS == 0) {
+			snowTimer = new Timer();
+			rainTimer = new Timer();
+
+			snowTimer.schedule(new TimerTask() {
+				public void run() {
+					if (SNOW) {
+						particleList.add(new Particle(xSpawnPosition(1), -2, snowX, snowY, 5, randInt(2, 5), (float) randDouble(0.01, 1), 1));
+					}
+				}
+			}, 0, snowDelay);
+
+			rainTimer.schedule(new TimerTask() {
+				public void run() {
+					if (RAIN) {
+						particleList.add(new Particle(xSpawnPosition(2), -2, rainX, rainY, 5, randInt(2, 3), (float) randDouble(0.01, 0.7), 2));
+					}
+				}
+			}, 0, rainDelay);
+		}
 	}
 
 	public void paint(Graphics g) {
@@ -213,6 +232,9 @@ public class Game extends JPanel {
 
 		g2d.setPaint(new GradientPaint(width / 2, height, new Color(0x212121), width / 2, 0, new Color(0x00263B)));
 		g2d.fillRect(0, 0, width, height);
+
+		g2d.setColor(Color.green);
+		g2d.fill(manualToggle);
 
 		g2d.setColor(Color.blue);
 		g2d.fill(rainToggle);
@@ -270,7 +292,6 @@ public class Game extends JPanel {
 			}
 			game.update();
 			game.repaint();
-			frames++;
 
 			try {
 				gameTime = (lastLoopTime - System.nanoTime() + OPTIMAL_TIME) / 1000000;

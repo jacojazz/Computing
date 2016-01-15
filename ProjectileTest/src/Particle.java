@@ -10,7 +10,6 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
-import java.awt.Polygon;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.util.Random;
@@ -18,7 +17,6 @@ import java.util.Random;
 public class Particle {
 	double size, x, y, xVelocity, yVelocity, lifetime, age = 0;
 	Ellipse2D rect;
-	Polygon sprite;
 	Color color;
 	boolean touchFloor = false;
 	float alpha;
@@ -38,10 +36,6 @@ public class Particle {
 		this.size = size;
 		this.alpha = alpha;
 		this.TYPE = type;
-
-		for (int i = 0; i < 6; i++) {
-			sprite.addPoint((int) (x + size * Math.cos(i * 2 * Math.PI / 6)), (int) (y + size * Math.sin(i * 2 * Math.PI / 6)));
-		}
 
 		if (TYPE == 0) {
 			color = Color.WHITE;
