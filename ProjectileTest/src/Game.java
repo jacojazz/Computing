@@ -1,8 +1,11 @@
 import java.awt.Color;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -26,13 +29,26 @@ public class Game extends JPanel {
 	static int angle = 0;
 	static int TARGET_FPS = 120;
 	static int initialX, initialY, distanceX, distanceY;
-	static boolean HOSE = true;
+	static boolean RAIN = true;
+	static boolean SNOW = false;
+	static int rainX = -2, rainY = -10;
+	static int snowX = 2, snowY = 2;
+	static int rainDelay = 1;
+	static int snowDelay = 20;
 	static boolean dragging = false;
 	static int mouseX, mouseY;
+	static Rectangle clearScreen = new Rectangle(width - 20, height - 20, 20, 20);
+
+	final static double GRAVITY = 0.10;
 
 	Game() {
 		addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
+				Point p = new Point(e.getX(), e.getY());
+
+				if (clearScreen.contains(p)) {
+					particleList.clear();
+				}
 			}
 
 			public void mouseEntered(MouseEvent e) {
@@ -51,7 +67,7 @@ public class Game extends JPanel {
 				dragging = false;
 				distanceX = initialX - e.getX();
 				distanceY = initialY - e.getY();
-				particleList.add(new Particle(initialX, initialY, distanceX / 20, distanceY / 20, 5));
+				particleList.add(new Particle(initialX, initialY, distanceX / 20, distanceY / 20, 5, 8, 1f, 0));
 
 			}
 		});
@@ -70,24 +86,110 @@ public class Game extends JPanel {
 
 		setFocusable(true);
 
-		if (HOSE) {
+		if (SNOW) {
 			Timer timer = new Timer();
 			timer.schedule(new TimerTask() {
 				public void run() {
-					particleList.add(new Particle(0, height / 2, 4, randDouble(0, -10), 5));
+					particleList.add(new Particle(xSpawnPosition(1), 0, snowX, snowY, 5, randInt(2, 5), (float) randDouble(0.01, 1), 1));
 				}
-			}, 0, 1);
+			}, 0, snowDelay);
 		}
+
+		if (RAIN) {
+			Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+				public void run() {
+					particleList.add(new Particle(xSpawnPosition(2), 0, rainX, rainY, 5, randInt(2, 3), (float) randDouble(0.01, 0.7), 2));
+				}
+			}, 0, rainDelay);
+		}
+	}
+
+	public double offScreenCalculationRain() {
+		if (snowY < 0 || snowY == 0) {
+			double rainXVelocity = Math.abs(rainX);
+			double rainYVelocity = Math.abs(rainY);
+
+			double yV = Math.sqrt(Math.pow(rainYVelocity, 2) + (2 * GRAVITY * height));
+			double t = (yV - rainYVelocity) / GRAVITY;
+			double xS = ((rainXVelocity + rainXVelocity) / 2) * t;
+			
+			return xS;
+		} else {
+			double rainXVelocity1 = Math.abs(rainX);
+			double rainYVelocity1 = Math.abs(rainY);
+
+			double yS1 = (0 - Math.pow(rainYVelocity1, 2)) / (2 * GRAVITY);
+			double yT1 = (2 * yS1) / (rainYVelocity1 + 0);
+			
+			double xS1 = ((rainXVelocity1 + rainXVelocity1) / 2) * (2 * yT1);
+
+			double yV = Math.sqrt(Math.pow(rainYVelocity1, 2) + (2 * GRAVITY * height));
+			double t2 = (yV - rainYVelocity1) / GRAVITY;
+			double xS2 = ((rainXVelocity1 + rainXVelocity1) / 2) * t2;
+			
+			double xS = xS2 + (2 * xS1);
+			
+			return xS;
+		}
+
+		
+	}
+
+	public double offScreenCalculationSnow() {
+		double snowXVelocity = Math.abs(snowX);
+		double snowYVelocity = Math.abs(snowY);
+
+		double yV = Math.sqrt(Math.pow(snowYVelocity, 2) + (2 * GRAVITY * height));
+		double t = (yV - snowYVelocity) / GRAVITY;
+		double xS = ((snowXVelocity + snowXVelocity) / 2) * t;
+
+		return xS;
+	}
+
+	public double xSpawnPosition(int type) {
+		if (type == 1) {
+			if (snowX > 0) {
+				return randDouble(-offScreenCalculationSnow(), width);
+			} else if (snowX < 0) {
+				return randDouble(0, width + offScreenCalculationSnow());
+			} else if (snowX == 0) {
+				return randDouble(0, width);
+			}
+		} else if (type == 2) {
+			if (rainX > 0) {
+				return randDouble(-offScreenCalculationRain(), width);
+			} else if (rainX < 0) {
+				return randDouble(0, width + offScreenCalculationRain());
+			} else if (rainX == 0) {
+				return randDouble(0, width);
+			}
+		}
+		return 0;
 	}
 
 	public void update() {
 		for (int i = 0; i < particleList.size(); i++) {
 			try {
 				Particle currentParticle = particleList.get(i);
-				if (currentParticle.getX() > width || currentParticle.getX() < 0 || currentParticle.age > currentParticle.lifetime) {
-					particleList.remove(i);
-				} else {
-					currentParticle.update();
+				if (currentParticle.TYPE == 0) {
+					if (currentParticle.getX() > width || currentParticle.getX() < 0 || currentParticle.age > currentParticle.lifetime) {
+						particleList.remove(i);
+					} else {
+						currentParticle.update();
+					}
+				} else if (currentParticle.TYPE == 1) {
+					if (currentParticle.getX() > (width + offScreenCalculationSnow()) || currentParticle.getX() < -offScreenCalculationSnow() || currentParticle.age > currentParticle.lifetime) {
+						particleList.remove(i);
+					} else {
+						currentParticle.update();
+					}
+				} else if (currentParticle.TYPE == 2) {
+					if (currentParticle.getX() > (width + offScreenCalculationRain()) || currentParticle.getX() < 0 - offScreenCalculationRain() || currentParticle.getY() > height) {
+						particleList.remove(i);
+					} else {
+						currentParticle.update();
+					}
 				}
 			} catch (Exception e) {
 			}
@@ -98,6 +200,12 @@ public class Game extends JPanel {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+		g2d.setPaint(new GradientPaint(width / 2, height, new Color(0x212121), width / 2, 0, new Color(0x00263B)));
+		g2d.fillRect(0, 0, width, height);
+
+		g2d.setColor(Color.white);
+		g2d.fill(clearScreen);
 
 		for (int i = 0; i < particleList.size(); i++) {
 			try {
@@ -110,7 +218,11 @@ public class Game extends JPanel {
 
 		if (dragging) {
 			g2d.drawLine(initialX, initialY, mouseX, mouseY);
+			g2d.setColor(Color.WHITE);
+			g2d.drawLine(initialX + 1, initialY + 1, mouseX, mouseY);
 		}
+
+		g2d.setColor(Color.BLACK);
 
 		g2d.drawString(Integer.toString(particleList.size()), 0, 10);
 	}

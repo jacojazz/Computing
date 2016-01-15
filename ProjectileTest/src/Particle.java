@@ -1,28 +1,64 @@
+/*
+ * TYPES
+ * 0 = manual
+ * 1 = snow
+ * 2 = rain
+ *  
+ */
+
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.util.Random;
 
 public class Particle {
-	double mass, x, y, xVelocity, yVelocity, lifetime, age = 0;
+	double size, x, y, xVelocity, yVelocity, lifetime, age = 0;
 	Ellipse2D rect;
 	Color color;
 	boolean touchFloor = false;
+	float alpha;
 
-	final double GRAVITY = 0.05;
-	final double FRICTION_COEFFICIENT = 0.7;
-	final double BOUNCE_COEFFICIENT = 0.62;
+	final double GRAVITY = Game.GRAVITY;
 
-	Particle(double x, double y, double xVelocity, double yVelocity, double lifetime) {
+	double FRICTION_COEFFICIENT;
+	double BOUNCE_COEFFICIENT;
+
+	int TYPE;
+
+	Particle(double x, double y, double xVelocity, double yVelocity, double lifetime, double size, float alpha, int type) {
 		this.x = x;
 		this.y = y;
 		this.xVelocity = xVelocity;
 		this.yVelocity = yVelocity;
-		this.mass = 1;
-		this.lifetime = lifetime * Game.TARGET_FPS;
+		this.size = size;
+		this.alpha = alpha;
+		this.TYPE = type;
 
-		rect = new Ellipse2D.Double((int) x, (int) y, 8, 8);
-		color = new Color(64, 164, 223);
+		if (TYPE == 0) {
+			color = Color.WHITE;
+			this.FRICTION_COEFFICIENT = 0.7;
+			this.BOUNCE_COEFFICIENT = 0.62;
+			this.lifetime = lifetime * Game.TARGET_FPS;
+			rect = new Ellipse2D.Double((int) x, (int) y, size, size);
+		} else if (TYPE == 1) {
+			color = new Color(0xCFF1FC);
+			this.lifetime = lifetime * Game.TARGET_FPS;
+			this.FRICTION_COEFFICIENT = Game.randDouble(0.5, 0.8);
+			this.BOUNCE_COEFFICIENT = Game.randDouble(0, 0.1);
+			rect = new Ellipse2D.Double((int) x, (int) y, size, size);
+		} else if (TYPE == 2) {
+			color = new Color(0x5FA3BA);
+			this.lifetime = lifetime * Game.TARGET_FPS;
+			rect = new Ellipse2D.Double((int) x, (int) y, size, size * 3);
+		}
+	}
+
+	private AlphaComposite makeComposite(float alpha) {
+		int type = AlphaComposite.SRC_OVER;
+		return (AlphaComposite.getInstance(type, alpha));
 	}
 
 	public void update() {
@@ -30,21 +66,24 @@ public class Particle {
 
 		// setY(Game.height - rect.getHeight());
 		// yVelocity = -(yVelocity * BOUNCE_VALUE);
-
-		if (isTouchingFloor() == false) {
+		if (TYPE == 0 || TYPE == 1) {
+			if (isTouchingFloor() == false) {
+				yVelocity += GRAVITY;
+			} else if (isTouchingFloor() == true && yVelocity > 0) {
+				yVelocity = bounce();
+				xVelocity *= FRICTION_COEFFICIENT;
+			} else {
+				setY(Game.height - rect.getHeight());
+				yVelocity = 0;
+			}
+		} else if (TYPE == 2) {
 			yVelocity += GRAVITY;
-		} else if (isTouchingFloor() == true && yVelocity > 0) {
-			yVelocity = bounce();
-			xVelocity *= FRICTION_COEFFICIENT;
-		} else {
-			setY(Game.height - rect.getHeight());
-			yVelocity = 0;
 		}
 
 		if (xVelocity != 0 && isTouchingFloor() == true) {
 			xVelocity *= FRICTION_COEFFICIENT;
 		}
-		
+
 		x += xVelocity;
 		y += yVelocity;
 
@@ -70,16 +109,33 @@ public class Particle {
 	}
 
 	public void paint(Graphics2D g2d) {
+		Composite originalComposite = g2d.getComposite();
+		g2d.setComposite(makeComposite(alpha));
+
+		AffineTransform transform = new AffineTransform();
+		transform.rotate(-getAngle(xVelocity, yVelocity), rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+		AffineTransform old = g2d.getTransform();
+
+		g2d.setTransform(transform);
+
 		g2d.setColor(color);
 		g2d.fill(rect);
+
+		g2d.setTransform(old);
+
+		g2d.setComposite(originalComposite);
 	}
 
-	public double getMass() {
-		return mass;
+	public static double getAngle(double x, double y) {
+		return 1.5 * Math.PI - Math.atan2(y, x);
 	}
 
-	public void setMass(double mass) {
-		this.mass = mass;
+	public double getSize() {
+		return size;
+	}
+
+	public void setSize(double size) {
+		this.size = size;
 	}
 
 	public double getX() {
@@ -112,6 +168,22 @@ public class Particle {
 
 	public void setyVelocity(double yVelocity) {
 		this.yVelocity = yVelocity;
+	}
+
+	public double getAge() {
+		return age;
+	}
+
+	public void setAge(double age) {
+		this.age = age;
+	}
+
+	public double getLifetime() {
+		return lifetime;
+	}
+
+	public void setLifetime(double lifetime) {
+		this.lifetime = lifetime;
 	}
 
 	public static int randInt(int min, int max) {
