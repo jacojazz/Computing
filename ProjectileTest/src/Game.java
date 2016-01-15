@@ -56,17 +56,14 @@ public class Game extends JPanel {
 
 				if (rainToggle.contains(p)) {
 					RAIN = !RAIN;
-					System.out.println(RAIN);
 				}
 
 				if (snowToggle.contains(p)) {
 					SNOW = !SNOW;
-					System.out.println(SNOW);
 				}
 
 				if (manualToggle.contains(p)) {
 					MANUAL = !MANUAL;
-					System.out.println(MANUAL);
 				}
 			}
 
@@ -89,7 +86,9 @@ public class Game extends JPanel {
 					dragging = false;
 					distanceX = initialX - e.getX();
 					distanceY = initialY - e.getY();
-					particleList.add(new Particle(initialX, initialY, distanceX / 20, distanceY / 20, 5, 8, 1f, 0));
+					if (!manualToggle.contains(new Point(e.getX(), e.getY()))) {
+						particleList.add(new Particle(initialX, initialY, distanceX / 20, distanceY / 20, 5, 8, 1f, 0));
+					}
 				}
 			}
 		});
@@ -204,6 +203,11 @@ public class Game extends JPanel {
 		}
 
 		if (frames % TARGET_FPS == 0) {
+			snowTimer.cancel();
+			snowTimer.purge();
+			rainTimer.cancel();
+			rainTimer.purge();
+
 			snowTimer = new Timer();
 			rainTimer = new Timer();
 
@@ -232,18 +236,7 @@ public class Game extends JPanel {
 
 		g2d.setPaint(new GradientPaint(width / 2, height, new Color(0x212121), width / 2, 0, new Color(0x00263B)));
 		g2d.fillRect(0, 0, width, height);
-
-		g2d.setColor(Color.green);
-		g2d.fill(manualToggle);
-
-		g2d.setColor(Color.blue);
-		g2d.fill(rainToggle);
-
-		g2d.setColor(Color.white);
-		g2d.fill(snowToggle);
-
-		g2d.setColor(Color.red);
-		g2d.fill(clearScreen);
+		g2d.setColor(Color.black);
 
 		for (int i = 0; i < particleList.size(); i++) {
 			try {
@@ -259,6 +252,18 @@ public class Game extends JPanel {
 			g2d.setColor(Color.WHITE);
 			g2d.drawLine(initialX + 1, initialY + 1, mouseX, mouseY);
 		}
+
+		g2d.setColor(Color.green);
+		g2d.fill(manualToggle);
+
+		g2d.setColor(Color.blue);
+		g2d.fill(rainToggle);
+
+		g2d.setColor(Color.white);
+		g2d.fill(snowToggle);
+
+		g2d.setColor(Color.red);
+		g2d.fill(clearScreen);
 
 		g2d.setColor(Color.BLACK);
 
