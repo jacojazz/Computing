@@ -3,6 +3,7 @@
  * 0 = manual
  * 1 = snow
  * 2 = rain
+ * 3 = rain splash
  *  
  */
 
@@ -42,17 +43,21 @@ public class Particle {
 			this.FRICTION_COEFFICIENT = 0.7;
 			this.BOUNCE_COEFFICIENT = 0.62;
 			this.lifetime = lifetime * Game.TARGET_FPS;
-			rect = new Ellipse2D.Double((int) x, (int) y, size, size);
+			rect = new Ellipse2D.Double(x, y, size, size);
 		} else if (TYPE == 1) {
 			color = new Color(0xCFF1FC);
 			this.lifetime = lifetime * Game.TARGET_FPS;
 			this.FRICTION_COEFFICIENT = Game.randDouble(0.5, 0.8);
 			this.BOUNCE_COEFFICIENT = Game.randDouble(0, 0.1);
-			rect = new Ellipse2D.Double((int) x, (int) y, size, size);
+			rect = new Ellipse2D.Double(x, y, size, size);
 		} else if (TYPE == 2) {
 			color = new Color(0x5FA3BA);
 			this.lifetime = lifetime * Game.TARGET_FPS;
-			rect = new Ellipse2D.Double((int) x, (int) y, size, size * 3);
+			rect = new Ellipse2D.Double(x, y, size, size * 3);
+		} else if (TYPE == 3) {
+			color = new Color(0x5FA3BA);
+			this.lifetime = lifetime * Game.TARGET_FPS;
+			rect = new Ellipse2D.Double(x, y, size, size);
 		}
 	}
 
@@ -66,7 +71,7 @@ public class Particle {
 
 		// setY(Game.height - rect.getHeight());
 		// yVelocity = -(yVelocity * BOUNCE_VALUE);
-		if (TYPE == 0 || TYPE == 1) {
+		if (TYPE == 0 || TYPE == 1 || TYPE == 3) {
 			if (isTouchingFloor() == false) {
 				yVelocity += GRAVITY;
 			} else if (isTouchingFloor() == true && yVelocity > 0) {
@@ -87,7 +92,7 @@ public class Particle {
 		x += xVelocity;
 		y += yVelocity;
 
-		rect = new Ellipse2D.Double((int) x, (int) y, rect.getWidth(), rect.getHeight());
+		rect = new Ellipse2D.Double(x, y, rect.getWidth(), rect.getHeight());
 	}
 
 	public boolean isTouchingFloor() {

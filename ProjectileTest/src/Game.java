@@ -32,8 +32,8 @@ public class Game extends JPanel {
 	static boolean RAIN = false;
 	static boolean SNOW = false;
 	static boolean MANUAL = false;
-	static int rainX = 4, rainY = 10;
-	static int snowX = 2, snowY = 2;
+	static int rainX = 0, rainY = 10;
+	static int snowX = 0, snowY = 5;
 	static int rainDelay = 2;
 	static int snowDelay = 10;
 	static boolean dragging = false;
@@ -55,10 +55,12 @@ public class Game extends JPanel {
 				}
 
 				if (rainToggle.contains(p)) {
+					rainX = randInt(-5, 5);
 					RAIN = !RAIN;
 				}
 
 				if (snowToggle.contains(p)) {
+					snowX = randInt(-3, 3);
 					SNOW = !SNOW;
 				}
 
@@ -197,8 +199,19 @@ public class Game extends JPanel {
 					} else {
 						currentParticle.update();
 					}
+
+					if (currentParticle.getY() > height - 10 && currentParticle.getY() < height) {
+						particleList.add(new Particle(currentParticle.getX(), currentParticle.getY(), currentParticle.getxVelocity() + randDouble(1, -1), -currentParticle.getyVelocity() / 10, 2, 2, currentParticle.alpha, 3));
+					}
+				} else if (currentParticle.TYPE == 3) {
+					if (currentParticle.getX() > width || currentParticle.getX() < 0 || currentParticle.age > currentParticle.lifetime) {
+						particleList.remove(i);
+					} else {
+						currentParticle.update();
+					}
 				}
 			} catch (Exception e) {
+
 			}
 		}
 
@@ -227,6 +240,14 @@ public class Game extends JPanel {
 				}
 			}, 0, rainDelay);
 		}
+	}
+
+	public double getXFromAngle(double initialX, int angle, double velocity) {
+		return initialX + (velocity * Math.cos(angle));
+	}
+
+	public double getYFromAngle(double initialY, int angle, double velocity) {
+		return initialY + (velocity * Math.cos(angle));
 	}
 
 	public void paint(Graphics g) {
