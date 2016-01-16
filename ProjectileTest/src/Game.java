@@ -242,7 +242,7 @@ public class Game extends JPanel {
 			rainTimer.schedule(new TimerTask() {
 				public void run() {
 					if (RAIN) {
-						particleList.add(new Particle(xSpawnPosition(2), -2, rainX, rainY, 5, randInt(2, 3), (float) randDouble(0.01, 0.7), 2));
+						particleList.add(new Particle(xSpawnPosition(2), -2, rainX, rainY, 5, randInt(2, 3), (float) randDouble(0.01, 0.8), 2));
 					}
 				}
 			}, 0, rainDelay);
