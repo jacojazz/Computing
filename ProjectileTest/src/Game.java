@@ -121,7 +121,7 @@ public class Game extends JPanel {
 		double t = (yV - rainYVelocity) / GRAVITY;
 		double xS = ((rainXVelocity + rainXVelocity) / 2) * t;
 
-		return xS;
+		return xS; //Test
 
 		/*
 		 * } else { double rainXVelocity1 = Math.abs(rainX); double
