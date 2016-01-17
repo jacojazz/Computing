@@ -345,3 +345,6 @@ public class Game extends JPanel {
 		return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
 	}
 }
+
+
+//dicks?
