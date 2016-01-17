@@ -44,10 +44,14 @@ public class Game extends JPanel {
 	static Rectangle snowToggle = new Rectangle(width - 20, 0, 20, 20);
 
 	final static double GRAVITY = 0.05;
+	
+	Menu menu = new Menu();
 
 	Game() {
 		addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
+				menu.mouseClicked(e);
+				
 				Point p = new Point(e.getX(), e.getY());
 				if (clearScreen.contains(p)) {
 					particleList.clear();
@@ -75,6 +79,7 @@ public class Game extends JPanel {
 			}
 
 			public void mousePressed(MouseEvent e) {
+				
 				if (MANUAL) {
 					dragging = true;
 					initialX = e.getX();
@@ -83,6 +88,8 @@ public class Game extends JPanel {
 			}
 
 			public void mouseReleased(MouseEvent e) {
+				menu.mouseReleased(e);
+				
 				if (MANUAL) {
 					dragging = false;
 					distanceX = initialX - e.getX();
@@ -96,11 +103,15 @@ public class Game extends JPanel {
 
 		addMouseMotionListener(new MouseMotionListener() {
 			public void mouseDragged(MouseEvent e) {
+				menu.mouseDragged(e);
+				
 				mouseX = e.getX();
 				mouseY = e.getY();
 			}
 
 			public void mouseMoved(MouseEvent e) {
+				menu.mouseMoved(e);
+				
 				mouseX = e.getX();
 				mouseY = e.getY();
 			}
@@ -247,6 +258,9 @@ public class Game extends JPanel {
 				}
 			}, 0, rainDelay);
 		}
+		
+		menu.update();
+		
 	}
 
 	public double getXFromAngle(double initialX, int angle, double velocity) {
@@ -296,6 +310,8 @@ public class Game extends JPanel {
 		g2d.setColor(Color.BLACK);
 
 		g2d.drawString(Integer.toString(particleList.size()), 0, 10);
+		
+		menu.paint(g2d);
 	}
 
 	public static void main(String[] args) {
