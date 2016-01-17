@@ -43,7 +43,7 @@ public class Game extends JPanel {
 	static Rectangle rainToggle = new Rectangle(width - 40, 0, 20, 20);
 	static Rectangle snowToggle = new Rectangle(width - 20, 0, 20, 20);
 
-	final static double GRAVITY = 0.10;
+	final static double GRAVITY = 0.05;
 
 	Game() {
 		addMouseListener(new MouseListener() {
@@ -200,14 +200,14 @@ public class Game extends JPanel {
 					}
 
 					if (currentParticle.getY() > height - 15 && currentParticle.getY() < height) {
-						for (int x = 0; x <= 2; x++) {
+						for (int x = 0; x <= 3; x++) {
 							double calculatedX = 0;
 							if (randInt(0, 2) == 1) {
 								calculatedX = -((currentParticle.getxVelocity() / 2) + randDouble(1, -1));
 							} else {
 								calculatedX = ((currentParticle.getxVelocity() / 2) + randDouble(1, -1));
 							}
-							particleList.add(new Particle(currentParticle.getX(), currentParticle.getY(), calculatedX, randDouble(0, -3.0), 1, 2, currentParticle.alpha, 3));
+							particleList.add(new Particle(currentParticle.getX(), currentParticle.getY(), calculatedX, randDouble(0, -2.5), 1, 2, currentParticle.alpha, 3));
 						}
 					}
 				} else if (currentParticle.TYPE == 3) {
