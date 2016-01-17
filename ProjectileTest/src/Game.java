@@ -346,5 +346,4 @@ public class Game extends JPanel {
 	}
 }
 
-
 //dicks?
