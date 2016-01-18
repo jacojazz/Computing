@@ -39,7 +39,7 @@ public class Game extends JPanel {
 	static Timer snowTimer, rainTimer;
 
 	final static double GRAVITY = 0.05;
-	
+
 	Menu menu = new Menu();
 
 	Game() {
@@ -56,7 +56,7 @@ public class Game extends JPanel {
 
 			public void mousePressed(MouseEvent e) {
 				menu.mousePressed(e);
-				
+
 				if (MANUAL) {
 					dragging = true;
 					initialX = e.getX();
@@ -66,7 +66,7 @@ public class Game extends JPanel {
 
 			public void mouseReleased(MouseEvent e) {
 				menu.mouseReleased(e);
-				
+
 				if (MANUAL) {
 					dragging = false;
 					distanceX = initialX - e.getX();
@@ -81,14 +81,14 @@ public class Game extends JPanel {
 		addMouseMotionListener(new MouseMotionListener() {
 			public void mouseDragged(MouseEvent e) {
 				menu.mouseDragged(e);
-				
+
 				mouseX = e.getX();
 				mouseY = e.getY();
 			}
 
 			public void mouseMoved(MouseEvent e) {
 				menu.mouseMoved(e);
-				
+
 				mouseX = e.getX();
 				mouseY = e.getY();
 			}
@@ -203,7 +203,7 @@ public class Game extends JPanel {
 			snowTimer.schedule(new TimerTask() {
 				public void run() {
 					if (SNOW) {
-						particleList.add(new Particle(xSpawnPosition(1), -2, snowX, snowY, 5, randInt(2, 5), (float) randDouble(0.01, 1), 1));
+						particleList.add(new Particle(xSpawnPosition(1), -2, snowX, snowY, 10, randInt(2, 5), (float) randDouble(0.01, 1), 1));
 					}
 				}
 			}, 0, snowDelay);
@@ -216,9 +216,9 @@ public class Game extends JPanel {
 				}
 			}, 0, rainDelay);
 		}
-		
+
 		menu.update();
-		
+
 	}
 
 	public double getXFromAngle(double initialX, int angle, double velocity) {
@@ -256,7 +256,7 @@ public class Game extends JPanel {
 		g2d.setColor(Color.BLACK);
 
 		g2d.drawString(Integer.toString(particleList.size()), 0, 10);
-		
+
 		menu.paint(g2d);
 	}
 
