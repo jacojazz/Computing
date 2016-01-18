@@ -79,6 +79,7 @@ public class Game extends JPanel {
 			}
 
 			public void mousePressed(MouseEvent e) {
+				menu.mousePressed(e);
 				
 				if (MANUAL) {
 					dragging = true;

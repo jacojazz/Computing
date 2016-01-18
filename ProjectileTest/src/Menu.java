@@ -6,8 +6,8 @@ import java.awt.event.MouseEvent;
 
 public class Menu {
 
-	int x = 120;
-	int y = 120;
+	int x = 10;
+	int y = 10;
 	int width = 200;
 	int height = 300;
 
@@ -15,6 +15,8 @@ public class Menu {
 	int mouseY;
 	int mouseXChange;
 	int mouseYChange;
+	int mouseRelationX;
+	int mouseRelationY;
 
 	boolean dragging = false;
 
@@ -36,10 +38,7 @@ public class Menu {
 	public void mouseClicked(MouseEvent e) {
 		p = new Point(e.getX(), e.getY());
 
-		if (moveRect.contains(p)) {
-			dragging = true;
-
-		} else if (manualRect.contains(p)) {
+		if (manualRect.contains(p)) {
 			Game.MANUAL = !Game.MANUAL;
 		} else if (rainRect.contains(p)) {
 			Game.rainX = Game.randInt(-5, 5);
@@ -51,6 +50,17 @@ public class Menu {
 			System.exit(0);
 		}
 
+	}
+
+	public void mousePressed(MouseEvent e) {
+		p = new Point(e.getX(), e.getY());
+		
+		if (moveRect.contains(p)) {
+			dragging = true;
+			
+			mouseRelationX = e.getX() - baseRect.x;
+			mouseRelationY = e.getY() - baseRect.y;
+		}
 	}
 
 	public void mouseReleased(MouseEvent e) {
@@ -78,8 +88,8 @@ public class Menu {
 		exitRect = new Rectangle(x + 10, y + 270, width - 20, height - 280);
 
 		if (dragging == true) {
-			x = mouseX;
-			y = mouseY;
+			x = mouseX - mouseRelationX;
+			y = mouseY - mouseRelationY;
 		}
 
 	}
