@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -111,25 +110,6 @@ public class Game extends JPanel {
 		double xS = ((rainXVelocity + rainXVelocity) / 2) * t;
 
 		return xS;
-		
-		/*
-		 * } else { double rainXVelocity1 = Math.abs(rainX); double
-		 * rainYVelocity1 = Math.abs(rainY);
-		 * 
-		 * double yS1 = (0 - Math.pow(rainYVelocity1, 2)) / (2 * GRAVITY);
-		 * double yT1 = (2 * yS1) / (rainYVelocity1 + 0);
-		 * 
-		 * double xS1 = ((rainXVelocity1 + rainXVelocity1) / 2) * (2 * yT1);
-		 * 
-		 * double yV = Math.sqrt(Math.pow(rainYVelocity1, 2) + (2 * GRAVITY *
-		 * height)); double t2 = (yV - rainYVelocity1) / GRAVITY; double xS2 =
-		 * ((rainXVelocity1 + rainXVelocity1) / 2) * t2;
-		 * 
-		 * double xS = xS2 + (2 * xS1);
-		 * 
-		 * return xS; }
-		 */
-
 	}
 
 	public double offScreenCalculationSnow() {
