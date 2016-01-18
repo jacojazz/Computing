@@ -38,10 +38,6 @@ public class Game extends JPanel {
 	static boolean dragging = false;
 	static int mouseX, mouseY;
 	static Timer snowTimer, rainTimer;
-	static Rectangle clearScreen = new Rectangle(width - 20, height - 20, 20, 20);
-	static Rectangle manualToggle = new Rectangle(width - 60, 0, 20, 20);
-	static Rectangle rainToggle = new Rectangle(width - 40, 0, 20, 20);
-	static Rectangle snowToggle = new Rectangle(width - 20, 0, 20, 20);
 
 	final static double GRAVITY = 0.05;
 	
@@ -51,25 +47,6 @@ public class Game extends JPanel {
 		addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
 				menu.mouseClicked(e);
-				
-				Point p = new Point(e.getX(), e.getY());
-				if (clearScreen.contains(p)) {
-					particleList.clear();
-				}
-
-				if (rainToggle.contains(p)) {
-					rainX = randInt(-5, 5);
-					RAIN = !RAIN;
-				}
-
-				if (snowToggle.contains(p)) {
-					snowX = randInt(-3, 3);
-					SNOW = !SNOW;
-				}
-
-				if (manualToggle.contains(p)) {
-					MANUAL = !MANUAL;
-				}
 			}
 
 			public void mouseEntered(MouseEvent e) {
@@ -95,7 +72,7 @@ public class Game extends JPanel {
 					dragging = false;
 					distanceX = initialX - e.getX();
 					distanceY = initialY - e.getY();
-					if (!manualToggle.contains(new Point(e.getX(), e.getY()))) {
+					if (!menu.manualRect.contains(new Point(e.getX(), e.getY()))) {
 						particleList.add(new Particle(initialX, initialY, distanceX / 20, distanceY / 20, 5, 8, 1f, 0));
 					}
 				}
@@ -219,7 +196,7 @@ public class Game extends JPanel {
 							} else {
 								calculatedX = ((currentParticle.getxVelocity() / 2) + randDouble(1, -1));
 							}
-							particleList.add(new Particle(currentParticle.getX(), currentParticle.getY(), calculatedX, randDouble(0, -2.5), 1, 2, currentParticle.alpha, 3));
+							particleList.add(new Particle(currentParticle.getX(), currentParticle.getY(), calculatedX, randDouble(0, -2.0), 1, 2, currentParticle.alpha, 3));
 						}
 					}
 				} else if (currentParticle.TYPE == 3) {
@@ -295,18 +272,6 @@ public class Game extends JPanel {
 			g2d.setColor(Color.WHITE);
 			g2d.drawLine(initialX + 1, initialY + 1, mouseX, mouseY);
 		}
-
-		g2d.setColor(Color.green);
-		g2d.fill(manualToggle);
-
-		g2d.setColor(Color.blue);
-		g2d.fill(rainToggle);
-
-		g2d.setColor(Color.white);
-		g2d.fill(snowToggle);
-
-		g2d.setColor(Color.red);
-		g2d.fill(clearScreen);
 
 		g2d.setColor(Color.BLACK);
 
