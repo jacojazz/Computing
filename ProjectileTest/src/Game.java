@@ -30,6 +30,7 @@ public class Game extends JPanel {
 	static boolean RAIN = false;
 	static boolean SNOW = false;
 	static boolean MANUAL = false;
+	static boolean NIGHT = true;
 	static int rainX = 0, rainY = 10;
 	static int snowX = 0, snowY = 5;
 	static int rainDelay = 2;
@@ -233,8 +234,11 @@ public class Game extends JPanel {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-		g2d.setPaint(new GradientPaint(width / 2, height, new Color(0x212121), width / 2, 0, new Color(0x00263B)));
+		if (NIGHT == true) {
+			g2d.setPaint(new GradientPaint(width / 2, height, new Color(0x212121), width / 2, 0, new Color(0x00263B)));
+		} else {
+			g2d.setPaint(new GradientPaint(width / 2, height, new Color(0xF2B3DA), width / 2, 0, new Color(0x91D5FF)));
+		}
 		g2d.fillRect(0, 0, width, height);
 		g2d.setColor(Color.black);
 

@@ -37,6 +37,9 @@ public class Menu {
 
 	Rectangle changeAngle;
 
+	Rectangle dayRect;
+	Rectangle nightRect;
+
 	Rectangle exitRect;
 
 	public Menu() {
@@ -68,6 +71,10 @@ public class Menu {
 			int xVariation = Game.randInt(-5, 5);
 			Game.rainX = xVariation;
 			Game.snowX = xVariation;
+		} else if (dayRect.contains(p)) {
+			Game.NIGHT = false;
+		} else if (nightRect.contains(p)) {
+			Game.NIGHT = true;
 		} else if (exitRect.contains(p)) {
 			System.exit(0);
 		}
@@ -101,19 +108,22 @@ public class Menu {
 
 	public void update() {
 		baseRect = new Rectangle(x, y, width, height);
-		moveRect = new Rectangle(x + 10, y + 10, width - 20, height - 280);
+		moveRect = new Rectangle(x, y, width, height - 280);
 
-		manualRect = new Rectangle(x + 10, y + 100, width - 20, height - 280);
+		manualRect = new Rectangle(x + 10, y + 40, width - 20, height - 280);
 
-		rainPlus = new Rectangle(x + 10, y + 140, width / 10, width / 10);
-		rainRect = new Rectangle(x + 35, y + 140, width - 70, height - 280);
-		rainMinus = new Rectangle(x + 170, y + 140, width / 10, width / 10);
+		rainPlus = new Rectangle(x + 10, y + 70, width / 10, width / 10);
+		rainRect = new Rectangle(x + 35, y + 70, width - 70, height - 280);
+		rainMinus = new Rectangle(x + 170, y + 70, width / 10, width / 10);
 
-		snowPlus = new Rectangle(x + 10, y + 180, width / 10, width / 10);
-		snowRect = new Rectangle(x + 35, y + 180, width - 70, height - 280);
-		snowMinus = new Rectangle(x + 170, y + 180, width / 10, width / 10);
+		snowPlus = new Rectangle(x + 10, y + 100, width / 10, width / 10);
+		snowRect = new Rectangle(x + 35, y + 100, width - 70, height - 280);
+		snowMinus = new Rectangle(x + 170, y + 100, width / 10, width / 10);
 
-		changeAngle = new Rectangle(x + 10, y + 220, width - 20, height - 280);
+		changeAngle = new Rectangle(x + 10, y + 130, width - 20, height - 280);
+
+		dayRect = new Rectangle(x + 10, y + 160, 85, height - 280);
+		nightRect = new Rectangle(x + 105, y + 160, 85, height - 280);
 
 		exitRect = new Rectangle(x + 10, y + 270, width - 20, height - 280);
 
@@ -128,7 +138,7 @@ public class Menu {
 		g2d.setColor(new Color(20, 20, 20, 220));
 		g2d.fill(baseRect);
 
-		g2d.setColor(new Color(51, 51, 51, 220));
+		g2d.setColor(Color.GRAY);
 		g2d.fill(moveRect);
 
 		g2d.setColor(new Color(51, 51, 51, 220));
@@ -148,6 +158,10 @@ public class Menu {
 		g2d.fill(changeAngle);
 
 		g2d.setColor(new Color(51, 51, 51, 220));
+		g2d.fill(dayRect);
+		g2d.fill(nightRect);
+
+		g2d.setColor(new Color(0x521616));
 		g2d.fill(exitRect);
 
 	}
