@@ -11,6 +11,8 @@ public class Menu {
 	int width = 200;
 	int height = 300;
 
+	boolean visible = true;
+
 	int mouseX;
 	int mouseY;
 	int mouseXChange;
@@ -23,6 +25,10 @@ public class Menu {
 	Point p = new Point(0, 0);
 
 	Rectangle baseRect;
+
+	Rectangle minRect;
+	Rectangle minHandler;
+
 	Rectangle moveRect;
 
 	Rectangle manualRect;
@@ -37,8 +43,7 @@ public class Menu {
 
 	Rectangle changeAngle;
 
-	Rectangle dayRect;
-	Rectangle nightRect;
+	Rectangle dayNightToggle;
 
 	Rectangle exitRect;
 
@@ -49,7 +54,9 @@ public class Menu {
 	public void mouseClicked(MouseEvent e) {
 		p = new Point(e.getX(), e.getY());
 
-		if (manualRect.contains(p)) {
+		if (minHandler.contains(p)) {
+			visible = !visible;
+		} else if (manualRect.contains(p)) {
 			Game.MANUAL = !Game.MANUAL;
 		} else if (rainPlus.contains(p)) {
 			if (Game.rainDelay > 1) {
@@ -71,10 +78,8 @@ public class Menu {
 			int xVariation = Game.randInt(-5, 5);
 			Game.rainX = xVariation;
 			Game.snowX = xVariation;
-		} else if (dayRect.contains(p)) {
-			Game.NIGHT = false;
-		} else if (nightRect.contains(p)) {
-			Game.NIGHT = true;
+		} else if (dayNightToggle.contains(p)) {
+			Game.NIGHT = !Game.NIGHT;
 		} else if (exitRect.contains(p)) {
 			System.exit(0);
 		}
@@ -108,6 +113,10 @@ public class Menu {
 
 	public void update() {
 		baseRect = new Rectangle(x, y, width, height);
+
+		minRect = new Rectangle((x + width) - 18, y + 15, 16, 3);
+		minHandler = new Rectangle((x + width) - 20, y, 20, 20);
+
 		moveRect = new Rectangle(x, y, width, height - 280);
 
 		manualRect = new Rectangle(x + 10, y + 40, width - 20, height - 280);
@@ -122,8 +131,7 @@ public class Menu {
 
 		changeAngle = new Rectangle(x + 10, y + 130, width - 20, height - 280);
 
-		dayRect = new Rectangle(x + 10, y + 160, 85, height - 280);
-		nightRect = new Rectangle(x + 105, y + 160, 85, height - 280);
+		dayNightToggle = new Rectangle(x + 10, y + 160, width - 20, height - 280);
 
 		exitRect = new Rectangle(x + 10, y + 270, width - 20, height - 280);
 
@@ -135,35 +143,40 @@ public class Menu {
 	}
 
 	public void paint(Graphics2D g2d) {
-		g2d.setColor(new Color(20, 20, 20, 220));
-		g2d.fill(baseRect);
+		if (visible) {
+			g2d.setColor(new Color(20, 20, 20, 220));
+			g2d.fill(baseRect);
+		}
 
 		g2d.setColor(Color.GRAY);
 		g2d.fill(moveRect);
 
-		g2d.setColor(new Color(51, 51, 51, 220));
-		g2d.fill(manualRect);
+		g2d.setColor(Color.BLACK);
+		g2d.fill(minRect);
 
-		g2d.setColor(new Color(51, 51, 51, 220));
-		g2d.fill(rainPlus);
-		g2d.fill(rainRect);
-		g2d.fill(rainMinus);
+		if (visible) {
+			g2d.setColor(new Color(51, 51, 51, 220));
+			g2d.fill(manualRect);
 
-		g2d.setColor(new Color(51, 51, 51, 220));
-		g2d.fill(snowPlus);
-		g2d.fill(snowRect);
-		g2d.fill(snowMinus);
+			g2d.setColor(new Color(51, 51, 51, 220));
+			g2d.fill(rainPlus);
+			g2d.fill(rainRect);
+			g2d.fill(rainMinus);
 
-		g2d.setColor(new Color(51, 51, 51, 220));
-		g2d.fill(changeAngle);
+			g2d.setColor(new Color(51, 51, 51, 220));
+			g2d.fill(snowPlus);
+			g2d.fill(snowRect);
+			g2d.fill(snowMinus);
 
-		g2d.setColor(new Color(51, 51, 51, 220));
-		g2d.fill(dayRect);
-		g2d.fill(nightRect);
+			g2d.setColor(new Color(51, 51, 51, 220));
+			g2d.fill(changeAngle);
 
-		g2d.setColor(new Color(0x521616));
-		g2d.fill(exitRect);
+			g2d.setColor(new Color(51, 51, 51, 220));
+			g2d.fill(dayNightToggle);
 
+			g2d.setColor(new Color(0x521616));
+			g2d.fill(exitRect);
+		}
 	}
 
 }
