@@ -1,8 +1,15 @@
+package gui;
+
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 
 public class Menu {
 
@@ -19,6 +26,8 @@ public class Menu {
 	int mouseYChange;
 	int mouseRelationX;
 	int mouseRelationY;
+
+	Font titleFont, textFont;
 
 	boolean dragging = false;
 
@@ -48,7 +57,12 @@ public class Menu {
 	Rectangle exitRect;
 
 	public Menu() {
-
+		try {
+			titleFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/gui/fonts/Abel-Regular.ttf")).deriveFont(15f);
+			textFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/gui/fonts/Abel-Regular.ttf")).deriveFont(15f);
+		} catch (FontFormatException | IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void mouseClicked(MouseEvent e) {
@@ -151,31 +165,58 @@ public class Menu {
 		g2d.setColor(Color.GRAY);
 		g2d.fill(moveRect);
 
+		FontMetrics fmT = g2d.getFontMetrics(titleFont);
+		g2d.setFont(titleFont);
+		g2d.setColor(Color.BLACK);
+		g2d.drawString(Reference.NAME + " " + Reference.VERSION, moveRect.x + 5, (moveRect.y + (moveRect.height / 2)) + (fmT.getHeight() / 4));
+
 		g2d.setColor(Color.BLACK);
 		g2d.fill(minRect);
 
 		if (visible) {
 			g2d.setColor(new Color(51, 51, 51, 220));
 			g2d.fill(manualRect);
+			
+			g2d.setColor(Color.GRAY);
+			g2d.drawString("Manual Mode", manualRect.x + (manualRect.width / 2) - (fmT.stringWidth("Manual Mode") / 2), (manualRect.y + (manualRect.height / 2)) + (fmT.getHeight() / 4));
+			
 
 			g2d.setColor(new Color(51, 51, 51, 220));
 			g2d.fill(rainPlus);
 			g2d.fill(rainRect);
 			g2d.fill(rainMinus);
+			
+			g2d.setColor(Color.GRAY);
+			g2d.drawString("+", rainPlus.x + (rainPlus.width / 2) - (fmT.stringWidth("+") / 2), (rainPlus.y + (rainPlus.height / 2)) + (fmT.getHeight() / 4));
+			g2d.drawString("Rain Toggle", rainRect.x + (rainRect.width / 2) - (fmT.stringWidth("Rain Toggle") / 2), (rainRect.y + (rainRect.height / 2)) + (fmT.getHeight() / 4));
+			g2d.drawString("-", rainMinus.x + (rainMinus.width / 2) - (fmT.stringWidth("-") / 2), (rainMinus.y + (rainMinus.height / 2)) + (fmT.getHeight() / 4));
+			
 
 			g2d.setColor(new Color(51, 51, 51, 220));
 			g2d.fill(snowPlus);
 			g2d.fill(snowRect);
 			g2d.fill(snowMinus);
+			
+			g2d.setColor(Color.GRAY);
+			g2d.drawString("+", snowPlus.x + (snowPlus.width / 2) - (fmT.stringWidth("+") / 2), (snowPlus.y + (snowPlus.height / 2)) + (fmT.getHeight() / 4));
+			g2d.drawString("Snow Toggle", snowRect.x + (snowRect.width / 2) - (fmT.stringWidth("Snow Toggle") / 2), (snowRect.y + (snowRect.height / 2)) + (fmT.getHeight() / 4));
+			g2d.drawString("-", snowMinus.x + (snowMinus.width / 2) - (fmT.stringWidth("-") / 2), (snowMinus.y + (snowMinus.height / 2)) + (fmT.getHeight() / 4));
 
 			g2d.setColor(new Color(51, 51, 51, 220));
 			g2d.fill(changeAngle);
+			
+			g2d.setColor(Color.GRAY);
+			g2d.drawString("Change Angle", changeAngle.x + (changeAngle.width / 2) - (fmT.stringWidth("Change Angle") / 2), (changeAngle.y + (changeAngle.height / 2)) + (fmT.getHeight() / 4));
 
 			g2d.setColor(new Color(51, 51, 51, 220));
 			g2d.fill(dayNightToggle);
+			
+			g2d.setColor(Color.GRAY);
 
 			g2d.setColor(new Color(0x521616));
 			g2d.fill(exitRect);
+			
+			g2d.setColor(Color.GRAY);
 		}
 	}
 
