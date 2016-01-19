@@ -53,6 +53,8 @@ public class Menu {
 	Rectangle changeAngle;
 
 	Rectangle dayNightToggle;
+	
+	Rectangle gravityToggle;
 
 	Rectangle exitRect;
 
@@ -94,6 +96,12 @@ public class Menu {
 			Game.snowX = xVariation;
 		} else if (dayNightToggle.contains(p)) {
 			Game.NIGHT = !Game.NIGHT;
+		} else if (gravityToggle.contains(p)) {
+			if(Game.GRAVITY != 0) {
+				Game.GRAVITY = 0;
+			} else {
+				Game.GRAVITY = 0.10;
+			}
 		} else if (exitRect.contains(p)) {
 			System.exit(0);
 		}
@@ -146,6 +154,8 @@ public class Menu {
 		changeAngle = new Rectangle(x + 10, y + 130, width - 20, height - 280);
 
 		dayNightToggle = new Rectangle(x + 10, y + 160, width - 20, height - 280);
+		
+		gravityToggle = new Rectangle(x + 10, y + 190, width - 20, height - 280);
 
 		exitRect = new Rectangle(x + 10, y + 270, width - 20, height - 280);
 
@@ -165,10 +175,10 @@ public class Menu {
 		g2d.setColor(Color.GRAY);
 		g2d.fill(moveRect);
 
-		FontMetrics fmT = g2d.getFontMetrics(titleFont);
+		FontMetrics fmT = g2d.getFontMetrics(textFont);
 		g2d.setFont(titleFont);
 		g2d.setColor(Color.BLACK);
-		g2d.drawString(Reference.NAME + " " + Reference.VERSION, moveRect.x + 5, (moveRect.y + (moveRect.height / 2)) + (fmT.getHeight() / 4));
+		g2d.drawString(Reference.NAME + " " + Reference.VERSION + " Options", moveRect.x + 5, (moveRect.y + (moveRect.height / 2)) + (fmT.getHeight() / 4));
 
 		g2d.setColor(Color.BLACK);
 		g2d.fill(minRect);
@@ -188,7 +198,7 @@ public class Menu {
 			
 			g2d.setColor(Color.GRAY);
 			g2d.drawString("+", rainPlus.x + (rainPlus.width / 2) - (fmT.stringWidth("+") / 2), (rainPlus.y + (rainPlus.height / 2)) + (fmT.getHeight() / 4));
-			g2d.drawString("Rain Toggle", rainRect.x + (rainRect.width / 2) - (fmT.stringWidth("Rain Toggle") / 2), (rainRect.y + (rainRect.height / 2)) + (fmT.getHeight() / 4));
+			g2d.drawString("Rain Toggle (" + Game.rainDelay + ")", rainRect.x + (rainRect.width / 2) - (fmT.stringWidth("Rain Toggle (" + Game.rainDelay + ")") / 2), (rainRect.y + (rainRect.height / 2)) + (fmT.getHeight() / 4));
 			g2d.drawString("-", rainMinus.x + (rainMinus.width / 2) - (fmT.stringWidth("-") / 2), (rainMinus.y + (rainMinus.height / 2)) + (fmT.getHeight() / 4));
 			
 
@@ -199,7 +209,7 @@ public class Menu {
 			
 			g2d.setColor(Color.GRAY);
 			g2d.drawString("+", snowPlus.x + (snowPlus.width / 2) - (fmT.stringWidth("+") / 2), (snowPlus.y + (snowPlus.height / 2)) + (fmT.getHeight() / 4));
-			g2d.drawString("Snow Toggle", snowRect.x + (snowRect.width / 2) - (fmT.stringWidth("Snow Toggle") / 2), (snowRect.y + (snowRect.height / 2)) + (fmT.getHeight() / 4));
+			g2d.drawString("Snow Toggle (" + Game.snowDelay + ")", snowRect.x + (snowRect.width / 2) - (fmT.stringWidth("Snow Toggle (" + Game.snowDelay + ")") / 2), (snowRect.y + (snowRect.height / 2)) + (fmT.getHeight() / 4));
 			g2d.drawString("-", snowMinus.x + (snowMinus.width / 2) - (fmT.stringWidth("-") / 2), (snowMinus.y + (snowMinus.height / 2)) + (fmT.getHeight() / 4));
 
 			g2d.setColor(new Color(51, 51, 51, 220));
@@ -212,11 +222,19 @@ public class Menu {
 			g2d.fill(dayNightToggle);
 			
 			g2d.setColor(Color.GRAY);
+			g2d.drawString("Day/Night Toggle", dayNightToggle.x + (dayNightToggle.width / 2) - (fmT.stringWidth("Day/Night Toggle") / 2), (dayNightToggle.y + (dayNightToggle.height / 2)) + (fmT.getHeight() / 4));
 
+			g2d.setColor(new Color(51, 51, 51, 220));
+			g2d.fill(gravityToggle);
+			
+			g2d.setColor(Color.GRAY);
+			g2d.drawString("Gravity Toggle", gravityToggle.x + (gravityToggle.width / 2) - (fmT.stringWidth("Gravity Toggle") / 2), (gravityToggle.y + (gravityToggle.height / 2)) + (fmT.getHeight() / 4));
+			
 			g2d.setColor(new Color(0x521616));
 			g2d.fill(exitRect);
 			
-			g2d.setColor(Color.GRAY);
+			g2d.setColor(Color.WHITE);
+			g2d.drawString("Exit", exitRect.x + (exitRect.width / 2) - (fmT.stringWidth("Exit") / 2), (exitRect.y + (exitRect.height / 2)) + (fmT.getHeight() / 4));
 		}
 	}
 

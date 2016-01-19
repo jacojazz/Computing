@@ -34,29 +34,33 @@ public class Game extends JPanel {
 	static boolean MANUAL = false;
 	static boolean NIGHT = true;
 	static int rainX = 0, rainY = 10;
-	static int snowX = 0, snowY = 5;
+	static int snowX = 0, snowY = 3;
 	static int rainDelay = 10;
 	static int snowDelay = 10;
 	static boolean dragging = false;
 	static int mouseX, mouseY;
 	static Timer snowTimer, rainTimer;
 
-	final static double GRAVITY = 0.05;
+	static double GRAVITY = 0.10; //0.10
 
 	Menu menu = new Menu();
 
 	Game() {
 		addMouseListener(new MouseListener() {
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				menu.mouseClicked(e);
 			}
 
+			@Override
 			public void mouseEntered(MouseEvent e) {
 			}
 
+			@Override
 			public void mouseExited(MouseEvent e) {
 			}
 
+			@Override
 			public void mousePressed(MouseEvent e) {
 				menu.mousePressed(e);
 
@@ -67,6 +71,7 @@ public class Game extends JPanel {
 				}
 			}
 
+			@Override
 			public void mouseReleased(MouseEvent e) {
 				menu.mouseReleased(e);
 
@@ -82,6 +87,7 @@ public class Game extends JPanel {
 		});
 
 		addMouseMotionListener(new MouseMotionListener() {
+			@Override
 			public void mouseDragged(MouseEvent e) {
 				menu.mouseDragged(e);
 
@@ -89,6 +95,7 @@ public class Game extends JPanel {
 				mouseY = e.getY();
 			}
 
+			@Override
 			public void mouseMoved(MouseEvent e) {
 				menu.mouseMoved(e);
 
@@ -148,6 +155,10 @@ public class Game extends JPanel {
 	}
 
 	public void update() {
+		if(particleList.size() > 2500) {
+			particleList.clear();
+		}
+		
 		frames++;
 		for (int i = 0; i < particleList.size(); i++) {
 			try {
@@ -204,6 +215,7 @@ public class Game extends JPanel {
 			rainTimer = new Timer();
 
 			snowTimer.schedule(new TimerTask() {
+				@Override
 				public void run() {
 					if (SNOW) {
 						particleList.add(new Particle(xSpawnPosition(1), -2, snowX, snowY, 10, randInt(2, 5), (float) randDouble(0.01, 1), 1));
@@ -212,6 +224,7 @@ public class Game extends JPanel {
 			}, 0, snowDelay);
 
 			rainTimer.schedule(new TimerTask() {
+				@Override
 				public void run() {
 					if (RAIN) {
 						particleList.add(new Particle(xSpawnPosition(2), -2, rainX, rainY, 5, randInt(2, 3), (float) randDouble(0.01, 0.8), 2));
@@ -232,17 +245,18 @@ public class Game extends JPanel {
 		return initialY + (velocity * Math.cos(angle));
 	}
 
+	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+		g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
 		if (NIGHT == true) {
 			g2d.setPaint(new GradientPaint(width / 2, height, new Color(0x212121), width / 2, 0, new Color(0x00263B)));
 		} else {
-			g2d.setPaint(new GradientPaint(width / 2, height, new Color(0xF2B3DA), width / 2, 0, new Color(0x91D5FF)));
+			g2d.setPaint(new GradientPaint(width / 2, height, new Color(0x305e91), width / 2, 0, new Color(0xC8ACF1)));
 		}
 		g2d.fillRect(0, 0, width, height);
 		g2d.setColor(Color.black);

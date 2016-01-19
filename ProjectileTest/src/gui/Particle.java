@@ -23,7 +23,7 @@ public class Particle {
 	boolean touchFloor = false;
 	float alpha;
 
-	final double GRAVITY = Game.GRAVITY;
+	double GRAVITY = Game.GRAVITY;
 
 	double FRICTION_COEFFICIENT;
 	double BOUNCE_COEFFICIENT;
@@ -42,7 +42,7 @@ public class Particle {
 		if (TYPE == 0) {
 			color = Color.WHITE;
 			this.FRICTION_COEFFICIENT = 0.7;
-			this.BOUNCE_COEFFICIENT = 0.62;
+			this.BOUNCE_COEFFICIENT = 0.7;
 			this.lifetime = lifetime * Game.TARGET_FPS;
 			rect = new Ellipse2D.Double(x, y, size, size);
 		} else if (TYPE == 1) {
@@ -68,6 +68,7 @@ public class Particle {
 	}
 
 	public void update() {
+		GRAVITY = Game.GRAVITY;
 		age++;
 
 		// setY(Game.height - rect.getHeight());
