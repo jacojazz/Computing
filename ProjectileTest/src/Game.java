@@ -33,7 +33,7 @@ public class Game extends JPanel {
 	static boolean NIGHT = true;
 	static int rainX = 0, rainY = 10;
 	static int snowX = 0, snowY = 5;
-	static int rainDelay = 2;
+	static int rainDelay = 10;
 	static int snowDelay = 10;
 	static boolean dragging = false;
 	static int mouseX, mouseY;
@@ -234,6 +234,9 @@ public class Game extends JPanel {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
 		if (NIGHT == true) {
 			g2d.setPaint(new GradientPaint(width / 2, height, new Color(0x212121), width / 2, 0, new Color(0x00263B)));
 		} else {
@@ -257,9 +260,11 @@ public class Game extends JPanel {
 			g2d.drawLine(initialX + 1, initialY + 1, mouseX, mouseY);
 		}
 
-		g2d.setColor(Color.BLACK);
+		g2d.setColor(Color.WHITE);
 
 		g2d.drawString(Integer.toString(particleList.size()), 0, 10);
+
+		g2d.setColor(Color.BLACK);
 
 		menu.paint(g2d);
 	}
