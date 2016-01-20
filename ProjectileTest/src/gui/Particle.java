@@ -75,7 +75,7 @@ public class Particle {
 
 		// setY(Game.height - rect.getHeight());
 		// yVelocity = -(yVelocity * BOUNCE_VALUE);
-		if (TYPE == 0 || TYPE == 1 || TYPE == 3) {
+		if (TYPE == 1 || TYPE == 3) {
 			if (isTouchingFloor() == false) {
 				yVelocity += yGRAVITY;
 			} else if (isTouchingFloor() == true && yVelocity > 0) {
@@ -87,6 +87,31 @@ public class Particle {
 			}
 		} else if (TYPE == 2) {
 			yVelocity += yGRAVITY;
+		} else if (TYPE == 0) {
+			if (Game.gravityMode == 0 || Game.gravityMode == 1) {
+				if (isTouchingFloor() == false) {
+					yVelocity += yGRAVITY;
+				} else if (isTouchingFloor() == true && yVelocity > 0) {
+					yVelocity = bounce();
+					xVelocity *= FRICTION_COEFFICIENT;
+				} else {
+					setY(Game.height - rect.getHeight());
+					yVelocity = 0;
+				}
+			} else if (Game.gravityMode == 2) {
+				System.out.println("Steve");
+				if (rect.getY() > (Game.height / 2)) {
+					yVelocity -= yGRAVITY;
+				} else {
+					yVelocity += yGRAVITY;
+				}
+
+				if (rect.getX() > (Game.width / 2)) {
+					xVelocity -= xGRAVITY;
+				} else {
+					xVelocity += xGRAVITY;
+				}
+			}
 		}
 
 		if (xVelocity != 0 && isTouchingFloor() == true) {

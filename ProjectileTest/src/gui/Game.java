@@ -42,7 +42,7 @@ public class Game extends JPanel {
 	static Timer snowTimer, rainTimer;
 
 	static double yGRAVITY = 0.10; // 0.10
-	static double xGravity = 0;
+	static double xGravity = 0.18; // 16:9 Calculated
 	static int gravityMode = 0; // 0 - Normal, 1 - Anti, 2 - Orbital
 	static String gravityModeString;
 
@@ -169,8 +169,6 @@ public class Game extends JPanel {
 			gravityModeString = "Orbital";
 			break;
 		}
-		
-		
 
 		if (particleList.size() > 2500) {
 			particleList.clear();
@@ -251,6 +249,8 @@ public class Game extends JPanel {
 		}
 
 		menu.update();
+
+		System.out.println(gravityMode);
 
 	}
 

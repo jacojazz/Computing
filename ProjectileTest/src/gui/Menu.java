@@ -101,6 +101,12 @@ public class Menu {
 			} else {
 				Game.gravityMode++;
 			}
+			
+			if(Game.gravityMode == 1) {
+				Game.yGRAVITY = 0;
+			} else {
+				Game.yGRAVITY = 0.10;
+			}
 		} else if (exitRect.contains(p)) {
 			System.exit(0);
 		}
