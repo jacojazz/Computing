@@ -113,7 +113,6 @@ public class Particle {
 					yVelocity = 0;
 				}
 			} else if (Game.gravityMode == 2) {
-				System.out.println("Steve");
 				if (rect.getY() > (Game.height / 2)) {
 					yVelocity -= yGRAVITY;
 				} else {

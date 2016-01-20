@@ -1,7 +1,6 @@
 package gui;
 
 import java.awt.Color;
-import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -135,7 +134,7 @@ public class Game extends JPanel {
 
 		rainTimer = new Timer();
 		snowTimer = new Timer();
-		
+
 		try {
 			deathStar = ImageIO.read(new File("src/gui/images/deathStar.png"));
 		} catch (IOException e1) {
@@ -327,14 +326,11 @@ public class Game extends JPanel {
 			g2d.setColor(Color.WHITE);
 			g2d.drawLine(initialX + 1, initialY + 1, mouseX, mouseY);
 		}
-		
+
 		if (gravityMode == 2) {
 			g2d.drawImage(deathStarResize, (width / 2) - 64, (height / 2) - 64, 128, 128, null);
 		}
 
-		g2d.setColor(Color.WHITE);
-
-		FontMetrics fm = g2d.getFontMetrics();
 		g2d.setColor(Color.WHITE);
 		g2d.drawString(Integer.toString(particleList.size()), 0, 10);
 
