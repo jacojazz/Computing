@@ -23,7 +23,8 @@ public class Particle {
 	boolean touchFloor = false;
 	float alpha;
 
-	double GRAVITY = Game.GRAVITY;
+	double yGRAVITY = Game.yGRAVITY;
+	double xGRAVITY = Game.xGravity;
 
 	double FRICTION_COEFFICIENT;
 	double BOUNCE_COEFFICIENT;
@@ -68,14 +69,15 @@ public class Particle {
 	}
 
 	public void update() {
-		GRAVITY = Game.GRAVITY;
+		yGRAVITY = Game.yGRAVITY;
+		xGRAVITY = Game.xGravity;
 		age++;
 
 		// setY(Game.height - rect.getHeight());
 		// yVelocity = -(yVelocity * BOUNCE_VALUE);
 		if (TYPE == 0 || TYPE == 1 || TYPE == 3) {
 			if (isTouchingFloor() == false) {
-				yVelocity += GRAVITY;
+				yVelocity += yGRAVITY;
 			} else if (isTouchingFloor() == true && yVelocity > 0) {
 				yVelocity = bounce();
 				xVelocity *= FRICTION_COEFFICIENT;
@@ -84,7 +86,7 @@ public class Particle {
 				yVelocity = 0;
 			}
 		} else if (TYPE == 2) {
-			yVelocity += GRAVITY;
+			yVelocity += yGRAVITY;
 		}
 
 		if (xVelocity != 0 && isTouchingFloor() == true) {

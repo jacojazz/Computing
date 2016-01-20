@@ -22,7 +22,7 @@ import javax.swing.JPanel;
 public class Game extends JPanel {
 	private static final long serialVersionUID = 636997359079194521L;
 	static int frames = 0;
-	static JFrame frame = new JFrame("Projectile Test");
+	static JFrame frame = new JFrame(Reference.NAME + " " + Reference.VERSION);
 	static GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 	static int width = gd.getDisplayMode().getWidth();
 	static int height = gd.getDisplayMode().getHeight();
@@ -41,7 +41,10 @@ public class Game extends JPanel {
 	static int mouseX, mouseY;
 	static Timer snowTimer, rainTimer;
 
-	static double GRAVITY = 0.10; //0.10
+	static double yGRAVITY = 0.10; // 0.10
+	static double xGravity = 0;
+	static int gravityMode = 0; // 0 - Normal, 1 - Anti, 2 - Orbital
+	static String gravityModeString;
 
 	Menu menu = new Menu();
 
@@ -115,8 +118,8 @@ public class Game extends JPanel {
 		double rainXVelocity = Math.abs(rainX);
 		double rainYVelocity = Math.abs(rainY);
 
-		double yV = Math.sqrt(Math.pow(rainYVelocity, 2) + (2 * GRAVITY * height));
-		double t = (yV - rainYVelocity) / GRAVITY;
+		double yV = Math.sqrt(Math.pow(rainYVelocity, 2) + (2 * yGRAVITY * height));
+		double t = (yV - rainYVelocity) / yGRAVITY;
 		double xS = ((rainXVelocity + rainXVelocity) / 2) * t;
 
 		return xS;
@@ -126,8 +129,8 @@ public class Game extends JPanel {
 		double snowXVelocity = Math.abs(snowX);
 		double snowYVelocity = Math.abs(snowY);
 
-		double yV = Math.sqrt(Math.pow(snowYVelocity, 2) + (2 * GRAVITY * height));
-		double t = (yV - snowYVelocity) / GRAVITY;
+		double yV = Math.sqrt(Math.pow(snowYVelocity, 2) + (2 * yGRAVITY * height));
+		double t = (yV - snowYVelocity) / yGRAVITY;
 		double xS = ((snowXVelocity + snowXVelocity) / 2) * t;
 
 		return xS;
@@ -155,10 +158,24 @@ public class Game extends JPanel {
 	}
 
 	public void update() {
-		if(particleList.size() > 2500) {
-			particleList.clear();
+		switch (gravityMode) {
+		case 0:
+			gravityModeString = "Normal";
+			break;
+		case 1:
+			gravityModeString = "Anti";
+			break;
+		case 2:
+			gravityModeString = "Orbital";
+			break;
 		}
 		
+		
+
+		if (particleList.size() > 2500) {
+			particleList.clear();
+		}
+
 		frames++;
 		for (int i = 0; i < particleList.size(); i++) {
 			try {

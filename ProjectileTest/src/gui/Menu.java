@@ -27,7 +27,7 @@ public class Menu {
 	int mouseRelationX;
 	int mouseRelationY;
 
-	Font titleFont, textFont;
+	Font textFont;
 
 	boolean dragging = false;
 
@@ -54,13 +54,12 @@ public class Menu {
 
 	Rectangle dayNightToggle;
 	
-	Rectangle gravityToggle;
+	Rectangle gravityModeToggle;
 
 	Rectangle exitRect;
 
 	public Menu() {
 		try {
-			titleFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/gui/fonts/Abel-Regular.ttf")).deriveFont(15f);
 			textFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/gui/fonts/Abel-Regular.ttf")).deriveFont(15f);
 		} catch (FontFormatException | IOException e) {
 			e.printStackTrace();
@@ -96,11 +95,11 @@ public class Menu {
 			Game.snowX = xVariation;
 		} else if (dayNightToggle.contains(p)) {
 			Game.NIGHT = !Game.NIGHT;
-		} else if (gravityToggle.contains(p)) {
-			if(Game.GRAVITY != 0) {
-				Game.GRAVITY = 0;
+		} else if (gravityModeToggle.contains(p)) {
+			if(Game.gravityMode == 2) {
+				Game.gravityMode = 0;
 			} else {
-				Game.GRAVITY = 0.10;
+				Game.gravityMode++;
 			}
 		} else if (exitRect.contains(p)) {
 			System.exit(0);
@@ -155,7 +154,7 @@ public class Menu {
 
 		dayNightToggle = new Rectangle(x + 10, y + 160, width - 20, height - 280);
 		
-		gravityToggle = new Rectangle(x + 10, y + 190, width - 20, height - 280);
+		gravityModeToggle = new Rectangle(x + 10, y + 190, width - 20, height - 280);
 
 		exitRect = new Rectangle(x + 10, y + 270, width - 20, height - 280);
 
@@ -176,7 +175,7 @@ public class Menu {
 		g2d.fill(moveRect);
 
 		FontMetrics fmT = g2d.getFontMetrics(textFont);
-		g2d.setFont(titleFont);
+		g2d.setFont(textFont);
 		g2d.setColor(Color.BLACK);
 		g2d.drawString(Reference.NAME + " " + Reference.VERSION + " Options", moveRect.x + 5, (moveRect.y + (moveRect.height / 2)) + (fmT.getHeight() / 4));
 
@@ -225,10 +224,10 @@ public class Menu {
 			g2d.drawString("Day/Night Toggle", dayNightToggle.x + (dayNightToggle.width / 2) - (fmT.stringWidth("Day/Night Toggle") / 2), (dayNightToggle.y + (dayNightToggle.height / 2)) + (fmT.getHeight() / 4));
 
 			g2d.setColor(new Color(51, 51, 51, 220));
-			g2d.fill(gravityToggle);
+			g2d.fill(gravityModeToggle);
 			
 			g2d.setColor(Color.GRAY);
-			g2d.drawString("Gravity Toggle", gravityToggle.x + (gravityToggle.width / 2) - (fmT.stringWidth("Gravity Toggle") / 2), (gravityToggle.y + (gravityToggle.height / 2)) + (fmT.getHeight() / 4));
+			g2d.drawString("Gravity Toggle (" + Game.gravityModeString + ")", gravityModeToggle.x + (gravityModeToggle.width / 2) - (fmT.stringWidth("Gravity Toggle (" + Game.gravityModeString + ")") / 2), (gravityModeToggle.y + (gravityModeToggle.height / 2)) + (fmT.getHeight() / 4));
 			
 			g2d.setColor(new Color(0x521616));
 			g2d.fill(exitRect);
