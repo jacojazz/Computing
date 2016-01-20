@@ -79,7 +79,7 @@ public class Game extends JPanel {
 			public void mousePressed(MouseEvent e) {
 				menu.mousePressed(e);
 
-				if (MANUAL) {
+				if (MANUAL && !menu.baseRect.contains(new Point(e.getX(), e.getY()))) {
 					dragging = true;
 					initialX = e.getX();
 					initialY = e.getY();
@@ -94,7 +94,7 @@ public class Game extends JPanel {
 					dragging = false;
 					distanceX = initialX - e.getX();
 					distanceY = initialY - e.getY();
-					if (!menu.manualRect.contains(new Point(e.getX(), e.getY()))) {
+					if (!menu.baseRect.contains(new Point(e.getX(), e.getY()))) {
 						particleList.add(new Particle(initialX, initialY, distanceX / 20, distanceY / 20, 5, 8, 1f, 0));
 					}
 				}
@@ -313,9 +313,18 @@ public class Game extends JPanel {
 		g2d.setColor(Color.black);
 
 		for (int i = 0; i < particleList.size(); i++) {
-			try {
+			if (gravityMode != 2 || (gravityMode == 2 && particleList.get(i).xVelocity > 0)) {
 				particleList.get(i).paint(g2d);
-			} catch (Exception e) {
+			}
+		}
+
+		if (gravityMode == 2) {
+			g2d.drawImage(deathStarResize, (width / 2) - 64, (height / 2) - 64, 128, 128, null);
+		}
+
+		for (int i = 0; i < particleList.size(); i++) {
+			if (gravityMode == 2 && particleList.get(i).xVelocity <= 0) {
+				particleList.get(i).paint(g2d);
 			}
 		}
 
@@ -325,10 +334,6 @@ public class Game extends JPanel {
 			g2d.drawLine(initialX, initialY, mouseX, mouseY);
 			g2d.setColor(Color.WHITE);
 			g2d.drawLine(initialX + 1, initialY + 1, mouseX, mouseY);
-		}
-
-		if (gravityMode == 2) {
-			g2d.drawImage(deathStarResize, (width / 2) - 64, (height / 2) - 64, 128, 128, null);
 		}
 
 		g2d.setColor(Color.WHITE);
