@@ -1,21 +1,28 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -40,11 +47,17 @@ public class Game extends JPanel {
 	static boolean dragging = false;
 	static int mouseX, mouseY;
 	static Timer snowTimer, rainTimer;
+	static Image deathStar;
+	static Image deathStarResize;
 
 	static double yGRAVITY = 0.10; // 0.10
 	static double xGravity = 0.18; // 16:9 Calculated
 	static int gravityMode = 0; // 0 - Normal, 1 - Anti, 2 - Orbital
 	static String gravityModeString;
+
+	static int snowCount = 0;
+	static int rainCount = 0;
+	static int ppsNumber = 0;
 
 	Menu menu = new Menu();
 
@@ -107,10 +120,28 @@ public class Game extends JPanel {
 			}
 		});
 
+		addKeyListener(new KeyListener() {
+			public void keyPressed(KeyEvent e) {
+			}
+
+			public void keyReleased(KeyEvent e) {
+			}
+
+			public void keyTyped(KeyEvent e) {
+			}
+		});
+
 		setFocusable(true);
 
 		rainTimer = new Timer();
 		snowTimer = new Timer();
+		
+		try {
+			deathStar = ImageIO.read(new File("src/gui/images/deathStar.png"));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		deathStarResize = deathStar.getScaledInstance(128, 128, Image.SCALE_DEFAULT);
 	}
 
 	public double offScreenCalculationRain() {
@@ -170,8 +201,10 @@ public class Game extends JPanel {
 			break;
 		}
 
-		if (particleList.size() > 2500) {
-			particleList.clear();
+		if (particleList.size() > 2000) {
+			for (int particleRemove = 0; particleRemove <= 500; particleRemove++) {
+				particleList.remove(particleRemove);
+			}
 		}
 
 		frames++;
@@ -234,6 +267,7 @@ public class Game extends JPanel {
 				public void run() {
 					if (SNOW) {
 						particleList.add(new Particle(xSpawnPosition(1), -2, snowX, snowY, 10, randInt(2, 5), (float) randDouble(0.01, 1), 1));
+						snowCount++;
 					}
 				}
 			}, 0, snowDelay);
@@ -249,9 +283,10 @@ public class Game extends JPanel {
 		}
 
 		menu.update();
+	}
 
-		System.out.println(gravityMode);
-
+	public static int getAngle() {
+		return (5 * rainX);
 	}
 
 	public double getXFromAngle(double initialX, int angle, double velocity) {
@@ -292,10 +327,16 @@ public class Game extends JPanel {
 			g2d.setColor(Color.WHITE);
 			g2d.drawLine(initialX + 1, initialY + 1, mouseX, mouseY);
 		}
+		
+		if (gravityMode == 2) {
+			g2d.drawImage(deathStarResize, (width / 2) - 64, (height / 2) - 64, 128, 128, null);
+		}
 
 		g2d.setColor(Color.WHITE);
 
-		g2d.drawString(Integer.toString(particleList.size()), 0, 10);
+		FontMetrics fm = g2d.getFontMetrics();
+		g2d.setColor(Color.WHITE);
+		g2d.drawString(Integer.toString(particleList.size()), menu.baseRect.x + (menu.baseRect.width / 2) - (fm.stringWidth(Integer.toString(particleList.size())) / 2), menu.baseRect.y + menu.moveRect.height + fm.getHeight());
 
 		g2d.setColor(Color.BLACK);
 

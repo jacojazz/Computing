@@ -76,14 +76,28 @@ public class Particle {
 		// setY(Game.height - rect.getHeight());
 		// yVelocity = -(yVelocity * BOUNCE_VALUE);
 		if (TYPE == 1 || TYPE == 3) {
-			if (isTouchingFloor() == false) {
-				yVelocity += yGRAVITY;
-			} else if (isTouchingFloor() == true && yVelocity > 0) {
-				yVelocity = bounce();
-				xVelocity *= FRICTION_COEFFICIENT;
+			if (!(Game.gravityMode == 2)) {
+				if (isTouchingFloor() == false) {
+					yVelocity += yGRAVITY;
+				} else if (isTouchingFloor() == true && yVelocity > 0) {
+					yVelocity = bounce();
+					xVelocity *= FRICTION_COEFFICIENT;
+				} else {
+					setY(Game.height - rect.getHeight());
+					yVelocity = 0;
+				}
 			} else {
-				setY(Game.height - rect.getHeight());
-				yVelocity = 0;
+				if (rect.getY() > (Game.height / 2)) {
+					yVelocity -= yGRAVITY;
+				} else {
+					yVelocity += yGRAVITY;
+				}
+
+				if (rect.getX() > (Game.width / 2)) {
+					xVelocity -= xGRAVITY;
+				} else {
+					xVelocity += xGRAVITY;
+				}
 			}
 		} else if (TYPE == 2) {
 			yVelocity += yGRAVITY;
