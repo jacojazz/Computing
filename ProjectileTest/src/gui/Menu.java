@@ -189,45 +189,45 @@ public class Menu {
 		g2d.fill(minRect);
 
 		if (visible) {
-			g2d.setColor(new Color(51, 51, 51, 220));
+			g2d.setColor(new Color(51, 51, 51, 255));
 			g2d.fill(manualRect);
 
 			g2d.setColor(Color.GRAY);
 			g2d.drawString("Manual Mode", manualRect.x + (manualRect.width / 2) - (fmT.stringWidth("Manual Mode") / 2), (manualRect.y + (manualRect.height / 2)) + (fmT.getHeight() / 4));
 
-			g2d.setColor(new Color(51, 51, 51, 220));
+			g2d.setColor(new Color(51, 51, 51, 255));
 			g2d.fill(rainPlus);
 			g2d.fill(rainRect);
 			g2d.fill(rainMinus);
 
 			g2d.setColor(Color.GRAY);
 			g2d.drawString("+", rainPlus.x + (rainPlus.width / 2) - (fmT.stringWidth("+") / 2), (rainPlus.y + (rainPlus.height / 2)) + (fmT.getHeight() / 4));
-			g2d.drawString("Rain Toggle (" + Game.rainDelay + " pps)", rainRect.x + (rainRect.width / 2) - (fmT.stringWidth("Rain Toggle (" + Game.rainDelay + " pps)") / 2), (rainRect.y + (rainRect.height / 2)) + (fmT.getHeight() / 4));
+			g2d.drawString("Rain Toggle (" + Game.rainDelay + " ms)", rainRect.x + (rainRect.width / 2) - (fmT.stringWidth("Rain Toggle (" + Game.rainDelay + " ms)") / 2), (rainRect.y + (rainRect.height / 2)) + (fmT.getHeight() / 4));
 			g2d.drawString("-", rainMinus.x + (rainMinus.width / 2) - (fmT.stringWidth("-") / 2), (rainMinus.y + (rainMinus.height / 2)) + (fmT.getHeight() / 4));
 
-			g2d.setColor(new Color(51, 51, 51, 220));
+			g2d.setColor(new Color(51, 51, 51, 255));
 			g2d.fill(snowPlus);
 			g2d.fill(snowRect);
 			g2d.fill(snowMinus);
 
 			g2d.setColor(Color.GRAY);
 			g2d.drawString("+", snowPlus.x + (snowPlus.width / 2) - (fmT.stringWidth("+") / 2), (snowPlus.y + (snowPlus.height / 2)) + (fmT.getHeight() / 4));
-			g2d.drawString("Snow Toggle (" + Game.snowDelay + " pps)", snowRect.x + (snowRect.width / 2) - (fmT.stringWidth("Snow Toggle (" + Game.snowDelay + " pps)") / 2), (snowRect.y + (snowRect.height / 2)) + (fmT.getHeight() / 4));
+			g2d.drawString("Snow Toggle (" + Game.snowDelay + " ms)", snowRect.x + (snowRect.width / 2) - (fmT.stringWidth("Snow Toggle (" + Game.snowDelay + " ms)") / 2), (snowRect.y + (snowRect.height / 2)) + (fmT.getHeight() / 4));
 			g2d.drawString("-", snowMinus.x + (snowMinus.width / 2) - (fmT.stringWidth("-") / 2), (snowMinus.y + (snowMinus.height / 2)) + (fmT.getHeight() / 4));
 
-			g2d.setColor(new Color(51, 51, 51, 220));
+			g2d.setColor(new Color(51, 51, 51, 255));
 			g2d.fill(changeAngle);
 
 			g2d.setColor(Color.GRAY);
 			g2d.drawString("Change Angle (" + Game.getAngle() + ")", changeAngle.x + (changeAngle.width / 2) - (fmT.stringWidth("Change Angle (" + Game.getAngle() + ")") / 2), (changeAngle.y + (changeAngle.height / 2)) + (fmT.getHeight() / 4));
 
-			g2d.setColor(new Color(51, 51, 51, 220));
+			g2d.setColor(new Color(51, 51, 51, 255));
 			g2d.fill(dayNightToggle);
 
 			g2d.setColor(Color.GRAY);
 			g2d.drawString("Day/Night Toggle", dayNightToggle.x + (dayNightToggle.width / 2) - (fmT.stringWidth("Day/Night Toggle") / 2), (dayNightToggle.y + (dayNightToggle.height / 2)) + (fmT.getHeight() / 4));
 
-			g2d.setColor(new Color(51, 51, 51, 220));
+			g2d.setColor(new Color(51, 51, 51, 255));
 			g2d.fill(gravityModeToggle);
 
 			g2d.setColor(Color.GRAY);

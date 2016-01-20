@@ -336,7 +336,7 @@ public class Game extends JPanel {
 
 		FontMetrics fm = g2d.getFontMetrics();
 		g2d.setColor(Color.WHITE);
-		g2d.drawString(Integer.toString(particleList.size()), menu.baseRect.x + (menu.baseRect.width / 2) - (fm.stringWidth(Integer.toString(particleList.size())) / 2), menu.baseRect.y + menu.moveRect.height + fm.getHeight());
+		g2d.drawString(Integer.toString(particleList.size()), 0, 10);
 
 		g2d.setColor(Color.BLACK);
 
