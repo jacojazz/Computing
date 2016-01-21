@@ -56,6 +56,8 @@ public class Menu {
 
 	Rectangle gravityModeToggle;
 
+	Rectangle clearParticles;
+
 	Rectangle exitRect;
 
 	public Menu() {
@@ -101,12 +103,8 @@ public class Menu {
 			} else {
 				Game.gravityMode++;
 			}
-
-			if (Game.gravityMode == 1) {
-				Game.yGRAVITY = 0;
-			} else {
-				Game.yGRAVITY = 0.10;
-			}
+		} else if (clearParticles.contains(p)) {
+			Game.particleList.clear();
 		} else if (exitRect.contains(p)) {
 			System.exit(0);
 		}
@@ -162,13 +160,14 @@ public class Menu {
 
 		gravityModeToggle = new Rectangle(x + 10, y + 190, width - 20, height - 280);
 
+		clearParticles = new Rectangle(x + 10, y + 220, width - 20, height - 280);
+
 		exitRect = new Rectangle(x + 10, y + 270, width - 20, height - 280);
 
 		if (dragging == true) {
 			x = mouseX - mouseRelationX;
 			y = mouseY - mouseRelationY;
 		}
-
 	}
 
 	public void paint(Graphics2D g2d) {
@@ -233,6 +232,12 @@ public class Menu {
 			g2d.setColor(Color.GRAY);
 			g2d.drawString("Gravity Toggle (" + Game.gravityModeString + ")", gravityModeToggle.x + (gravityModeToggle.width / 2) - (fmT.stringWidth("Gravity Toggle (" + Game.gravityModeString + ")") / 2), (gravityModeToggle.y + (gravityModeToggle.height / 2)) + (fmT.getHeight() / 4));
 
+			g2d.setColor(new Color(51, 51, 51, 255));
+			g2d.fill(clearParticles);
+			
+			g2d.setColor(Color.GRAY);
+			g2d.drawString("Clear Particles (" + Game.particleList.size() + ")", clearParticles.x + (clearParticles.width / 2) - (fmT.stringWidth("Clear Particles (" + Game.particleList.size() + ")") / 2), (clearParticles.y + (clearParticles.height / 2)) + (fmT.getHeight() / 4));
+			
 			g2d.setColor(new Color(0x521616));
 			g2d.fill(exitRect);
 

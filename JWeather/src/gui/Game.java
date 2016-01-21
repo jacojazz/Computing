@@ -14,6 +14,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Ellipse2D;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,11 +47,12 @@ public class Game extends JPanel {
 	static boolean dragging = false;
 	static int mouseX, mouseY;
 	static Timer snowTimer, rainTimer;
-	static Image deathStar;
+	static Image deathStarImage;
 	static Image deathStarResize;
+	static Ellipse2D deathStar;
 
 	static double yGRAVITY = 0.10; // 0.10
-	static double xGravity = 0.18; // 16:9 Calculated
+	static double xGRAVITY = 0.17777778; // 16:9 Calculated
 	static int gravityMode = 0; // 0 - Normal, 1 - Anti, 2 - Orbital
 	static String gravityModeString;
 
@@ -95,7 +97,11 @@ public class Game extends JPanel {
 					distanceX = initialX - e.getX();
 					distanceY = initialY - e.getY();
 					if (!menu.baseRect.contains(new Point(e.getX(), e.getY()))) {
-						particleList.add(new Particle(initialX, initialY, distanceX / 20, distanceY / 20, 5, 8, 1f, 0));
+						if (Game.gravityMode != 0) {
+							particleList.add(new Particle(initialX, initialY, distanceX / 40, distanceY / 40, 5, 8, 1f, 0));
+						} else {
+							particleList.add(new Particle(initialX, initialY, distanceX / 20, distanceY / 20, 5, 8, 1f, 0));
+						}
 					}
 				}
 			}
@@ -136,11 +142,13 @@ public class Game extends JPanel {
 		snowTimer = new Timer();
 
 		try {
-			deathStar = ImageIO.read(new File("src/gui/images/deathStar.png"));
+			deathStarImage = ImageIO.read(new File("src/gui/images/deathStar.png"));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		deathStarResize = deathStar.getScaledInstance(128, 128, Image.SCALE_DEFAULT);
+		deathStarResize = deathStarImage.getScaledInstance(128, 128, Image.SCALE_DEFAULT);
+
+		deathStar = new Ellipse2D.Double((width / 2) - 64, (height / 2) - 64, 128, 128);
 	}
 
 	public double offScreenCalculationRain() {
@@ -199,6 +207,16 @@ public class Game extends JPanel {
 			gravityModeString = "Orbital";
 			break;
 		}
+		if (gravityMode == 0) {
+			yGRAVITY = 0.10;
+			xGRAVITY = 0.10;
+		} else if (gravityMode == 1) {
+			yGRAVITY = 0;
+			xGRAVITY = 0;
+		} else if (gravityMode == 2) {
+			yGRAVITY = 0.03;
+			xGRAVITY = 0.03;
+		}
 
 		if (particleList.size() > 2000) {
 			for (int particleRemove = 0; particleRemove <= 500; particleRemove++) {
@@ -211,7 +229,7 @@ public class Game extends JPanel {
 			try {
 				Particle currentParticle = particleList.get(i);
 				if (currentParticle.TYPE == 0) {
-					if (currentParticle.getX() > width || currentParticle.getX() < 0 || currentParticle.age > currentParticle.lifetime) {
+					if (currentParticle.getX() > width || currentParticle.getX() < 0) {
 						particleList.remove(i);
 					} else {
 						currentParticle.update();
@@ -335,9 +353,6 @@ public class Game extends JPanel {
 			g2d.setColor(Color.WHITE);
 			g2d.drawLine(initialX + 1, initialY + 1, mouseX, mouseY);
 		}
-
-		g2d.setColor(Color.WHITE);
-		g2d.drawString(Integer.toString(particleList.size()), 0, 10);
 
 		g2d.setColor(Color.BLACK);
 

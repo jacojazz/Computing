@@ -14,17 +14,18 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 import java.util.Random;
 
 public class Particle {
-	double size, x, y, xVelocity, yVelocity, lifetime, age = 0;
+	double size, x, y, xVelocity, yVelocity, lifetime, age = 0, radius;
 	Ellipse2D rect;
 	Color color;
 	boolean touchFloor = false;
 	float alpha;
 
 	double yGRAVITY = Game.yGRAVITY;
-	double xGRAVITY = Game.xGravity;
+	double xGRAVITY = Game.xGRAVITY;
 
 	double FRICTION_COEFFICIENT;
 	double BOUNCE_COEFFICIENT;
@@ -39,6 +40,7 @@ public class Particle {
 		this.size = size;
 		this.alpha = alpha;
 		this.TYPE = type;
+		this.radius = size / 2;
 
 		if (TYPE == 0) {
 			color = Color.WHITE;
@@ -70,13 +72,11 @@ public class Particle {
 
 	public void update() {
 		yGRAVITY = Game.yGRAVITY;
-		xGRAVITY = Game.xGravity;
+		xGRAVITY = Game.xGRAVITY;
 		age++;
 
-		// setY(Game.height - rect.getHeight());
-		// yVelocity = -(yVelocity * BOUNCE_VALUE);
 		if (TYPE == 1 || TYPE == 3) {
-			if (!(Game.gravityMode == 2)) {
+			if (Game.gravityMode != 2) {
 				if (isTouchingFloor() == false) {
 					yVelocity += yGRAVITY;
 				} else if (isTouchingFloor() == true && yVelocity > 0) {
