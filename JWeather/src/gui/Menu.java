@@ -234,10 +234,10 @@ public class Menu {
 
 			g2d.setColor(new Color(51, 51, 51, 255));
 			g2d.fill(clearParticles);
-			
+
 			g2d.setColor(Color.GRAY);
 			g2d.drawString("Clear Particles (" + Game.particleList.size() + ")", clearParticles.x + (clearParticles.width / 2) - (fmT.stringWidth("Clear Particles (" + Game.particleList.size() + ")") / 2), (clearParticles.y + (clearParticles.height / 2)) + (fmT.getHeight() / 4));
-			
+
 			g2d.setColor(new Color(0x521616));
 			g2d.fill(exitRect);
 
