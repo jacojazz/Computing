@@ -52,7 +52,7 @@ public class Game extends JPanel {
 	static Ellipse2D deathStar;
 
 	static double yGRAVITY = 0.10; // 0.10
-	static double xGRAVITY = 0.17777778; // 16:9 Calculated
+	static double xGRAVITY = 0.10; // 16:9 Calculated
 	static int gravityMode = 0; // 0 - Normal, 1 - Anti, 2 - Orbital
 	static String gravityModeString;
 
@@ -330,20 +330,25 @@ public class Game extends JPanel {
 		g2d.fillRect(0, 0, width, height);
 		g2d.setColor(Color.black);
 
-		for (int i = 0; i < particleList.size(); i++) {
-			if (gravityMode != 2 || (gravityMode == 2 && particleList.get(i).xVelocity > 0)) {
-				particleList.get(i).paint(g2d);
-			}
-		}
+		try {
 
-		if (gravityMode == 2) {
-			g2d.drawImage(deathStarResize, (width / 2) - 64, (height / 2) - 64, 128, 128, null);
-		}
-
-		for (int i = 0; i < particleList.size(); i++) {
-			if (gravityMode == 2 && particleList.get(i).xVelocity <= 0) {
-				particleList.get(i).paint(g2d);
+			for (int i = 0; i < particleList.size(); i++) {
+				if (gravityMode != 2 || (gravityMode == 2 && particleList.get(i).xVelocity > 0)) {
+					particleList.get(i).paint(g2d);
+				}
 			}
+
+			if (gravityMode == 2) {
+				g2d.drawImage(deathStarResize, (width / 2) - 64, (height / 2) - 64, 128, 128, null);
+			}
+
+			for (int i = 0; i < particleList.size(); i++) {
+				if (gravityMode == 2 && particleList.get(i).xVelocity <= 0) {
+					particleList.get(i).paint(g2d);
+				}
+			}
+
+		} catch (Exception e) {
 		}
 
 		g2d.setColor(Color.BLACK);
