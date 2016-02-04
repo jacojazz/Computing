@@ -44,15 +44,17 @@ public class Game extends JPanel {
 	static int snowX = 0, snowY = 3;
 	static int rainDelay = 10;
 	static int snowDelay = 10;
+	static int spawnDelay = 10;
 	static boolean dragging = false;
 	static int mouseX, mouseY;
-	static Timer snowTimer, rainTimer;
+	static Timer snowTimer, rainTimer, spawnTimer;
 	static Image deathStarImage;
 	static Image deathStarResize;
 	static Ellipse2D deathStar;
+	static boolean rightClicked = false;
 
-	static double yGRAVITY = 0.10; // 0.10
-	static double xGRAVITY = 0.10; // 16:9 Calculated
+	static double yGRAVITY = 0.1; // 0.10
+	static double xGRAVITY = 0.18; // 16:9 Calculated
 	static int gravityMode = 0; // 0 - Normal, 1 - Anti, 2 - Orbital
 	static String gravityModeString;
 
@@ -79,30 +81,41 @@ public class Game extends JPanel {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				menu.mousePressed(e);
+				mouseX = e.getX();
+				mouseY = e.getY();
 
-				if (MANUAL && !menu.baseRect.contains(new Point(e.getX(), e.getY()))) {
-					dragging = true;
-					initialX = e.getX();
-					initialY = e.getY();
+				if (e.getButton() == MouseEvent.BUTTON1) {
+					menu.mousePressed(e);
+
+					if (MANUAL && !menu.baseRect.contains(new Point(e.getX(), e.getY()))) {
+						dragging = true;
+						initialX = e.getX();
+						initialY = e.getY();
+					}
+				} else if (e.getButton() == MouseEvent.BUTTON3) {
+					rightClicked = true;
 				}
 			}
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				menu.mouseReleased(e);
+				if (e.getButton() == MouseEvent.BUTTON1) {
+					menu.mouseReleased(e);
 
-				if (MANUAL) {
-					dragging = false;
-					distanceX = initialX - e.getX();
-					distanceY = initialY - e.getY();
-					if (!menu.baseRect.contains(new Point(e.getX(), e.getY()))) {
-						if (Game.gravityMode != 0) {
-							particleList.add(new Particle(initialX, initialY, distanceX / 40, distanceY / 40, 5, 8, 1f, 0));
-						} else {
-							particleList.add(new Particle(initialX, initialY, distanceX / 20, distanceY / 20, 5, 8, 1f, 0));
+					if (MANUAL) {
+						dragging = false;
+						distanceX = initialX - e.getX();
+						distanceY = initialY - e.getY();
+						if (!menu.baseRect.contains(new Point(e.getX(), e.getY()))) {
+							if (Game.gravityMode != 0) {
+								particleList.add(new Particle(initialX, initialY, distanceX / 40, distanceY / 40, 5, 8, 1f, 0));
+							} else {
+								particleList.add(new Particle(initialX, initialY, distanceX / 20, distanceY / 20, 5, 8, 1f, 0));
+							}
 						}
 					}
+				} else if (e.getButton() == MouseEvent.BUTTON3) {
+					rightClicked = false;
 				}
 			}
 		});
@@ -140,6 +153,7 @@ public class Game extends JPanel {
 
 		rainTimer = new Timer();
 		snowTimer = new Timer();
+		spawnTimer = new Timer();
 
 		try {
 			deathStarImage = ImageIO.read(new File("src/gui/images/deathStar.png"));
@@ -275,9 +289,12 @@ public class Game extends JPanel {
 			snowTimer.purge();
 			rainTimer.cancel();
 			rainTimer.purge();
+			spawnTimer.cancel();
+			spawnTimer.purge();
 
 			snowTimer = new Timer();
 			rainTimer = new Timer();
+			spawnTimer = new Timer();
 
 			snowTimer.schedule(new TimerTask() {
 				@Override
@@ -297,6 +314,15 @@ public class Game extends JPanel {
 					}
 				}
 			}, 0, rainDelay);
+			
+			spawnTimer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					if(rightClicked) {
+						particleList.add(new Particle(mouseX, mouseY, 0, 0, 5, 8, 1f, 0));
+					}
+				}
+			}, 0, spawnDelay);
 		}
 
 		menu.update();
@@ -340,6 +366,7 @@ public class Game extends JPanel {
 
 			if (gravityMode == 2) {
 				g2d.drawImage(deathStarResize, (width / 2) - 64, (height / 2) - 64, 128, 128, null);
+				g2d.draw(deathStar);
 			}
 
 			for (int i = 0; i < particleList.size(); i++) {
