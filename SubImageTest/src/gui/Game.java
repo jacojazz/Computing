@@ -45,7 +45,7 @@ public class Game extends JPanel {
 
 		original = ImageIO.read(new File("banner2.png"));
 		cImage = new CircleImage(original);
-		cImage.scale(2f);
+		cImage.scale(4f);
 	}
 
 	void update() {

@@ -89,7 +89,7 @@ public class CircleImage {
 			int height = (int) (original.getHeight() * scale);
 			BufferedImage temp = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D g2d = temp.createGraphics();
-			g2d.drawImage(original.getScaledInstance(width, height, Image.SCALE_DEFAULT), 0, 0, width, height, null);
+			g2d.drawImage(original.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0, 0, width, height, null);
 			g2d.dispose();
 
 			original = temp;
@@ -100,7 +100,7 @@ public class CircleImage {
 		if (width > height) {
 			BufferedImage temp = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D g2d = temp.createGraphics();
-			g2d.drawImage(original.getScaledInstance(width, height, Image.SCALE_DEFAULT), 0, 0, width, height, null);
+			g2d.drawImage(original.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0, 0, width, height, null);
 			g2d.dispose();
 
 			original = temp;
