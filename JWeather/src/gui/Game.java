@@ -318,7 +318,7 @@ public class Game extends JPanel {
 			spawnTimer.schedule(new TimerTask() {
 				@Override
 				public void run() {
-					if(rightClicked) {
+					if(rightClicked && MANUAL) {
 						particleList.add(new Particle(mouseX, mouseY, 0, 0, 5, 8, 1f, 0));
 					}
 				}
