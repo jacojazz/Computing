@@ -71,42 +71,44 @@ public class Menu {
 	public void mouseClicked(MouseEvent e) {
 		p = new Point(e.getX(), e.getY());
 
-		if (minHandler.contains(p)) {
-			visible = !visible;
-		} else if (manualRect.contains(p)) {
-			Game.MANUAL = !Game.MANUAL;
-		} else if (rainPlus.contains(p)) {
-			if (Game.rainDelay > 1) {
-				Game.rainDelay--;
+		if (e.getButton() == MouseEvent.BUTTON1) {
+			if (minHandler.contains(p)) {
+				visible = !visible;
+			} else if (manualRect.contains(p)) {
+				Game.MANUAL = !Game.MANUAL;
+			} else if (rainPlus.contains(p)) {
+				if (Game.rainDelay > 1) {
+					Game.rainDelay--;
+				}
+			} else if (rainRect.contains(p)) {
+				Game.RAIN = !Game.RAIN;
+			} else if (rainMinus.contains(p)) {
+				Game.rainDelay++;
+			} else if (snowPlus.contains(p)) {
+				if (Game.snowDelay > 1) {
+					Game.snowDelay--;
+				}
+			} else if (snowRect.contains(p)) {
+				Game.SNOW = !Game.SNOW;
+			} else if (snowMinus.contains(p)) {
+				Game.snowDelay++;
+			} else if (changeAngle.contains(p)) {
+				int xVariation = Game.randInt(-5, 5);
+				Game.rainX = xVariation;
+				Game.snowX = xVariation;
+			} else if (dayNightToggle.contains(p)) {
+				Game.NIGHT = !Game.NIGHT;
+			} else if (gravityModeToggle.contains(p)) {
+				if (Game.gravityMode == 2) {
+					Game.gravityMode = 0;
+				} else {
+					Game.gravityMode++;
+				}
+			} else if (clearParticles.contains(p)) {
+				Game.particleList.clear();
+			} else if (exitRect.contains(p)) {
+				System.exit(0);
 			}
-		} else if (rainRect.contains(p)) {
-			Game.RAIN = !Game.RAIN;
-		} else if (rainMinus.contains(p)) {
-			Game.rainDelay++;
-		} else if (snowPlus.contains(p)) {
-			if (Game.snowDelay > 1) {
-				Game.snowDelay--;
-			}
-		} else if (snowRect.contains(p)) {
-			Game.SNOW = !Game.SNOW;
-		} else if (snowMinus.contains(p)) {
-			Game.snowDelay++;
-		} else if (changeAngle.contains(p)) {
-			int xVariation = Game.randInt(-5, 5);
-			Game.rainX = xVariation;
-			Game.snowX = xVariation;
-		} else if (dayNightToggle.contains(p)) {
-			Game.NIGHT = !Game.NIGHT;
-		} else if (gravityModeToggle.contains(p)) {
-			if (Game.gravityMode == 2) {
-				Game.gravityMode = 0;
-			} else {
-				Game.gravityMode++;
-			}
-		} else if (clearParticles.contains(p)) {
-			Game.particleList.clear();
-		} else if (exitRect.contains(p)) {
-			System.exit(0);
 		}
 
 	}
