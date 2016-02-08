@@ -12,7 +12,10 @@ public class CircleImage {
 	private static BufferedImage original;
 	private static BufferedImage currentImage;
 	private static BufferedImage subImage;
-	private static int i;
+	private static int i = 0;
+	private static boolean customDelay = false;
+	private float speedFloat = 1f;
+	private int delayCounter = 0;
 
 	CircleImage(BufferedImage original) {
 		CircleImage.original = original;
@@ -20,10 +23,14 @@ public class CircleImage {
 
 	public BufferedImage getNextImage() {
 		currentImage = subImage;
-		if (i < original.getWidth()) {
-			i++;
+		if (!customDelay) {
+			if (i < original.getWidth()) {
+				i++;
+			} else {
+				i = 0;
+			}
 		} else {
-			i = 0;
+			i = getDelay();
 		}
 
 		int excess = original.getHeight() - (original.getWidth() - i);
@@ -82,9 +89,9 @@ public class CircleImage {
 
 		return output;
 	}
-	
+
 	void scale(float scale) {
-		if(scale != 1f) {
+		if (scale != 1f) {
 			int width = (int) (original.getWidth() * scale);
 			int height = (int) (original.getHeight() * scale);
 			BufferedImage temp = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -94,6 +101,32 @@ public class CircleImage {
 
 			original = temp;
 		}
+	}
+
+	int getDelay() {
+		if (speedFloat >= 1f) {
+			if ((i + speedFloat) < original.getWidth()) {
+				return (int) (i + speedFloat);
+			} else {
+				return 0;
+			}
+		} else {
+			delayCounter++;
+			if (delayCounter % (1 / speedFloat) == 0) {
+				if (i < original.getWidth()) {
+					return i + 1;
+				} else {
+					return 0;
+				}
+			} else {
+				return i;
+			}
+		}
+	}
+
+	void setSpeed(float speed) {
+		customDelay = true;
+		speedFloat = speed;
 	}
 
 	void resize(int width, int height) {

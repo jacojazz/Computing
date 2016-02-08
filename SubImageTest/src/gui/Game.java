@@ -30,7 +30,7 @@ public class Game extends JPanel {
 	BufferedImage original;
 	int imageCounter = 0;
 	double scale = 1;
-	
+
 	CircleImage cImage;
 
 	Game() throws IOException {
@@ -40,23 +40,24 @@ public class Game extends JPanel {
 				scale -= (double) e.getWheelRotation() / 10;
 			}
 		});
-		
+
 		setFocusable(true);
 
-		original = ImageIO.read(new File("banner2.png"));
+		original = ImageIO.read(new File("earth.png"));
 		cImage = new CircleImage(original);
 		cImage.scale(2f);
+		cImage.setSpeed(0.25f);
 	}
 
 	void update() {
-
+		frames++;
 	}
 
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.scale(scale, scale);
-		g2d.drawImage(cImage.getNextImage(), 0, 0, null);
+		g2d.drawImage(cImage.getNextImage(), null, 0, 0);
 	}
 
 	public static void main(String[] args) throws IOException {
