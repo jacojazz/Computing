@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -101,6 +102,10 @@ public class CircleImage {
 
 			original = temp;
 		}
+	}
+	
+	Dimension getCircleBounds() {
+		return new Dimension(original.getHeight(), original.getHeight());
 	}
 
 	int getDelay() {

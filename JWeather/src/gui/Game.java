@@ -1,12 +1,12 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
@@ -15,6 +15,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,10 +49,10 @@ public class Game extends JPanel {
 	static boolean dragging = false;
 	static int mouseX, mouseY;
 	static Timer snowTimer, rainTimer, spawnTimer;
-	static Image deathStarImage;
-	static Image deathStarResize;
-	static Ellipse2D deathStar;
+	static BufferedImage orbitalImage;
+	static Ellipse2D orbitalCircle;
 	static boolean rightClicked = false;
+	static CircleImage cImage;
 
 	static double yGRAVITY = 0.1; // 0.10
 	static double xGRAVITY = 0.18; // 16:9 Calculated
@@ -61,6 +62,8 @@ public class Game extends JPanel {
 	static int snowCount = 0;
 	static int rainCount = 0;
 	static int ppsNumber = 0;
+
+	Dimension cImageD;
 
 	Menu menu = new Menu();
 
@@ -156,13 +159,18 @@ public class Game extends JPanel {
 		spawnTimer = new Timer();
 
 		try {
-			deathStarImage = ImageIO.read(new File("src/gui/images/deathStar.png"));
-		} catch (IOException e1) {
-			e1.printStackTrace();
+			orbitalImage = ImageIO.read(new File("src/gui/images/earth.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		deathStarResize = deathStarImage.getScaledInstance(128, 128, Image.SCALE_DEFAULT);
 
-		deathStar = new Ellipse2D.Double((width / 2) - 64, (height / 2) - 64, 128, 128);
+		cImage = new CircleImage(orbitalImage);
+		cImage.scale(5f);
+		cImage.setSpeed(0.25f);
+
+		cImageD = cImage.getCircleBounds();
+
+		orbitalCircle = new Ellipse2D.Double((width / 2) - (cImageD.width / 2), (height / 2) - (cImageD.height / 2), cImageD.width, cImageD.height);
 	}
 
 	public double offScreenCalculationRain() {
@@ -314,11 +322,11 @@ public class Game extends JPanel {
 					}
 				}
 			}, 0, rainDelay);
-			
+
 			spawnTimer.schedule(new TimerTask() {
 				@Override
 				public void run() {
-					if(rightClicked && MANUAL) {
+					if (rightClicked && MANUAL) {
 						particleList.add(new Particle(mouseX, mouseY, 0, 0, 5, 8, 1f, 0));
 					}
 				}
@@ -365,8 +373,10 @@ public class Game extends JPanel {
 			}
 
 			if (gravityMode == 2) {
-				g2d.drawImage(deathStarResize, (width / 2) - 64, (height / 2) - 64, 128, 128, null);
-				g2d.draw(deathStar);
+				g2d.setColor(Color.BLACK);
+				g2d.drawImage(cImage.getNextImage(), (width / 2) - (cImageD.width / 2), (height / 2) - (cImageD.height / 2), null);
+				g2d.draw(orbitalCircle);
+				g2d.setColor(Color.BLACK);
 			}
 
 			for (int i = 0; i < particleList.size(); i++) {

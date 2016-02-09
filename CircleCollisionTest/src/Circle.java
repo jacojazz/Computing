@@ -26,6 +26,7 @@ public class Circle {
 	List<Double> getVelocitiesFromAngle(double angle, double speed) {
 		double velocity_X = speed * Math.cos(angle);
 		double velocity_Y = speed * Math.sin(angle);
+
 		List<Double> vector = new ArrayList<Double>();
 		vector.add(velocity_X);
 		vector.add(velocity_Y);
@@ -34,10 +35,10 @@ public class Circle {
 
 	void update() {
 		List<Double> velocities = getVelocitiesFromAngle(angle, speed);
-		
+
 		xVelocity = velocities.get(0);
 		yVelocity = velocities.get(1);
-		
+
 		x += xVelocity;
 		y += yVelocity;
 

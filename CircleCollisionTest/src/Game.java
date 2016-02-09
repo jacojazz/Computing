@@ -4,7 +4,12 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -19,24 +24,89 @@ public class Game extends JPanel {
 	static double height = gd.getDisplayMode().getHeight();
 	static Rectangle2D screenBounds = new Rectangle2D.Double(0, 0, width, height);
 	static int TARGET_FPS = 240;
+	static double mouseX, mouseY, initialX, initialY, distanceX, distanceY;
+	static boolean dragging = false;
+	static ArrayList<Circle> circleList = new ArrayList<Circle>();
 
 	static Circle staticCircle, movingCircle;
+	static Point2D p;
 
 	Game() {
-		staticCircle = new Circle((width / 2) - (200 / 2), (height / 2) - (200 / 2), 200, 0, 0, 10);
-		movingCircle = new Circle(width - 20, height * 0.8, 20, 280, 0.5, 1);
+		addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				mouseX = e.getX();
+				mouseY = e.getY();
+				dragging = true;
+				initialX = e.getX();
+				initialY = e.getY();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				dragging = false;
+				distanceX = initialX - e.getX();
+				distanceY = initialY - e.getY();
+
+				double angle = Math.atan2(distanceY, distanceX);
+				circleList.add(new Circle(initialX, initialY, 20d, angle, 1, 1));
+			}
+		});
+
+		addMouseMotionListener(new MouseMotionListener() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				mouseX = e.getX();
+				mouseY = e.getY();
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				mouseX = e.getX();
+				mouseY = e.getY();
+			}
+		});
+
+		setFocusable(true);
+
+		staticCircle = new Circle((width / 2) - (200 / 2), (height / 2) - (200 / 2), 200, Math.PI, 0, 100);
+		movingCircle = new Circle(600, 0, 20, 65 * (Math.PI / 180), 1, 1);
 	}
 
 	void update() {
-		double xDif = movingCircle.circle.getCenterX() - staticCircle.circle.getCenterX();
-		double yDif = movingCircle.circle.getCenterY() - staticCircle.circle.getCenterY();
-		double distanceSquared = Math.pow(xDif, 2) + Math.pow(yDif, 2);
-		
-		if (distanceSquared <= Math.pow(movingCircle.radius + staticCircle.radius, 2)) {
-			movingCircle.speed = 0;
-		}
+		for (int i = 0; i < circleList.size(); i++) {
+			Circle currentCircle = circleList.get(i);
+			double xDif = currentCircle.circle.getCenterX() - staticCircle.circle.getCenterX();
+			double yDif = currentCircle.circle.getCenterY() - staticCircle.circle.getCenterY();
+			double distanceSquared = Math.pow(xDif, 2) + Math.pow(yDif, 2);
 
-		movingCircle.update();
+			double collisionPointX = ((staticCircle.circle.getCenterX() * currentCircle.radius) + (currentCircle.circle.getCenterX() * staticCircle.radius)) / (staticCircle.radius + currentCircle.radius);
+			double collisionPointY = ((staticCircle.circle.getCenterY() * currentCircle.radius) + (currentCircle.circle.getCenterY() * staticCircle.radius)) / (staticCircle.radius + currentCircle.radius);
+
+			// distanceSquared <= Math.pow(movingCircle.radius +
+			// staticCircle.radius, 2)
+
+			if (distanceSquared <= Math.pow(currentCircle.radius + staticCircle.radius, 2)) {
+				double newVelX1 = (currentCircle.xVelocity * (currentCircle.mass - staticCircle.mass) + (2 * staticCircle.mass * staticCircle.xVelocity)) / (currentCircle.mass + staticCircle.mass);
+				double newVelY1 = (currentCircle.yVelocity * (currentCircle.mass - staticCircle.mass) + (2 * staticCircle.mass * staticCircle.yVelocity)) / (currentCircle.mass + staticCircle.mass);
+
+				currentCircle.angle = Math.atan2(newVelY1, newVelX1);
+			}
+
+			currentCircle.update();
+		}
 		staticCircle.update();
 	}
 
@@ -46,7 +116,16 @@ public class Game extends JPanel {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		staticCircle.paint(g2d);
-		movingCircle.paint(g2d);
+
+		for (Circle c : circleList) {
+			c.paint(g2d);
+		}
+
+		if (dragging) {
+			g2d.drawLine((int) initialX, (int) initialY, (int) mouseX, (int) mouseY);
+			g2d.setColor(Color.WHITE);
+			g2d.drawLine((int) initialX + 1, (int) initialY + 1, (int) mouseX, (int) mouseY);
+		}
 	}
 
 	public static void main(String[] args) {
