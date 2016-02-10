@@ -25,7 +25,7 @@ public class Game extends JPanel {
 	static double width = gd.getDisplayMode().getWidth();
 	static double height = gd.getDisplayMode().getHeight();
 	static Rectangle2D screenBounds = new Rectangle2D.Double(0, 0, width, height);
-	static int TARGET_FPS = 120;
+	static int TARGET_FPS = 240;
 
 	BufferedImage original;
 	int imageCounter = 0;
@@ -44,9 +44,9 @@ public class Game extends JPanel {
 		setFocusable(true);
 
 		original = ImageIO.read(new File("earth.png"));
-		cImage = new CircleImage(original);
+		cImage = new CircleImage(original, true);
 		cImage.scale(4f);
-		cImage.setSpeed(0.25f);
+		cImage.setSpeed(0.125f);
 	}
 
 	void update() {
@@ -56,6 +56,7 @@ public class Game extends JPanel {
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
+		g2d.fillRect(0, 0, (int) width, (int) height);
 		g2d.scale(scale, scale);
 		g2d.drawImage(cImage.getNextImage(), null, 0, 0);
 	}
