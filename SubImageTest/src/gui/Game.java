@@ -11,6 +11,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -27,7 +28,7 @@ public class Game extends JPanel {
 	static Rectangle2D screenBounds = new Rectangle2D.Double(0, 0, width, height);
 	static int TARGET_FPS = 240;
 
-	BufferedImage original;
+	HashMap<String, BufferedImage> imageCache = new HashMap<String, BufferedImage>();
 	int imageCounter = 0;
 	double scale = 1;
 
@@ -43,8 +44,8 @@ public class Game extends JPanel {
 
 		setFocusable(true);
 
-		original = ImageIO.read(new File("earth.png"));
-		cImage = new CircleImage(original, true);
+		imageCache.put("Earth", ImageIO.read(new File("earth.png")));
+		cImage = new CircleImage(imageCache.get("Earth"), true);
 		cImage.scale(4f);
 		cImage.setSpeed(0.125f);
 	}
