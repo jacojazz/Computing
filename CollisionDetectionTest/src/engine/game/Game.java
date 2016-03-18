@@ -1,19 +1,18 @@
 package engine.game;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
-import java.awt.Stroke;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -35,12 +34,12 @@ public class Game extends JPanel {
 	static Box2D bounds = new Box2D(0, width, 0, height);
 	static Point2D mouse, initial;
 	static Vector2D distance;
-	static boolean dragging = false, debug = false;
+	static boolean dragging = false, debug = false, flood = false;
 	static Line2D floor = new Line2D(0, height, width, height);
 	static ArrayList<Particle> pList = new ArrayList<Particle>();
+	static ArrayList<Line2D> lList = new ArrayList<Line2D>();
 
 	Game() {
-		System.out.println(GRAVITY);
 		addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
 			}
@@ -88,33 +87,33 @@ public class Game extends JPanel {
 		});
 
 		setFocusable(true);
+
+		lList.add(new Line2D(0, height, width, height));
 	}
 
 	void update() {
-		if (pList.size() > 30) {
-			pList.clear();
-		}
-
 		for (int particleIterator = 0; particleIterator < pList.size(); particleIterator++) {
 			Particle p = pList.get(particleIterator);
-
+			p.update();
 			if (p.center().getY() > height || p.center().getX() > width || p.center().getX() < 0) {
 				pList.remove(particleIterator);
-			} else {
-				p.update();
 			}
 		}
 
-		// Random rand = new Random();
-		// pList.add(new Particle(new Point2D(rand.nextInt(width), -25), 20, 1,
-		// new Vector2D(0, 0)));
+		if (pList.size() > 30) {
+			// pList.clear();
+		}
+
+		if (flood) {
+			Random rand = new Random();
+			pList.add(new Particle(new Point2D(rand.nextInt(width), -25), 5, 1, new Vector2D(0, 0)));
+		}
 
 		if (frames % TARGET_FPS == 0) {
-			// pList.add(new Particle(new Point2D(0, height - 20), 20, 1, new
-			// Vector2D(20, -20)));
-			// pList.add(new Particle(new Point2D(width, height - 20), 20, 1,
-			// new Vector2D(-20, -20)));
+			pList.add(new Particle(new Point2D(0, height - 20), 20, 1, new Vector2D(20, -20)));
+			pList.add(new Particle(new Point2D(width, height - 20), 20, 1, new Vector2D(-19, -20)));
 		}
+
 	}
 
 	public void paint(Graphics g) {
@@ -133,15 +132,9 @@ public class Game extends JPanel {
 
 				for (int particle2Iterator = 0; particle2Iterator < Game.pList.size(); particle2Iterator++) {
 					Particle p2 = Game.pList.get(particle2Iterator);
-					if (p.inCollisionRange(p2)) {
+					if (p.inParticleCollisionRange(p2)) {
 						g2d.setColor(Color.RED);
-						Stroke defaultStroke = g2d.getStroke();
-						if (!p.isColliding()) {
-							Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 5 }, 0);
-							g2d.setStroke(dashed);
-						}
 						new Line2D(p.center(), p2.center()).draw(g2d);
-						g2d.setStroke(defaultStroke);
 						g2d.setColor(Color.BLACK);
 					}
 				}

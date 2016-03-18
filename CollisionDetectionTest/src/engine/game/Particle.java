@@ -3,6 +3,7 @@ package engine.game;
 import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
 import math.geom2d.conic.Circle2D;
+import math.geom2d.line.Line2D;
 
 public class Particle extends Circle2D {
 	private Vector2D velocity;
@@ -31,6 +32,29 @@ public class Particle extends Circle2D {
 		return collision;
 	}
 
+	boolean inLineCollisionRange(Line2D l) {
+		if (l.distance(center()) <= radius()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	boolean inParticleCollisionRange(Particle p2) {
+		if (distance(p2.center()) < (radius() + p2.radius()) * 2) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	Vector2D reflect(Line2D l) {
+		setPosition(l.point(l.project(center())).minus(new Point2D(0, radius())));
+		Vector2D n = l.perpendicular(center()).direction().normalize();
+		Vector2D v = velocity.minus(n.times(2 * (n.dot(velocity))));
+		return new Vector2D(v.getX() * Constants.restitution, v.getY() * Constants.restitution);
+	}
+
 	public void resolveCollision(Particle p, Particle p2) {
 		colliding = true;
 		Vector2D delta = new Vector2D(p.center().minus(p2.center()));
@@ -50,27 +74,10 @@ public class Particle extends Circle2D {
 		p2.setVelocity(p2.getVelocity().minus(impulse.times(im2)));
 	}
 
-	boolean inCollisionRange(Particle p2) {
-		if (distance(p2.center()) < ((radius() + p2.radius() * 4))) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	Vector2D groundCheck() {
-		if (Game.floor.distance(center()) <= radius()) {
-			setPosition(Game.floor.point(Game.floor.position(center())).minus(new Point2D(0, radius())));
-			return new Vector2D(0, 0);
-		} else {
-			return velocity.plus(force);
-		}
-	}
-
 	void update() {
 		for (int particle2Iterator = 0; particle2Iterator < Game.pList.size(); particle2Iterator++) {
 			Particle p2 = Game.pList.get(particle2Iterator);
-			if (inCollisionRange(p2)) {
+			if (inParticleCollisionRange(p2)) {
 				if (checkCollision(this, p2) && !equals(p2)) {
 					resolveCollision(this, p2);
 				} else {
@@ -79,7 +86,14 @@ public class Particle extends Circle2D {
 			}
 		}
 
-		velocity = groundCheck();
+		for (int lineIterator = 0; lineIterator < Game.lList.size(); lineIterator++) {
+			Line2D l = Game.lList.get(lineIterator);
+			if (inLineCollisionRange(l)) {
+				velocity = reflect(l);
+			}
+		}
+
+		velocity = velocity.plus(force);
 		Point2D p = center().plus(velocity);
 		setPosition(p.getX(), p.getY());
 	}
