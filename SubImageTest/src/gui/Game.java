@@ -45,7 +45,7 @@ public class Game extends JPanel {
 		setFocusable(true);
 
 		imageCache.put("Earth", ImageIO.read(new File("earth.png")));
-		cImage = new CircleImage(imageCache.get("Earth"), true);
+		cImage = new CircleImage(imageCache.get("Earth"));
 		cImage.scale(4f);
 		cImage.setSpeed(0.125f);
 	}

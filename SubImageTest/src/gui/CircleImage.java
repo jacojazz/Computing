@@ -12,16 +12,13 @@ public class CircleImage {
 	private static BufferedImage original;
 	private static BufferedImage currentImage;
 	private static BufferedImage subImage;
-	private static BufferedImage bulgedSubImage;
 	private static int i = 0;
 	private static boolean customDelay = false;
-	private static boolean bulge = false;
 	private float speedFloat = 1f;
 	private int delayCounter = 0;
 
-	CircleImage(BufferedImage original, boolean bulge) {
+	CircleImage(BufferedImage original) {
 		CircleImage.original = original;
-		CircleImage.bulge = bulge;
 	}
 
 	public BufferedImage getNextImage() {
@@ -85,48 +82,6 @@ public class CircleImage {
 		g2d.dispose();
 
 		return newImage;
-	}
-
-	private static BufferedImage computeBulgeImage(BufferedImage input, int cx, int cy, double bulgeStrength, double bulgeRadius) {
-		BufferedImage output = new BufferedImage(input.getWidth(), input.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		int w = input.getWidth();
-		int h = input.getHeight();
-		for (int x = 0; x < w; x++) {
-			for (int y = 0; y < h; y++) {
-				int dx = x - cx;
-				int dy = y - cy;
-				double distanceSquared = dx * dx + dy * dy;
-
-				int sx = x;
-				int sy = y;
-				if (distanceSquared < bulgeRadius * bulgeRadius) {
-					double distance = Math.sqrt(distanceSquared);
-					boolean otherMethod = false;
-					otherMethod = true;
-					if (otherMethod) {
-						double r = distance / bulgeRadius;
-						double a = Math.atan2(dy, dx);
-						double rn = Math.pow(r, bulgeStrength) * distance;
-						double newX = rn * Math.cos(a) + cx;
-						double newY = rn * Math.sin(a) + cy;
-						sx += (newX - x);
-						sy += (newY - y);
-					} else {
-						double dirX = dx / distance;
-						double dirY = dy / distance;
-						double alpha = distance / bulgeRadius;
-						double distortionFactor = distance * Math.pow(1 - alpha, 1.0 / bulgeStrength);
-						sx -= distortionFactor * dirX;
-						sy -= distortionFactor * dirY;
-					}
-				}
-				if (sx >= 0 && sx < w && sy >= 0 && sy < h) {
-					int rgb = input.getRGB(sx, sy);
-					output.setRGB(x, y, rgb);
-				}
-			}
-		}
-		return output;
 	}
 
 	public static BufferedImage makeRoundedCorner(Image image, int cornerRadius) {
