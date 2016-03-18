@@ -100,8 +100,8 @@ public class Game extends JPanel {
 			}
 		}
 
-		if (pList.size() > 30) {
-			// pList.clear();
+		if (pList.size() > 50) {
+			pList.remove(0);
 		}
 
 		if (flood) {
