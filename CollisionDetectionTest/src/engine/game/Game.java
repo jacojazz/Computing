@@ -58,7 +58,10 @@ public class Game extends JPanel {
 			public void mouseReleased(MouseEvent e) {
 				dragging = false;
 				distance = new Vector2D(initial.minus(mouse));
-				pList.add(new Particle(initial, 20, 1, distance.times(0.125)));
+				if (e.getButton() == MouseEvent.BUTTON1)
+					pList.add(new Particle(initial, 20, 1, distance.times(0.125)));
+				if (e.getButton() == MouseEvent.BUTTON3)
+					lList.add(new Line2D(initial, mouse));
 			}
 		});
 
@@ -76,6 +79,12 @@ public class Game extends JPanel {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_P) {
 					debug = !debug;
+				}
+				if (e.getKeyCode() == KeyEvent.VK_I) {
+					pList.clear();
+				}
+				if (e.getKeyCode() == KeyEvent.VK_O) {
+					lList.clear();
 				}
 			}
 
@@ -110,8 +119,8 @@ public class Game extends JPanel {
 		}
 
 		if (frames % TARGET_FPS == 0) {
-			pList.add(new Particle(new Point2D(0, height - 20), 20, 1, new Vector2D(20, -20)));
-			pList.add(new Particle(new Point2D(width, height - 20), 20, 1, new Vector2D(-19, -20)));
+			pList.add(new Particle(new Point2D(0 - 20, height - 20), 20, 1, new Vector2D(20, -20)));
+			pList.add(new Particle(new Point2D(width + 20, height - 20), 20, 1, new Vector2D(-20, -20)));
 		}
 
 	}
@@ -139,6 +148,11 @@ public class Game extends JPanel {
 					}
 				}
 			}
+		}
+
+		for (int lineIterator = 0; lineIterator < lList.size(); lineIterator++) {
+			Line2D l = lList.get(lineIterator);
+			l.draw(g2d);
 		}
 
 		if (dragging) {
