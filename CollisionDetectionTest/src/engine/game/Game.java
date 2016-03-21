@@ -34,7 +34,7 @@ public class Game extends JPanel {
 	static Box2D bounds = new Box2D(0, width, 0, height);
 	static Point2D mouse, initial;
 	static Vector2D distance;
-	static boolean dragging = false, debug = false, flood = false;
+	static boolean dragging = false, debug = false, flood = false, arc = false;
 	static Line2D floor = new Line2D(0, height, width, height);
 	static ArrayList<Particle> pList = new ArrayList<Particle>();
 	static ArrayList<Line2D> lList = new ArrayList<Line2D>();
@@ -118,11 +118,12 @@ public class Game extends JPanel {
 			pList.add(new Particle(new Point2D(rand.nextInt(width), -25), 5, 1, new Vector2D(0, 0)));
 		}
 
-		if (frames % TARGET_FPS == 0) {
-			pList.add(new Particle(new Point2D(0 - 20, height - 20), 20, 1, new Vector2D(20, -20)));
-			pList.add(new Particle(new Point2D(width + 20, height - 20), 20, 1, new Vector2D(-20, -20)));
+		if (arc) {
+			if (frames % TARGET_FPS == 0) {
+				pList.add(new Particle(new Point2D(0 - 20, height - 20), 20, 1, new Vector2D(20, -20)));
+				pList.add(new Particle(new Point2D(width + 20, height - 20), 20, 1, new Vector2D(-20, -20)));
+			}
 		}
-
 	}
 
 	public void paint(Graphics g) {

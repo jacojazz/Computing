@@ -49,9 +49,9 @@ public class Particle extends Circle2D {
 	}
 
 	Vector2D reflect(Line2D l) {
-		setPosition(l.point(l.project(center())).minus(new Point2D(0, radius())));
-		Vector2D n = l.perpendicular(center()).direction().normalize();
-		Vector2D v = velocity.minus(n.times(2 * (n.dot(velocity))));
+		setPosition(center());
+		Vector2D n2 = l.perpendicular(center()).direction().normalize();
+		Vector2D v = velocity.minus(n2.times(2 * (n2.dot(velocity))));
 		return new Vector2D(v.getX() * Constants.restitution, v.getY() * Constants.restitution);
 	}
 
