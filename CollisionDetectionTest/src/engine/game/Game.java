@@ -31,6 +31,7 @@ public class Game extends JPanel {
 	static GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 	static int width = gd.getDisplayMode().getWidth();
 	static int height = gd.getDisplayMode().getHeight();
+	// Menu menu = new Menu();
 	static Box2D bounds = new Box2D(0, width, 0, height);
 	static Point2D mouse, initial;
 	static Vector2D distance;
@@ -42,6 +43,7 @@ public class Game extends JPanel {
 	Game() {
 		addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
+				// menu.mouseClicked(e);
 			}
 
 			public void mouseEntered(MouseEvent e) {
@@ -51,11 +53,13 @@ public class Game extends JPanel {
 			}
 
 			public void mousePressed(MouseEvent e) {
+				// menu.mousePressed(e);
 				dragging = true;
 				initial = new Point2D(e.getPoint());
 			}
 
 			public void mouseReleased(MouseEvent e) {
+				// menu.mouseReleased(e);
 				dragging = false;
 				distance = new Vector2D(initial.minus(mouse));
 				if (e.getButton() == MouseEvent.BUTTON1)
@@ -102,6 +106,7 @@ public class Game extends JPanel {
 	}
 
 	void update() {
+		// menu.update();
 		for (int particleIterator = 0; particleIterator < pList.size(); particleIterator++) {
 			Particle p = pList.get(particleIterator);
 			p.update();
@@ -164,6 +169,8 @@ public class Game extends JPanel {
 		if (dragging) {
 			new Line2D(initial, mouse).draw(g2d);
 		}
+
+		// menu.paint(g2d);
 
 		g2d.drawString(Integer.toString(pList.size()), 0, 10);
 	}
