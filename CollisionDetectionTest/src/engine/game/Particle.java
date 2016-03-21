@@ -34,6 +34,8 @@ public class Particle extends Circle2D {
 
 	boolean inLineCollisionRange(Line2D l) {
 		if (l.distance(center()) <= radius()) {
+			double penetrationDepth = 20 - l.distance(center());
+			setPosition(center().minus(new Point2D(0, penetrationDepth)));
 			return true;
 		} else {
 			return false;
@@ -49,7 +51,6 @@ public class Particle extends Circle2D {
 	}
 
 	Vector2D reflect(Line2D l) {
-		setPosition(l.point(l.project(center())).minus(new Point2D(0, radius())));
 		Vector2D n = l.perpendicular(center()).direction().normalize();
 		Vector2D v = velocity.minus(n.times(2 * (n.dot(velocity))));
 		return new Vector2D(v.getX() * Constants.restitution, v.getY() * Constants.restitution);
@@ -101,6 +102,7 @@ public class Particle extends Circle2D {
 	public void setPosition(double x, double y) {
 		xc = x;
 		yc = y;
+		theta = velocity.angle();
 	}
 
 	public void setPosition(Object obj) {

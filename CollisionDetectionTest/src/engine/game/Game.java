@@ -60,7 +60,7 @@ public class Game extends JPanel {
 				distance = new Vector2D(initial.minus(mouse));
 				if (e.getButton() == MouseEvent.BUTTON1)
 					pList.add(new Particle(initial, 20, 1, distance.times(0.125)));
-				if (e.getButton() == MouseEvent.BUTTON3)
+				if (e.getButton() == MouseEvent.BUTTON3 && !initial.equals(mouse))
 					lList.add(new Line2D(initial, mouse));
 			}
 		});
@@ -85,6 +85,7 @@ public class Game extends JPanel {
 				}
 				if (e.getKeyCode() == KeyEvent.VK_O) {
 					lList.clear();
+					lList.add(floor);
 				}
 			}
 
@@ -138,6 +139,10 @@ public class Game extends JPanel {
 			if (debug) {
 				g2d.setColor(Color.BLUE);
 				p.boundingBox().draw(g2d);
+				g2d.setColor(Color.BLACK);
+
+				g2d.setColor(Color.RED);
+				new Line2D(p.point(p.angle() - (Math.PI)), p.center()).draw(g2d);
 				g2d.setColor(Color.BLACK);
 
 				for (int particle2Iterator = 0; particle2Iterator < Game.pList.size(); particle2Iterator++) {
