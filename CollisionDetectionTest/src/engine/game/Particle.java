@@ -35,7 +35,7 @@ public class Particle extends Circle2D {
 
 	boolean inLineCollisionRange(Line2D l) {
 		if (l.distance(center()) <= radius()) {
-			double penetrationDepth = 20 - l.distance(center());
+			double penetrationDepth = radius() - l.distance(center());
 			setPosition(center().minus(new Point2D(0, penetrationDepth)));
 			return true;
 		} else {

@@ -30,22 +30,19 @@ public class Menu {
 
 	Point p = new Point(0, 0);
 
-	Rectangle2D baseRect;
-
-	Rectangle2D minRect;
-	Rectangle2D minHandler;
-
-	Rectangle2D moveRect;
-
-	Rectangle2D manualRect;
-
-	Rectangle2D rainPlus;
-	Rectangle2D rainRect;
-	Rectangle2D rainMinus;
-
-	Rectangle2D clearParticles;
-
-	Rectangle2D exitRect;
+	Rectangle2D baseRect = new Rectangle2D(position.getX(), position.getY(), width, height);
+	Rectangle2D minRect = new Rectangle2D((position.getX() + width) - 18, position.getY() + 15, 16, 3);
+	Rectangle2D minHandler = new Rectangle2D((position.getX() + width) - 20, position.getY(), 20, 20);
+	Rectangle2D moveRect = new Rectangle2D(position.getX(), position.getY(), width, height - 280);
+	Rectangle2D floodRect = new Rectangle2D(position.getX() + 10, position.getY() + 70, width - 20, height - 280);
+	Rectangle2D arcRect = new Rectangle2D(position.getX() + 10, position.getY() + 100, width - 20, height - 280);
+	Rectangle2D sizePlus = new Rectangle2D(position.getX() + 10, position.getY() + 40, width / 10, width / 10);
+	Rectangle2D sizeRect = new Rectangle2D(position.getX() + 35, position.getY() + 40, width - 70, height - 280);
+	Rectangle2D sizeMinus = new Rectangle2D(position.getX() + 170, position.getY() + 40, width / 10, width / 10);
+	Rectangle2D debugRect = new Rectangle2D(position.getX() + 10, position.getY() + 160, width - 20, height - 280);
+	Rectangle2D clearLines = new Rectangle2D(position.getX() + 10, position.getY() + 190, width - 20, height - 280);
+	Rectangle2D clearParticles = new Rectangle2D(position.getX() + 10, position.getY() + 220, width - 20, height - 280);
+	Rectangle2D exitRect = new Rectangle2D(position.getX() + 10, position.getY() + 270, width - 20, height - 280);
 
 	public Menu() {
 		try {
@@ -59,11 +56,24 @@ public class Menu {
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			if (minHandler.contains(Game.mouse)) {
 				visible = !visible;
-			} else if (manualRect.contains(Game.mouse)) {
-			} else if (rainPlus.contains(Game.mouse)) {
-			} else if (rainRect.contains(Game.mouse)) {
-			} else if (rainMinus.contains(Game.mouse)) {
+			} else if (floodRect.contains(Game.mouse)) {
+				Game.flood = !Game.flood;
+			} else if (arcRect.contains(Game.mouse)) {
+				Game.arc = !Game.arc;
+			} else if (sizePlus.contains(Game.mouse)) {
+				Game.manualSize += 2;
+			} else if (sizeRect.contains(Game.mouse)) {
+			} else if (sizeMinus.contains(Game.mouse)) {
+				if (Game.manualSize >= 12) {
+					Game.manualSize -= 2;
+				}
+			} else if (debugRect.contains(Game.mouse)) {
+				Game.debug = !Game.debug;
 			} else if (clearParticles.contains(Game.mouse)) {
+				Game.pList.clear();
+			} else if (clearLines.contains(Game.mouse)) {
+				Game.lList.clear();
+				Game.lList.add(Game.floor);
 			} else if (exitRect.contains(Game.mouse)) {
 				System.exit(0);
 			}
@@ -74,7 +84,6 @@ public class Menu {
 	public void mousePressed(MouseEvent e) {
 		if (moveRect.contains(Game.mouse)) {
 			dragging = true;
-
 			mouseRelation = Game.mouse.minus(new Point2D(baseRect.getX(), baseRect.getY()));
 		}
 	}
@@ -91,12 +100,15 @@ public class Menu {
 
 		moveRect = new Rectangle2D(position.getX(), position.getY(), width, height - 280);
 
-		manualRect = new Rectangle2D(position.getX() + 10, position.getY() + 40, width - 20, height - 280);
+		floodRect = new Rectangle2D(position.getX() + 10, position.getY() + 70, width - 20, height - 280);
+		arcRect = new Rectangle2D(position.getX() + 10, position.getY() + 100, width - 20, height - 280);
 
-		rainPlus = new Rectangle2D(position.getX() + 10, position.getY() + 70, width / 10, width / 10);
-		rainRect = new Rectangle2D(position.getX() + 35, position.getY() + 70, width - 70, height - 280);
-		rainMinus = new Rectangle2D(position.getX() + 170, position.getY() + 70, width / 10, width / 10);
+		sizePlus = new Rectangle2D(position.getX() + 10, position.getY() + 40, width / 10, width / 10);
+		sizeRect = new Rectangle2D(position.getX() + 35, position.getY() + 40, width - 70, height - 280);
+		sizeMinus = new Rectangle2D(position.getX() + 170, position.getY() + 40, width / 10, width / 10);
 
+		debugRect = new Rectangle2D(position.getX() + 10, position.getY() + 160, width - 20, height - 280);
+		clearLines = new Rectangle2D(position.getX() + 10, position.getY() + 190, width - 20, height - 280);
 		clearParticles = new Rectangle2D(position.getX() + 10, position.getY() + 220, width - 20, height - 280);
 
 		exitRect = new Rectangle2D(position.getX() + 10, position.getY() + 270, width - 20, height - 280);
@@ -108,7 +120,7 @@ public class Menu {
 
 	public void paint(Graphics2D g2d) {
 		if (visible) {
-			g2d.setColor(new Color(20, 20, 20, 220));
+			g2d.setColor(new Color(20, 20, 20, 250));
 			baseRect.fill(g2d);
 		}
 
@@ -124,23 +136,41 @@ public class Menu {
 		minRect.fill(g2d);
 
 		if (visible) {
-			g2d.setColor(new Color(51, 51, 51, 255));
-			manualRect.fill(g2d);
+			g2d.setColor(new Color(51, 51, 51));
+			floodRect.fill(g2d);
 
 			g2d.setColor(Color.GRAY);
-			g2d.drawString("Manual Mode", (int) (manualRect.getX() + (manualRect.getWidth() / 2) - (fmT.stringWidth("Manual Mode") / 2)), (int) (manualRect.getY() + (manualRect.getHeight() / 2)) + (fmT.getHeight() / 4));
+			g2d.drawString("Flood", (int) (floodRect.getX() + (floodRect.getWidth() / 2) - (fmT.stringWidth("Flood") / 2)), (int) (floodRect.getY() + (floodRect.getHeight() / 2)) + (fmT.getHeight() / 4));
 
-			g2d.setColor(new Color(51, 51, 51, 255));
-			rainPlus.fill(g2d);
-			rainRect.fill(g2d);
-			rainMinus.fill(g2d);
+			g2d.setColor(new Color(51, 51, 51));
+			arcRect.fill(g2d);
 
 			g2d.setColor(Color.GRAY);
-			g2d.drawString("+", (int) (rainPlus.getX() + (rainPlus.getWidth() / 2) - (fmT.stringWidth("+") / 2)), (int) (rainPlus.getY() + (rainPlus.getHeight() / 2)) + (fmT.getHeight() / 4));
-			g2d.drawString("Rain Toggle", (int) (rainRect.getX() + (rainRect.getWidth() / 2) - (fmT.stringWidth("Rain Toggle") / 2)), (int) (rainRect.getY() + (rainRect.getHeight() / 2)) + (fmT.getHeight() / 4));
-			g2d.drawString("-", (int) (rainMinus.getX() + (rainMinus.getWidth() / 2) - (fmT.stringWidth("-") / 2)), (int) (rainMinus.getY() + (rainMinus.getHeight() / 2)) + (fmT.getHeight() / 4));
+			g2d.drawString("Arc", (int) (arcRect.getX() + (arcRect.getWidth() / 2) - (fmT.stringWidth("Arc") / 2)), (int) (arcRect.getY() + (arcRect.getHeight() / 2)) + (fmT.getHeight() / 4));
 
-			g2d.setColor(new Color(51, 51, 51, 255));
+			g2d.setColor(new Color(51, 51, 51));
+			sizePlus.fill(g2d);
+			sizeRect.fill(g2d);
+			sizeMinus.fill(g2d);
+
+			g2d.setColor(Color.GRAY);
+			g2d.drawString("+", (int) (sizePlus.getX() + (sizePlus.getWidth() / 2) - (fmT.stringWidth("+") / 2)), (int) (sizePlus.getY() + (sizePlus.getHeight() / 2)) + (fmT.getHeight() / 4));
+			g2d.drawString("Change Size (" + Game.manualSize + ")", (int) (sizeRect.getX() + (sizeRect.getWidth() / 2) - (fmT.stringWidth("Change Size (" + Game.manualSize + ")") / 2)), (int) (sizeRect.getY() + (sizeRect.getHeight() / 2)) + (fmT.getHeight() / 4));
+			g2d.drawString("-", (int) (sizeMinus.getX() + (sizeMinus.getWidth() / 2) - (fmT.stringWidth("-") / 2)), (int) (sizeMinus.getY() + (sizeMinus.getHeight() / 2)) + (fmT.getHeight() / 4));
+
+			g2d.setColor(new Color(51, 51, 51));
+			debugRect.fill(g2d);
+
+			g2d.setColor(Color.GRAY);
+			g2d.drawString("Debug", (int) (debugRect.getX() + (debugRect.getWidth() / 2) - (fmT.stringWidth("Debug") / 2)), (int) (debugRect.getY() + (debugRect.getHeight() / 2)) + (fmT.getHeight() / 4));
+
+			g2d.setColor(new Color(51, 51, 51));
+			clearLines.fill(g2d);
+
+			g2d.setColor(Color.GRAY);
+			g2d.drawString("Clear Lines (" + (Game.lList.size() - 1) + ")", (int) (clearLines.getX() + (clearLines.getWidth() / 2) - (fmT.stringWidth("Clear Lines (" + (Game.lList.size() - 1) + ")") / 2)), (int) (clearLines.getY() + (clearLines.getHeight() / 2)) + (fmT.getHeight() / 4));
+
+			g2d.setColor(new Color(51, 51, 51));
 			clearParticles.fill(g2d);
 
 			g2d.setColor(Color.GRAY);

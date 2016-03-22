@@ -6,8 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -31,7 +29,7 @@ public class Game extends JPanel {
 	static GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 	static int width = gd.getDisplayMode().getWidth();
 	static int height = gd.getDisplayMode().getHeight();
-	// Menu menu = new Menu();
+	Menu menu = new Menu();
 	static Box2D bounds = new Box2D(0, width, 0, height);
 	static Point2D mouse, initial;
 	static Vector2D distance;
@@ -39,11 +37,12 @@ public class Game extends JPanel {
 	static Line2D floor = new Line2D(0, height, width, height);
 	static ArrayList<Particle> pList = new ArrayList<Particle>();
 	static ArrayList<Line2D> lList = new ArrayList<Line2D>();
+	static double manualSize = 40;
 
 	Game() {
 		addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
-				// menu.mouseClicked(e);
+				menu.mouseClicked(e);
 			}
 
 			public void mouseEntered(MouseEvent e) {
@@ -53,19 +52,23 @@ public class Game extends JPanel {
 			}
 
 			public void mousePressed(MouseEvent e) {
-				// menu.mousePressed(e);
-				dragging = true;
-				initial = new Point2D(e.getPoint());
+				menu.mousePressed(e);
+				if (!menu.baseRect.contains(mouse)) {
+					dragging = true;
+					initial = new Point2D(e.getPoint());
+				}
 			}
 
 			public void mouseReleased(MouseEvent e) {
-				// menu.mouseReleased(e);
-				dragging = false;
-				distance = new Vector2D(initial.minus(mouse));
-				if (e.getButton() == MouseEvent.BUTTON1)
-					pList.add(new Particle(initial, 20, 1, distance.times(0.125)));
-				if (e.getButton() == MouseEvent.BUTTON3 && !initial.equals(mouse))
-					lList.add(new Line2D(initial, mouse));
+				menu.mouseReleased(e);
+				if (!menu.baseRect.contains(mouse)) {
+					dragging = false;
+					distance = new Vector2D(initial.minus(mouse));
+					if (e.getButton() == MouseEvent.BUTTON1)
+						pList.add(new Particle(initial, manualSize, manualSize / 20, distance.times(0.125)));
+					if (e.getButton() == MouseEvent.BUTTON3 && !initial.equals(mouse))
+						lList.add(new Line2D(initial, mouse));
+				}
 			}
 		});
 
@@ -79,55 +82,30 @@ public class Game extends JPanel {
 			}
 		});
 
-		addKeyListener(new KeyListener() {
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_P) {
-					debug = !debug;
-				}
-				if (e.getKeyCode() == KeyEvent.VK_I) {
-					pList.clear();
-				}
-				if (e.getKeyCode() == KeyEvent.VK_O) {
-					lList.clear();
-					lList.add(floor);
-				}
-			}
-
-			public void keyReleased(KeyEvent e) {
-			}
-
-			public void keyTyped(KeyEvent e) {
-			}
-		});
-
 		setFocusable(true);
 
-		lList.add(new Line2D(0, height, width, height));
+		lList.add(floor);
 	}
 
 	void update() {
-		// menu.update();
+		menu.update();
 		for (int particleIterator = 0; particleIterator < pList.size(); particleIterator++) {
 			Particle p = pList.get(particleIterator);
 			p.update();
-			if (p.center().getY() > height || p.center().getX() > width || p.center().getX() < 0) {
+			if (p.center().getY() > height + p.radius() || p.center().getX() > width + p.radius() || p.center().getX() < 0 - p.radius()) {
 				pList.remove(particleIterator);
 			}
 		}
 
-		if (pList.size() > 50) {
-			pList.remove(0);
-		}
-
 		if (flood) {
 			Random rand = new Random();
-			pList.add(new Particle(new Point2D(rand.nextInt(width), -25), 5, 1, new Vector2D(0, 0)));
+			pList.add(new Particle(new Point2D(rand.nextInt(width), -25), manualSize, manualSize / 20, new Vector2D(0, 0)));
 		}
 
 		if (arc) {
 			if (frames % TARGET_FPS == 0) {
-				pList.add(new Particle(new Point2D(0 - 20, height - 20), 20, 1, new Vector2D(20, -20)));
-				pList.add(new Particle(new Point2D(width + 20, height - 20), 20, 1, new Vector2D(-20, -20)));
+				pList.add(new Particle(new Point2D(0 - 20, height - 20), manualSize, manualSize / 20, new Vector2D(20, -20)));
+				pList.add(new Particle(new Point2D(width + 20, height - 20), manualSize, manualSize / 20, new Vector2D(-20, -20)));
 			}
 		}
 	}
@@ -175,8 +153,9 @@ public class Game extends JPanel {
 			new Line2D(initial, mouse).draw(g2d);
 		}
 
-		// menu.paint(g2d);
+		menu.paint(g2d);
 
+		g2d.setColor(Color.BLACK);
 		g2d.drawString(Integer.toString(pList.size()), 0, 10);
 	}
 
