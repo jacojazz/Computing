@@ -146,15 +146,20 @@ public class Game extends JPanel {
 				p.boundingBox().draw(g2d);
 				g2d.setColor(Color.BLACK);
 
-				g2d.setColor(Color.RED);
-				new Line2D(p.point(p.angle() - (Math.PI)), p.center()).draw(g2d);
-				g2d.setColor(Color.BLACK);
-
 				for (int particle2Iterator = 0; particle2Iterator < Game.pList.size(); particle2Iterator++) {
 					Particle p2 = Game.pList.get(particle2Iterator);
 					if (p.inParticleCollisionRange(p2)) {
 						g2d.setColor(Color.RED);
 						new Line2D(p.center(), p2.center()).draw(g2d);
+						g2d.setColor(Color.BLACK);
+					}
+				}
+
+				for (int line2Iterator = 0; line2Iterator < Game.lList.size(); line2Iterator++) {
+					Line2D l2 = Game.lList.get(line2Iterator);
+					if (p.inLineCollisionRange(l2)) {
+						g2d.setColor(Color.GREEN);
+						new Line2D(p.center(), l2.point(l2.project(p.center()))).draw(g2d);
 						g2d.setColor(Color.BLACK);
 					}
 				}
