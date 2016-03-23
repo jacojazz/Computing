@@ -41,7 +41,7 @@ public class Particle extends Circle2D {
 	boolean inLineCollisionRange(Line2D l) {
 		if (l.distance(center()) <= radius()) {
 			double penetrationDepth = radius() - l.distance(center());
-			Vector2D resolution = l.perpendicular(l.point(l.project(center()))).direction().normalize().times(penetrationDepth);
+			Vector2D resolution = l.perpendicular(center()).direction().normalize().times(penetrationDepth);
 			setPosition(center().plus(resolution));
 			return true;
 		} else {
@@ -51,9 +51,13 @@ public class Particle extends Circle2D {
 
 	boolean inParticleCollisionRange(Particle p2) {
 		if (isActive() || p2.isActive()) {
-			if (distance(p2.center()) < (radius() + p2.radius()) * 2) {
-				return true;
-			} else {
+			try {
+				if (distance(p2.center()) < (radius() + p2.radius()) * 2) {
+					return true;
+				} else {
+					return false;
+				}
+			} catch (NullPointerException e) {
 				return false;
 			}
 		} else {
@@ -98,7 +102,7 @@ public class Particle extends Circle2D {
 						setActive(false);
 					}
 				}
-			}, 500);
+			}, Game.TARGET_FPS);
 		}
 	}
 

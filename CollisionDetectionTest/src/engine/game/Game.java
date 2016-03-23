@@ -34,8 +34,8 @@ public class Game extends JPanel {
 	static Point2D mouse, initial;
 	static Vector2D distance;
 	static boolean dragging = false, debug = false, flood = false, arc = false;
-	static Line2D floor = new Line2D(0, height, width, height);
-	static Line2D leftWall = new Line2D(0, 0, 0, height);
+	static Line2D floor = new Line2D(width, height, 0, height);
+	static Line2D leftWall = new Line2D(0, height, 0, 0);
 	static Line2D rightWall = new Line2D(width, 0, width, height);
 	static ArrayList<Particle> pList = new ArrayList<Particle>();
 	static ArrayList<Line2D> lList = new ArrayList<Line2D>();
@@ -69,7 +69,11 @@ public class Game extends JPanel {
 					if (e.getButton() == MouseEvent.BUTTON1)
 						pList.add(new Particle(initial, manualSize, manualSize / 20, distance.times(0.125)));
 					if (e.getButton() == MouseEvent.BUTTON3 && !initial.equals(mouse))
-						lList.add(new Line2D(initial, mouse));
+						if(initial.getX() < mouse.getX()) {
+							lList.add(new Line2D(mouse, initial));
+						} else {
+							lList.add(new Line2D(initial, mouse));
+						}
 				}
 			}
 		});

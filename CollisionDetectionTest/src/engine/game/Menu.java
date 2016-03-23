@@ -170,13 +170,13 @@ public class Menu {
 			clearLines.fill(g2d);
 
 			g2d.setColor(Color.GRAY);
-			g2d.drawString("Clear Lines (" + (Game.lList.size() - 1) + ")", (int) (clearLines.getX() + (clearLines.getWidth() / 2) - (fmT.stringWidth("Clear Lines (" + (Game.lList.size() - 1) + ")") / 2)), (int) (clearLines.getY() + (clearLines.getHeight() / 2)) + (fmT.getHeight() / 4));
+			g2d.drawString("Clear Lines (" + (Game.lList.size() - 3) + ")", (int) (clearLines.getX() + (clearLines.getWidth() / 2) - (fmT.stringWidth("Clear Lines (" + (Game.lList.size() - 3) + ")") / 2)), (int) (clearLines.getY() + (clearLines.getHeight() / 2)) + (fmT.getHeight() / 4));
 
 			g2d.setColor(new Color(51, 51, 51));
 			clearParticles.fill(g2d);
 
 			g2d.setColor(Color.GRAY);
-			g2d.drawString("Clear Particles", (int) (clearParticles.getX() + (clearParticles.getWidth() / 2) - (fmT.stringWidth("Clear Particles") / 2)), (int) (clearParticles.getY() + (clearParticles.getHeight() / 2)) + (fmT.getHeight() / 4));
+			g2d.drawString("Clear Particles (" + Game.pList.size() + ")", (int) (clearParticles.getX() + (clearParticles.getWidth() / 2) - (fmT.stringWidth("Clear Particles (" + Game.pList.size() + ")") / 2)), (int) (clearParticles.getY() + (clearParticles.getHeight() / 2)) + (fmT.getHeight() / 4));
 
 			g2d.setColor(new Color(0x521616));
 			exitRect.fill(g2d);
