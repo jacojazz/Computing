@@ -58,7 +58,7 @@ public class Particle extends Circle2D {
 					return false;
 				}
 			} catch (NullPointerException e) {
-				return false;
+				return true;
 			}
 		} else {
 			return false;
@@ -98,11 +98,11 @@ public class Particle extends Circle2D {
 			Timer timer = new Timer();
 			timer.schedule(new TimerTask() {
 				public void run() {
-					if (oldPosition.equals(center())) {
+					if (oldPosition.almostEquals(center(), 1)) {
 						setActive(false);
 					}
 				}
-			}, Game.TARGET_FPS);
+			}, 500);
 		}
 	}
 

@@ -69,7 +69,7 @@ public class Game extends JPanel {
 					if (e.getButton() == MouseEvent.BUTTON1)
 						pList.add(new Particle(initial, manualSize, manualSize / 20, distance.times(0.125)));
 					if (e.getButton() == MouseEvent.BUTTON3 && !initial.equals(mouse))
-						if(initial.getX() < mouse.getX()) {
+						if (initial.getX() < mouse.getX()) {
 							lList.add(new Line2D(mouse, initial));
 						} else {
 							lList.add(new Line2D(initial, mouse));
@@ -130,11 +130,16 @@ public class Game extends JPanel {
 		g2d.setColor(Color.BLACK);
 
 		for (int particleIterator = 0; particleIterator < pList.size(); particleIterator++) {
-			Particle p = Game.pList.get(particleIterator);
-			if (p.isActive()) {
-				p.draw(g2d);
+			Particle p = pList.get(particleIterator);
+
+			if (debug) {
+				if (p.isActive()) {
+					p.draw(g2d);
+				} else {
+					p.fill(g2d);
+				}
 			} else {
-				p.fill(g2d);
+				p.draw(g2d);
 			}
 
 			if (debug) {
@@ -142,7 +147,7 @@ public class Game extends JPanel {
 				p.boundingBox().draw(g2d);
 				g2d.setColor(Color.BLACK);
 
-				for (int particle2Iterator = 0; particle2Iterator < Game.pList.size(); particle2Iterator++) {
+				for (int particle2Iterator = 0; particle2Iterator < pList.size(); particle2Iterator++) {
 					Particle p2 = Game.pList.get(particle2Iterator);
 					if (p.inParticleCollisionRange(p2)) {
 						g2d.setColor(Color.RED);
@@ -151,7 +156,7 @@ public class Game extends JPanel {
 					}
 				}
 
-				for (int line2Iterator = 0; line2Iterator < Game.lList.size(); line2Iterator++) {
+				for (int line2Iterator = 0; line2Iterator < lList.size(); line2Iterator++) {
 					Line2D l2 = Game.lList.get(line2Iterator);
 					if (p.inLineCollisionRange(l2)) {
 						g2d.setColor(Color.GREEN);
