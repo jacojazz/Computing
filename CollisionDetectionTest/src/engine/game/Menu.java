@@ -74,6 +74,8 @@ public class Menu {
 			} else if (clearLines.contains(Game.mouse)) {
 				Game.lList.clear();
 				Game.lList.add(Game.floor);
+				Game.lList.add(Game.leftWall);
+				Game.lList.add(Game.rightWall);
 			} else if (exitRect.contains(Game.mouse)) {
 				System.exit(0);
 			}

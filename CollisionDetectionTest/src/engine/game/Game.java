@@ -24,7 +24,7 @@ public class Game extends JPanel {
 	private static final long serialVersionUID = 1L;
 	static final int TARGET_FPS = 60;
 	static final double GRAVITY = (double) TARGET_FPS / (2 * (double) TARGET_FPS);
-	static JFrame frame = new JFrame("Clicker");
+	static JFrame frame = new JFrame("Collision");
 	static int frames = 0;
 	static GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 	static int width = gd.getDisplayMode().getWidth();
@@ -35,6 +35,8 @@ public class Game extends JPanel {
 	static Vector2D distance;
 	static boolean dragging = false, debug = false, flood = false, arc = false;
 	static Line2D floor = new Line2D(0, height, width, height);
+	static Line2D leftWall = new Line2D(0, 0, 0, height);
+	static Line2D rightWall = new Line2D(width, 0, width, height);
 	static ArrayList<Particle> pList = new ArrayList<Particle>();
 	static ArrayList<Line2D> lList = new ArrayList<Line2D>();
 	static double manualSize = 40;
@@ -85,13 +87,19 @@ public class Game extends JPanel {
 		setFocusable(true);
 
 		lList.add(floor);
+		lList.add(leftWall);
+		lList.add(rightWall);
 	}
 
 	void update() {
 		menu.update();
 		for (int particleIterator = 0; particleIterator < pList.size(); particleIterator++) {
 			Particle p = pList.get(particleIterator);
-			p.update();
+
+			if (p.isActive()) {
+				p.update();
+			}
+
 			if (p.center().getY() > height + p.radius() || p.center().getX() > width + p.radius() || p.center().getX() < 0 - p.radius()) {
 				pList.remove(particleIterator);
 			}
@@ -115,9 +123,15 @@ public class Game extends JPanel {
 		Graphics2D g2d = (Graphics2D) g;
 		applyQualityRenderingHints(g2d);
 
+		g2d.setColor(Color.BLACK);
+
 		for (int particleIterator = 0; particleIterator < pList.size(); particleIterator++) {
 			Particle p = Game.pList.get(particleIterator);
-			p.draw(g2d);
+			if (p.isActive()) {
+				p.draw(g2d);
+			} else {
+				p.fill(g2d);
+			}
 
 			if (debug) {
 				g2d.setColor(Color.BLUE);

@@ -1,16 +1,21 @@
 package engine.game;
 
-import engine.utils.Constants;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
 import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
+import engine.utils.Constants;
 
 public class Particle extends Circle2D {
 	private Vector2D velocity;
 	private Vector2D force;
 	private double mass;
 	private boolean colliding;
+	private boolean active = true;
+	private Point2D oldPosition;
 
 	Particle(Point2D center, double radius, double mass) {
 		super(center, radius);
@@ -36,7 +41,8 @@ public class Particle extends Circle2D {
 	boolean inLineCollisionRange(Line2D l) {
 		if (l.distance(center()) <= radius()) {
 			double penetrationDepth = radius() - l.distance(center());
-			setPosition(center().minus(new Point2D(0, penetrationDepth)));
+			Vector2D resolution = l.perpendicular(l.point(l.project(center()))).direction().normalize().times(penetrationDepth);
+			setPosition(center().plus(resolution));
 			return true;
 		} else {
 			return false;
@@ -44,8 +50,12 @@ public class Particle extends Circle2D {
 	}
 
 	boolean inParticleCollisionRange(Particle p2) {
-		if (distance(p2.center()) < (radius() + p2.radius()) * 2) {
-			return true;
+		if (isActive() || p2.isActive()) {
+			if (distance(p2.center()) < (radius() + p2.radius()) * 2) {
+				return true;
+			} else {
+				return false;
+			}
 		} else {
 			return false;
 		}
@@ -58,6 +68,8 @@ public class Particle extends Circle2D {
 	}
 
 	public void resolveCollision(Particle p, Particle p2) {
+		p.setActive(true);
+		p2.setActive(true);
 		colliding = true;
 		Vector2D delta = new Vector2D(p.center().minus(p2.center()));
 		float d = (float) delta.norm();
@@ -74,6 +86,20 @@ public class Particle extends Circle2D {
 		Vector2D impulse = mtd.normalize().times(i);
 		p.setVelocity(p.getVelocity().plus(impulse.times(im1)));
 		p2.setVelocity(p2.getVelocity().minus(impulse.times(im2)));
+	}
+
+	void checkActive() {
+		if (Game.frames % Game.TARGET_FPS == 0) {
+			oldPosition = center();
+			Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+				public void run() {
+					if (oldPosition.equals(center())) {
+						setActive(false);
+					}
+				}
+			}, 500);
+		}
 	}
 
 	void update() {
@@ -98,6 +124,7 @@ public class Particle extends Circle2D {
 		velocity = velocity.plus(force);
 		Point2D p = center().plus(velocity);
 		setPosition(p.getX(), p.getY());
+		checkActive();
 	}
 
 	public void setPosition(double x, double y) {
@@ -138,5 +165,13 @@ public class Particle extends Circle2D {
 
 	public boolean isColliding() {
 		return colliding;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 }
