@@ -149,7 +149,7 @@ public class Game extends JPanel {
 
 				for (int particle2Iterator = 0; particle2Iterator < pList.size(); particle2Iterator++) {
 					Particle p2 = Game.pList.get(particle2Iterator);
-					if (p.inParticleCollisionRange(p2)) {
+					if (p.inParticleCollisionRange(p2) && !p.equals(p2)) {
 						g2d.setColor(Color.RED);
 						new Line2D(p.center(), p2.center()).draw(g2d);
 						g2d.setColor(Color.BLACK);

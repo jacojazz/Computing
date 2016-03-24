@@ -31,20 +31,28 @@ public class Particle extends Circle2D {
 	}
 
 	boolean checkCollision(Particle p, Particle p2) {
-		double xDif = p.center().getX() - p2.center().getX();
-		double yDif = p.center().getY() - p2.center().getY();
-		double distanceSquared = (xDif * xDif) + (yDif * yDif);
-		boolean collision = distanceSquared <= (p.radius() + p2.radius()) * (p.radius() + p2.radius());
-		return collision;
+		try {
+			double xDif = p.center().getX() - p2.center().getX();
+			double yDif = p.center().getY() - p2.center().getY();
+			double distanceSquared = (xDif * xDif) + (yDif * yDif);
+			boolean collision = distanceSquared <= (p.radius() + p2.radius()) * (p.radius() + p2.radius());
+			return collision;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	boolean inLineCollisionRange(Line2D l) {
-		if (l.distance(center()) <= radius()) {
-			double penetrationDepth = radius() - l.distance(center());
-			Vector2D resolution = l.perpendicular(center()).direction().normalize().times(penetrationDepth);
-			setPosition(center().plus(resolution));
-			return true;
-		} else {
+		try {
+			if (l.distance(center()) <= radius()) {
+				double penetrationDepth = radius() - l.distance(center());
+				Vector2D resolution = l.perpendicular(center()).direction().normalize().times(penetrationDepth);
+				setPosition(center().plus(resolution));
+				return true;
+			} else {
+				return false;
+			}
+		} catch (NullPointerException e) {
 			return false;
 		}
 	}
@@ -76,17 +84,17 @@ public class Particle extends Circle2D {
 		p2.setActive(true);
 		colliding = true;
 		Vector2D delta = new Vector2D(p.center().minus(p2.center()));
-		float d = (float) delta.norm();
+		double d = delta.norm();
 		Vector2D mtd = delta.times(((p.radius() + p2.radius()) - d) / d);
-		float im1 = (float) (1 / p.getMass());
-		float im2 = (float) (1 / p2.getMass());
+		double im1 = (1 / p.getMass());
+		double im2 = (1 / p2.getMass());
 		p.setPosition(p.center().plus(mtd.times(im1 / (im1 + im2))));
 		p2.setPosition(p2.center().minus(mtd.times(im2 / (im1 + im2))));
 		Vector2D v = (p.getVelocity().minus(p2.getVelocity()));
-		float vn = (float) v.dot(mtd.normalize());
+		double vn = v.dot(mtd.normalize());
 		if (vn > 0.0f)
 			return;
-		float i = (float) ((-(1.0f + Constants.restitution) * vn) / (im1 + im2));
+		double i = ((-(1.0f + Constants.restitution) * vn) / (im1 + im2));
 		Vector2D impulse = mtd.normalize().times(i);
 		p.setVelocity(p.getVelocity().plus(impulse.times(im1)));
 		p2.setVelocity(p2.getVelocity().minus(impulse.times(im2)));
@@ -102,7 +110,7 @@ public class Particle extends Circle2D {
 						setActive(false);
 					}
 				}
-			}, 500);
+			}, 100);
 		}
 	}
 
