@@ -95,15 +95,25 @@ public class Particle extends Circle2D {
 		if (vn > 0.0f)
 			return;
 		double i = ((-(1.0f + Constants.restitution) * vn) / (im1 + im2));
-		// double p1PD = p.distance(p2.point(p2.project(p.center())));
-		// double p2PD = p2.distance(p.point(p.project(p2.center())));
+		// double p1PD = p.distance(p2.point(p2.project(p2.center())));
+		// double p2PD = p2.distance(p.point(p.project(p.center())));
 		Vector2D impulse = mtd.normalize().times(i);
+		// p.setVelocity(p.getVelocity().plus(impulse.times(im1).times(tolerance(p2PD,
+		// p2.radius()))));
+		// p2.setVelocity(p2.getVelocity().minus(impulse.times(im2).times(tolerance(p1PD,
+		// p.radius()))));
 		p.setVelocity(p.getVelocity().plus(impulse.times(im1)));
 		p2.setVelocity(p2.getVelocity().minus(impulse.times(im2)));
 	}
 
 	double tolerance(double penetrationDepth, double radius) {
-		return penetrationDepth / radius;
+		double result = penetrationDepth / radius;
+		if (result > 1) {
+			return 1;
+		} else {
+			return result;
+		}
+
 	}
 
 	void checkActive() {

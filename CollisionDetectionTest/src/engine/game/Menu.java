@@ -36,9 +36,9 @@ public class Menu {
 	Rectangle2D moveRect = new Rectangle2D(position.getX(), position.getY(), width, height - 280);
 	Rectangle2D floodRect = new Rectangle2D(position.getX() + 10, position.getY() + 70, width - 20, height - 280);
 	Rectangle2D arcRect = new Rectangle2D(position.getX() + 10, position.getY() + 100, width - 20, height - 280);
-	Rectangle2D sizePlus = new Rectangle2D(position.getX() + 10, position.getY() + 40, width / 10, width / 10);
+	Rectangle2D sizeMinus = new Rectangle2D(position.getX() + 10, position.getY() + 40, width / 10, width / 10);
 	Rectangle2D sizeRect = new Rectangle2D(position.getX() + 35, position.getY() + 40, width - 70, height - 280);
-	Rectangle2D sizeMinus = new Rectangle2D(position.getX() + 170, position.getY() + 40, width / 10, width / 10);
+	Rectangle2D sizePlus = new Rectangle2D(position.getX() + 170, position.getY() + 40, width / 10, width / 10);
 	Rectangle2D debugRect = new Rectangle2D(position.getX() + 10, position.getY() + 160, width - 20, height - 280);
 	Rectangle2D clearLines = new Rectangle2D(position.getX() + 10, position.getY() + 190, width - 20, height - 280);
 	Rectangle2D clearParticles = new Rectangle2D(position.getX() + 10, position.getY() + 220, width - 20, height - 280);
@@ -63,6 +63,7 @@ public class Menu {
 			} else if (sizePlus.contains(Game.mouse)) {
 				Game.manualSize += 2;
 			} else if (sizeRect.contains(Game.mouse)) {
+				Game.manualSize = 40;
 			} else if (sizeMinus.contains(Game.mouse)) {
 				if (Game.manualSize >= 12) {
 					Game.manualSize -= 2;
@@ -105,9 +106,9 @@ public class Menu {
 		floodRect = new Rectangle2D(position.getX() + 10, position.getY() + 70, width - 20, height - 280);
 		arcRect = new Rectangle2D(position.getX() + 10, position.getY() + 100, width - 20, height - 280);
 
-		sizePlus = new Rectangle2D(position.getX() + 10, position.getY() + 40, width / 10, width / 10);
+		sizeMinus = new Rectangle2D(position.getX() + 10, position.getY() + 40, width / 10, width / 10);
 		sizeRect = new Rectangle2D(position.getX() + 35, position.getY() + 40, width - 70, height - 280);
-		sizeMinus = new Rectangle2D(position.getX() + 170, position.getY() + 40, width / 10, width / 10);
+		sizePlus = new Rectangle2D(position.getX() + 170, position.getY() + 40, width / 10, width / 10);
 
 		debugRect = new Rectangle2D(position.getX() + 10, position.getY() + 160, width - 20, height - 280);
 		clearLines = new Rectangle2D(position.getX() + 10, position.getY() + 190, width - 20, height - 280);
