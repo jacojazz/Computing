@@ -20,13 +20,13 @@ public class Particle extends Circle2D {
 	Particle(Point2D center, double radius, double mass) {
 		super(center, radius);
 		this.mass = mass;
-		this.force = new Vector2D(0, Game.GRAVITY);
+		this.force = new Vector2D(0, Game.EARTH_GRAVITY);
 	}
 
 	Particle(Point2D center, double radius, double mass, Vector2D velocity) {
 		super(center, radius);
 		this.mass = mass;
-		this.force = new Vector2D(0, Game.GRAVITY);
+		this.force = new Vector2D(0, Game.EARTH_GRAVITY);
 		this.velocity = velocity;
 	}
 
@@ -95,13 +95,7 @@ public class Particle extends Circle2D {
 		if (vn > 0.0f)
 			return;
 		double i = ((-(1.0f + Constants.restitution) * vn) / (im1 + im2));
-		// double p1PD = p.distance(p2.point(p2.project(p2.center())));
-		// double p2PD = p2.distance(p.point(p.project(p.center())));
 		Vector2D impulse = mtd.normalize().times(i);
-		// p.setVelocity(p.getVelocity().plus(impulse.times(im1).times(tolerance(p2PD,
-		// p2.radius()))));
-		// p2.setVelocity(p2.getVelocity().minus(impulse.times(im2).times(tolerance(p1PD,
-		// p.radius()))));
 		p.setVelocity(p.getVelocity().plus(impulse.times(im1)));
 		p2.setVelocity(p2.getVelocity().minus(impulse.times(im2)));
 	}
@@ -113,7 +107,6 @@ public class Particle extends Circle2D {
 		} else {
 			return result;
 		}
-
 	}
 
 	void checkActive() {

@@ -77,6 +77,7 @@ public class Menu {
 				Game.lList.add(Game.floor);
 				Game.lList.add(Game.leftWall);
 				Game.lList.add(Game.rightWall);
+				Game.lList.add(Game.roof);
 			} else if (exitRect.contains(Game.mouse)) {
 				System.exit(0);
 			}

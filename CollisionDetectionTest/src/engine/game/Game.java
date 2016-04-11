@@ -23,7 +23,7 @@ import math.geom2d.line.Line2D;
 public class Game extends JPanel {
 	private static final long serialVersionUID = 1L;
 	static final int TARGET_FPS = 60;
-	static final double GRAVITY = (double) TARGET_FPS / (2 * (double) TARGET_FPS);
+	static final double EARTH_GRAVITY = 0.5;
 	static JFrame frame = new JFrame("Collision");
 	static int frames = 0;
 	static GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
@@ -37,6 +37,7 @@ public class Game extends JPanel {
 	static Line2D floor = new Line2D(width, height, 0, height);
 	static Line2D leftWall = new Line2D(0, height, 0, 0);
 	static Line2D rightWall = new Line2D(width, 0, width, height);
+	static Line2D roof = new Line2D(0, 0, width, 0);
 	static ArrayList<Particle> pList = new ArrayList<Particle>();
 	static ArrayList<Line2D> lList = new ArrayList<Line2D>();
 	static double manualSize = 40;
@@ -93,6 +94,7 @@ public class Game extends JPanel {
 		lList.add(floor);
 		lList.add(leftWall);
 		lList.add(rightWall);
+		lList.add(roof);
 	}
 
 	void update() {
@@ -111,7 +113,7 @@ public class Game extends JPanel {
 
 		if (flood) {
 			Random rand = new Random();
-			pList.add(new Particle(new Point2D(rand.nextInt(width), -25), manualSize, manualSize / 20, new Vector2D(0, 0)));
+			pList.add(new Particle(new Point2D(rand.nextInt(width), manualSize), manualSize, manualSize / 20, new Vector2D(0, 0)));
 		}
 
 		if (arc) {
