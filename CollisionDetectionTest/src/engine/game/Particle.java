@@ -20,13 +20,13 @@ public class Particle extends Circle2D {
 	Particle(Point2D center, double radius, double mass) {
 		super(center, radius);
 		this.mass = mass;
-		this.force = new Vector2D(0, Game.EARTH_GRAVITY);
+		this.force = Game.getGravity();
 	}
 
 	Particle(Point2D center, double radius, double mass, Vector2D velocity) {
 		super(center, radius);
 		this.mass = mass;
-		this.force = new Vector2D(0, Game.EARTH_GRAVITY);
+		this.force = Game.getGravity();
 		this.velocity = velocity;
 	}
 
@@ -115,7 +115,7 @@ public class Particle extends Circle2D {
 			Timer timer = new Timer();
 			timer.schedule(new TimerTask() {
 				public void run() {
-					if (oldPosition.almostEquals(center(), 1)) {
+					if (oldPosition.equals(center())) {
 						setActive(false);
 					}
 				}
@@ -124,6 +124,7 @@ public class Particle extends Circle2D {
 	}
 
 	void update() {
+		force = Game.getGravity();
 		for (int particle2Iterator = 0; particle2Iterator < Game.pList.size(); particle2Iterator++) {
 			Particle p2 = Game.pList.get(particle2Iterator);
 			if (inParticleCollisionRange(p2)) {
@@ -139,6 +140,13 @@ public class Particle extends Circle2D {
 			Line2D l = Game.lList.get(lineIterator);
 			if (inLineCollisionRange(l)) {
 				velocity = reflect(l);
+			}
+		}
+
+		if (Game.gravityType == 2) {
+			for (int gNodeIterator = 0; gNodeIterator < Game.gList.size(); gNodeIterator++) {
+				GravityNode g = Game.gList.get(gNodeIterator);
+				force = g.gravityAtPoint(this);
 			}
 		}
 

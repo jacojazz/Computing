@@ -33,13 +33,15 @@ public class Game extends JPanel {
 	static Box2D bounds = new Box2D(0, width, 0, height);
 	static Point2D mouse, initial;
 	static Vector2D distance;
-	static boolean dragging = false, debug = false, flood = false, arc = false;
+	static boolean dragging = false, debug = false, flood = false;
+	static int gravityType = 1;
 	static Line2D floor = new Line2D(width, height, 0, height);
 	static Line2D leftWall = new Line2D(0, height, 0, 0);
 	static Line2D rightWall = new Line2D(width, 0, width, height);
 	static Line2D roof = new Line2D(0, 0, width, 0);
 	static ArrayList<Particle> pList = new ArrayList<Particle>();
 	static ArrayList<Line2D> lList = new ArrayList<Line2D>();
+	static ArrayList<GravityNode> gList = new ArrayList<GravityNode>();
 	static double manualSize = 40;
 
 	Game() {
@@ -95,6 +97,30 @@ public class Game extends JPanel {
 		lList.add(leftWall);
 		lList.add(rightWall);
 		lList.add(roof);
+
+		gList.add(new GravityNode(new Point2D(width / 2, height / 2), 100));
+	}
+
+	static Vector2D getGravity() {
+		switch (gravityType) {
+		case 1:
+			return new Vector2D(0, 0.5);
+		case 2:
+			return new Vector2D(0, 0);
+		default:
+			return new Vector2D(0, 0);
+		}
+	}
+
+	static String getGravityString() {
+		switch (gravityType) {
+		case 1:
+			return "Normal";
+		case 2:
+			return "Node-Based";
+		default:
+			return "Not Found";
+		}
 	}
 
 	void update() {
@@ -113,14 +139,7 @@ public class Game extends JPanel {
 
 		if (flood) {
 			Random rand = new Random();
-			pList.add(new Particle(new Point2D(rand.nextInt(width), manualSize), manualSize, manualSize / 20, new Vector2D(0, 0)));
-		}
-
-		if (arc) {
-			if (frames % TARGET_FPS == 0) {
-				pList.add(new Particle(new Point2D(0 - 20, height - 20), manualSize, manualSize / 20, new Vector2D(20, -20)));
-				pList.add(new Particle(new Point2D(width + 20, height - 20), manualSize, manualSize / 20, new Vector2D(-20, -20)));
-			}
+			pList.add(new Particle(new Point2D(rand.nextInt(width), rand.nextInt(height)), manualSize, manualSize / 20, new Vector2D(0, 0)));
 		}
 	}
 
