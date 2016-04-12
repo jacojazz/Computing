@@ -169,7 +169,7 @@ public class Game extends JPanel {
 				g2d.setColor(Color.BLACK);
 
 				for (int particle2Iterator = 0; particle2Iterator < pList.size(); particle2Iterator++) {
-					Particle p2 = Game.pList.get(particle2Iterator);
+					Particle p2 = pList.get(particle2Iterator);
 					if (p.inParticleCollisionRange(p2) && !p.equals(p2)) {
 						g2d.setColor(Color.RED);
 						new Line2D(p.center(), p2.center()).draw(g2d);
@@ -178,10 +178,20 @@ public class Game extends JPanel {
 				}
 
 				for (int line2Iterator = 0; line2Iterator < lList.size(); line2Iterator++) {
-					Line2D l2 = Game.lList.get(line2Iterator);
+					Line2D l2 = lList.get(line2Iterator);
 					if (p.inLineCollisionRange(l2)) {
 						g2d.setColor(Color.GREEN);
 						new Line2D(p.center(), l2.point(l2.project(p.center()))).draw(g2d);
+						g2d.setColor(Color.BLACK);
+					}
+				}
+
+				if (gravityType == 2) {
+					for (int nodeIterator = 0; nodeIterator < gList.size(); nodeIterator++) {
+						GravityNode gn = gList.get(nodeIterator);
+						gn.draw(g2d);
+						g2d.setColor(Color.GREEN);
+						new Line2D(p.center(), gn).draw(g2d);
 						g2d.setColor(Color.BLACK);
 					}
 				}

@@ -11,7 +11,6 @@ import engine.utils.Constants;
 
 public class Particle extends Circle2D {
 	private Vector2D velocity;
-	private Vector2D force;
 	private double mass;
 	private boolean colliding;
 	private boolean active = true;
@@ -20,13 +19,11 @@ public class Particle extends Circle2D {
 	Particle(Point2D center, double radius, double mass) {
 		super(center, radius);
 		this.mass = mass;
-		this.force = Game.getGravity();
 	}
 
 	Particle(Point2D center, double radius, double mass, Vector2D velocity) {
 		super(center, radius);
 		this.mass = mass;
-		this.force = Game.getGravity();
 		this.velocity = velocity;
 	}
 
@@ -109,6 +106,32 @@ public class Particle extends Circle2D {
 		}
 	}
 
+	Vector2D getForceParticle(Particle p) {
+		if (Game.gravityType == 2) {
+			Vector2D temp = new Vector2D(0, 0);
+			for (int gNodeIterator = 0; gNodeIterator < Game.gList.size(); gNodeIterator++) {
+				GravityNode g = Game.gList.get(gNodeIterator);
+				temp = temp.plus(g.gravityAtParticle(p));
+			}
+			return temp;
+		} else {
+			return Game.getGravity();
+		}
+	}
+
+	Vector2D getForcePoint(Point2D p) {
+		if (Game.gravityType == 2) {
+			Vector2D temp = new Vector2D(0, 0);
+			for (int gNodeIterator = 0; gNodeIterator < Game.gList.size(); gNodeIterator++) {
+				GravityNode g = Game.gList.get(gNodeIterator);
+				temp = temp.plus(g.gravityAtPoint(p));
+			}
+			return temp;
+		} else {
+			return Game.getGravity();
+		}
+	}
+
 	void checkActive() {
 		if (Game.frames % Game.TARGET_FPS == 0) {
 			oldPosition = center();
@@ -124,7 +147,6 @@ public class Particle extends Circle2D {
 	}
 
 	void update() {
-		force = Game.getGravity();
 		for (int particle2Iterator = 0; particle2Iterator < Game.pList.size(); particle2Iterator++) {
 			Particle p2 = Game.pList.get(particle2Iterator);
 			if (inParticleCollisionRange(p2)) {
@@ -143,14 +165,7 @@ public class Particle extends Circle2D {
 			}
 		}
 
-		if (Game.gravityType == 2) {
-			for (int gNodeIterator = 0; gNodeIterator < Game.gList.size(); gNodeIterator++) {
-				GravityNode g = Game.gList.get(gNodeIterator);
-				force = g.gravityAtPoint(this);
-			}
-		}
-
-		velocity = velocity.plus(force);
+		velocity = velocity.plus(getForceParticle(this));
 		Point2D p = center().plus(velocity);
 		setPosition(p.getX(), p.getY());
 		checkActive();

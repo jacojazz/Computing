@@ -12,18 +12,24 @@ public class GravityNode extends Point2D {
 		this.intensity = intensity;
 	}
 
-	Vector2D gravityAtPoint(Particle p) {
+	Vector2D gravityAtParticle(Particle p) {
 		Line2D lineSeparation = new Line2D(p.center(), this);
 		Vector2D lineDirection = lineSeparation.direction().normalize();
 		if (p.distance(this) < p.radius()) {
 			return new Vector2D(0, 0);
 		} else {
-			return lineDirection.times(inverseSquare(p));
+			return lineDirection.times(inverseSquare(p.center()));
 		}
 	}
 
-	double inverseSquare(Particle p) {
-		double calc = intensity / p.center().distance(this);
+	Vector2D gravityAtPoint(Point2D p) {
+		Line2D lineSeparation = new Line2D(p, this);
+		Vector2D lineDirection = lineSeparation.direction().normalize();
+		return lineDirection.times(inverseSquare(p));
+	}
+
+	double inverseSquare(Point2D p) {
+		double calc = intensity / p.distance(this);
 		if (!(calc < 0)) {
 			return calc;
 		} else {
