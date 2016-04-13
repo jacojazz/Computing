@@ -71,12 +71,13 @@ public class Game extends JPanel {
 					distance = new Vector2D(initial.minus(mouse));
 					if (e.getButton() == MouseEvent.BUTTON1)
 						pList.add(new Particle(initial, manualSize, manualSize / 20, distance.times(0.125)));
-					if (e.getButton() == MouseEvent.BUTTON3 && !initial.equals(mouse))
+					if (e.getButton() == MouseEvent.BUTTON3 && !initial.equals(mouse)) {
 						if (initial.getX() < mouse.getX()) {
 							lList.add(new Line2D(mouse, initial));
 						} else {
 							lList.add(new Line2D(initial, mouse));
 						}
+					}
 				}
 			}
 		});
