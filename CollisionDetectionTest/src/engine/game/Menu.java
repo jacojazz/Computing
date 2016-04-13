@@ -1,6 +1,8 @@
 package engine.game;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.FontMetrics;
@@ -19,32 +21,34 @@ import math.geom2d.polygon.Rectangle2D;
 public class Menu {
 	Point2D position = new Point2D(10, 10);
 	int width = 200;
-	int height = 300;
+	int height = 310;
 	boolean visible = true;
 	Point2D mouseRelation;
 	Font textFont;
+	int toolType = 0;
 	boolean dragging = false;
 	boolean toolsPopOut = false;
 
 	Rectangle2D baseRect = new Rectangle2D(position.getX(), position.getY(), width, height);
 	Rectangle2D minRect = new Rectangle2D((position.getX() + width) - 18, position.getY() + 15, 16, 3);
 	Rectangle2D minHandler = new Rectangle2D((position.getX() + width) - 20, position.getY(), 20, 20);
-	Rectangle2D moveRect = new Rectangle2D(position.getX(), position.getY(), width, height - 280);
+	Rectangle2D moveRect = new Rectangle2D(position.getX(), position.getY(), width, 20);
 	Rectangle2D sizeMinus = new Rectangle2D(position.getX() + 10, position.getY() + 40, 20, 20);
-	Rectangle2D sizeRect = new Rectangle2D(position.getX() + 35, position.getY() + 40, width - 70, height - 280);
+	Rectangle2D sizeRect = new Rectangle2D(position.getX() + 35, position.getY() + 40, width - 70, 20);
 	Rectangle2D sizePlus = new Rectangle2D(position.getX() + 170, position.getY() + 40, 20, 20);
-	Rectangle2D floodRect = new Rectangle2D(position.getX() + 10, position.getY() + 70, width - 20, height - 280);
-	Rectangle2D gravityRect = new Rectangle2D(position.getX() + 10, position.getY() + 100, width - 20, height - 280);
-	Rectangle2D toolsRect = new Rectangle2D(position.getX() + 10, position.getY() + 130, width - 20, height - 280);
-	Rectangle2D toolsBaseRect = new Rectangle2D(position.getX() + width + 10, position.getY() + 120, 145, height - 260);
+	Rectangle2D floodRect = new Rectangle2D(position.getX() + 10, position.getY() + 70, width - 20, 20);
+	Rectangle2D gravityRect = new Rectangle2D(position.getX() + 10, position.getY() + 100, width - 20, 20);
+	Rectangle2D toolsRect = new Rectangle2D(position.getX() + 10, position.getY() + 130, width - 20, 20);
+	Rectangle2D toolsBaseRect = new Rectangle2D(position.getX() + width + 10, position.getY() + 120, 145, 40);
 	Rectangle2D toolsParticle = new Rectangle2D(position.getX() + width + 15, position.getY() + 125, 30, 30);
 	Rectangle2D toolsLine = new Rectangle2D(position.getX() + width + 50, position.getY() + 125, 30, 30);
 	Rectangle2D toolsGravity = new Rectangle2D(position.getX() + width + 85, position.getY() + 125, 30, 30);
 	Rectangle2D toolsRepulsor = new Rectangle2D(position.getX() + width + 120, position.getY() + 125, 30, 30);
-	Rectangle2D debugRect = new Rectangle2D(position.getX() + 10, position.getY() + 160, width - 20, height - 280);
-	Rectangle2D clearLines = new Rectangle2D(position.getX() + 10, position.getY() + 190, width - 20, height - 280);
-	Rectangle2D clearParticles = new Rectangle2D(position.getX() + 10, position.getY() + 220, width - 20, height - 280);
-	Rectangle2D exitRect = new Rectangle2D(position.getX() + 10, position.getY() + 270, width - 20, height - 280);
+	Rectangle2D debugRect = new Rectangle2D(position.getX() + 10, position.getY() + 160, width - 20, 20);
+	Rectangle2D clearLines = new Rectangle2D(position.getX() + 10, position.getY() + 190, width - 20, 20);
+	Rectangle2D clearParticles = new Rectangle2D(position.getX() + 10, position.getY() + 220, width - 20, 20);
+	Rectangle2D clearNodes = new Rectangle2D(position.getX() + 10, position.getY() + 250, width - 20, 20);
+	Rectangle2D exitRect = new Rectangle2D(position.getX() + 10, position.getY() + 280, width - 20, 20);
 
 	Image particleImage, lineImage, gravityImage, repulsorImage;
 
@@ -80,24 +84,16 @@ public class Menu {
 				} else if (Game.gravityType == 2) {
 					Game.gravityType = 1;
 				}
-
-				switch (Game.gravityType) {
-				case 1:
-					Game.lList.clear();
-					Game.lList.add(Game.floor);
-					Game.lList.add(Game.leftWall);
-					Game.lList.add(Game.rightWall);
-					Game.lList.add(Game.roof);
-					break;
-				case 2:
-					Game.lList.clear();
-					break;
-				default:
-					System.out.println("Unknown case in Menu/MouseClicked switch statement!");
-					break;
-				}
 			} else if (toolsRect.contains(Game.mouse)) {
 				toolsPopOut = !toolsPopOut;
+			} else if (toolsParticle.contains(Game.mouse)) {
+				toolType = 0;
+			} else if (toolsLine.contains(Game.mouse)) {
+				toolType = 1;
+			} else if (toolsGravity.contains(Game.mouse)) {
+				toolType = 2;
+			} else if (toolsRepulsor.contains(Game.mouse)) {
+				toolType = 3;
 			} else if (debugRect.contains(Game.mouse)) {
 				Game.debug = !Game.debug;
 			} else if (clearParticles.contains(Game.mouse)) {
@@ -108,6 +104,8 @@ public class Menu {
 				Game.lList.add(Game.leftWall);
 				Game.lList.add(Game.rightWall);
 				Game.lList.add(Game.roof);
+			} else if (clearNodes.contains(Game.mouse)) {
+				Game.gList.clear();
 			} else if (exitRect.contains(Game.mouse)) {
 				System.exit(0);
 			}
@@ -129,26 +127,32 @@ public class Menu {
 		baseRect = new Rectangle2D(position.getX(), position.getY(), width, height);
 		minRect = new Rectangle2D((position.getX() + width) - 18, position.getY() + 15, 16, 3);
 		minHandler = new Rectangle2D((position.getX() + width) - 20, position.getY(), 20, 20);
-		moveRect = new Rectangle2D(position.getX(), position.getY(), width, height - 280);
+		moveRect = new Rectangle2D(position.getX(), position.getY(), width, 20);
 		sizeMinus = new Rectangle2D(position.getX() + 10, position.getY() + 40, 20, 20);
-		sizeRect = new Rectangle2D(position.getX() + 35, position.getY() + 40, width - 70, height - 280);
+		sizeRect = new Rectangle2D(position.getX() + 35, position.getY() + 40, width - 70, 20);
 		sizePlus = new Rectangle2D(position.getX() + 170, position.getY() + 40, 20, 20);
-		floodRect = new Rectangle2D(position.getX() + 10, position.getY() + 70, width - 20, height - 280);
-		gravityRect = new Rectangle2D(position.getX() + 10, position.getY() + 100, width - 20, height - 280);
-		toolsRect = new Rectangle2D(position.getX() + 10, position.getY() + 130, width - 20, height - 280);
-		toolsBaseRect = new Rectangle2D(position.getX() + width + 10, position.getY() + 120, 145, height - 260);
+		floodRect = new Rectangle2D(position.getX() + 10, position.getY() + 70, width - 20, 20);
+		gravityRect = new Rectangle2D(position.getX() + 10, position.getY() + 100, width - 20, 20);
+		toolsRect = new Rectangle2D(position.getX() + 10, position.getY() + 130, width - 20, 20);
+		toolsBaseRect = new Rectangle2D(position.getX() + width + 10, position.getY() + 120, 145, 40);
 		toolsParticle = new Rectangle2D(position.getX() + width + 15, position.getY() + 125, 30, 30);
 		toolsLine = new Rectangle2D(position.getX() + width + 50, position.getY() + 125, 30, 30);
 		toolsGravity = new Rectangle2D(position.getX() + width + 85, position.getY() + 125, 30, 30);
 		toolsRepulsor = new Rectangle2D(position.getX() + width + 120, position.getY() + 125, 30, 30);
-		debugRect = new Rectangle2D(position.getX() + 10, position.getY() + 160, width - 20, height - 280);
-		clearLines = new Rectangle2D(position.getX() + 10, position.getY() + 190, width - 20, height - 280);
-		clearParticles = new Rectangle2D(position.getX() + 10, position.getY() + 220, width - 20, height - 280);
-		exitRect = new Rectangle2D(position.getX() + 10, position.getY() + 270, width - 20, height - 280);
+		debugRect = new Rectangle2D(position.getX() + 10, position.getY() + 160, width - 20, 20);
+		clearLines = new Rectangle2D(position.getX() + 10, position.getY() + 190, width - 20, 20);
+		clearParticles = new Rectangle2D(position.getX() + 10, position.getY() + 220, width - 20, 20);
+		clearNodes = new Rectangle2D(position.getX() + 10, position.getY() + 250, width - 20, 20);
+		exitRect = new Rectangle2D(position.getX() + 10, position.getY() + 280, width - 20, 20);
 
 		if (dragging == true) {
 			position = Game.mouse.minus(mouseRelation);
 		}
+	}
+
+	private AlphaComposite makeAlpha(float alpha) {
+		int type = AlphaComposite.SRC_OVER;
+		return (AlphaComposite.getInstance(type, alpha));
 	}
 
 	public void paint(Graphics2D g2d) {
@@ -208,10 +212,15 @@ public class Menu {
 				toolsGravity.fill(g2d);
 				toolsRepulsor.fill(g2d);
 
+				Composite defaultAlpha = g2d.getComposite();
+				g2d.setComposite(makeAlpha(0.50f));
+
 				g2d.drawImage(particleImage, (int) toolsParticle.getX() + 2, (int) toolsParticle.getY() + 2, null);
 				g2d.drawImage(lineImage, (int) toolsLine.getX() + 2, (int) toolsLine.getY() + 2, null);
 				g2d.drawImage(gravityImage, (int) toolsGravity.getX() + 2, (int) toolsGravity.getY() + 2, null);
 				g2d.drawImage(repulsorImage, (int) toolsRepulsor.getX() + 2, (int) toolsRepulsor.getY() + 2, null);
+
+				g2d.setComposite(defaultAlpha);
 			}
 
 			g2d.setColor(new Color(51, 51, 51));
@@ -231,6 +240,12 @@ public class Menu {
 
 			g2d.setColor(Color.GRAY);
 			g2d.drawString("Clear Particles (" + Game.pList.size() + ")", (int) (clearParticles.getX() + (clearParticles.getWidth() / 2) - (fmT.stringWidth("Clear Particles (" + Game.pList.size() + ")") / 2)), (int) (clearParticles.getY() + (clearParticles.getHeight() / 2)) + (fmT.getHeight() / 4));
+
+			g2d.setColor(new Color(51, 51, 51));
+			clearNodes.fill(g2d);
+
+			g2d.setColor(Color.GRAY);
+			g2d.drawString("Clear Nodes (" + Game.gList.size() + ")", (int) (clearNodes.getX() + (clearNodes.getWidth() / 2) - (fmT.stringWidth("Clear Nodes (" + Game.gList.size() + ")") / 2)), (int) (clearNodes.getY() + (clearNodes.getHeight() / 2)) + (fmT.getHeight() / 4));
 
 			g2d.setColor(new Color(0x521616));
 			exitRect.fill(g2d);

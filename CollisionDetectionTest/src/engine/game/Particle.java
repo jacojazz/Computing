@@ -133,7 +133,7 @@ public class Particle extends Circle2D {
 	}
 
 	void checkActive() {
-		if (Game.frames % Game.TARGET_FPS == 0) {
+		if (Game.frames % Game.TARGET_FPS == 0 && Game.gravityType != 2) {
 			oldPosition = center();
 			Timer timer = new Timer();
 			timer.schedule(new TimerTask() {

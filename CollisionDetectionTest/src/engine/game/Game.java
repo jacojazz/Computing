@@ -58,7 +58,7 @@ public class Game extends JPanel {
 
 			public void mousePressed(MouseEvent e) {
 				menu.mousePressed(e);
-				if (!menu.baseRect.contains(mouse)) {
+				if (!menu.baseRect.contains(mouse) && !menu.toolsBaseRect.contains(mouse)) {
 					dragging = true;
 					initial = new Point2D(e.getPoint());
 				}
@@ -66,16 +66,33 @@ public class Game extends JPanel {
 
 			public void mouseReleased(MouseEvent e) {
 				menu.mouseReleased(e);
-				if (!menu.baseRect.contains(mouse)) {
+				if (!menu.baseRect.contains(mouse) && !menu.toolsBaseRect.contains(mouse)) {
 					dragging = false;
 					distance = new Vector2D(initial.minus(mouse));
-					if (e.getButton() == MouseEvent.BUTTON1)
-						pList.add(new Particle(initial, manualSize, manualSize / 20, distance.times(0.125)));
-					if (e.getButton() == MouseEvent.BUTTON3 && !initial.equals(mouse)) {
-						if (initial.getX() < mouse.getX()) {
-							lList.add(new Line2D(mouse, initial));
-						} else {
-							lList.add(new Line2D(initial, mouse));
+
+					if (e.getButton() == MouseEvent.BUTTON1) {
+						switch (menu.toolType) {
+						case 0:
+							pList.add(new Particle(initial, manualSize, manualSize / 20, distance.times(0.125)));
+							break;
+						case 1:
+							if (!initial.equals(mouse)) {
+								if (initial.getX() < mouse.getX()) {
+									lList.add(new Line2D(mouse, initial));
+								} else {
+									lList.add(new Line2D(initial, mouse));
+								}
+							}
+							break;
+						case 2:
+							if (gravityType == 2) {
+								gList.add(new GravityNode(mouse, 100));
+							}
+							break;
+						case 3:
+							break;
+						default:
+							break;
 						}
 					}
 				}
@@ -98,8 +115,6 @@ public class Game extends JPanel {
 		lList.add(leftWall);
 		lList.add(rightWall);
 		lList.add(roof);
-
-		gList.add(new GravityNode(new Point2D(width / 2, height / 2), 100));
 	}
 
 	static Vector2D getGravity() {
@@ -129,6 +144,10 @@ public class Game extends JPanel {
 		for (int particleIterator = 0; particleIterator < pList.size(); particleIterator++) {
 			Particle p = pList.get(particleIterator);
 
+			if (Game.gravityType == 2) {
+				p.setActive(true);
+			}
+
 			if (p.isActive()) {
 				p.update();
 			}
@@ -150,6 +169,13 @@ public class Game extends JPanel {
 		applyQualityRenderingHints(g2d);
 
 		g2d.setColor(Color.BLACK);
+
+		if (gravityType == 2) {
+			for (int nodeIterator = 0; nodeIterator < gList.size(); nodeIterator++) {
+				GravityNode gn = gList.get(nodeIterator);
+				gn.draw(g2d, 3);
+			}
+		}
 
 		for (int particleIterator = 0; particleIterator < pList.size(); particleIterator++) {
 			Particle p = pList.get(particleIterator);
@@ -190,7 +216,7 @@ public class Game extends JPanel {
 				if (gravityType == 2) {
 					for (int nodeIterator = 0; nodeIterator < gList.size(); nodeIterator++) {
 						GravityNode gn = gList.get(nodeIterator);
-						gn.draw(g2d);
+						gn.draw(g2d, 3);
 						g2d.setColor(Color.GREEN);
 						new Line2D(p.center(), gn).draw(g2d);
 						g2d.setColor(Color.BLACK);
@@ -199,7 +225,9 @@ public class Game extends JPanel {
 			}
 		}
 
-		for (int lineIterator = 0; lineIterator < lList.size(); lineIterator++) {
+		for (
+
+		int lineIterator = 0; lineIterator < lList.size(); lineIterator++) {
 			Line2D l = lList.get(lineIterator);
 			l.draw(g2d);
 		}
