@@ -215,9 +215,24 @@ public class Menu {
 				Composite defaultAlpha = g2d.getComposite();
 				g2d.setComposite(makeAlpha(0.50f));
 
+				if (toolType == 0) {
+					g2d.setComposite(makeAlpha(0.95f));
+				}
 				g2d.drawImage(particleImage, (int) toolsParticle.getX() + 2, (int) toolsParticle.getY() + 2, null);
+				g2d.setComposite(makeAlpha(0.50f));
+				if (toolType == 1) {
+					g2d.setComposite(makeAlpha(0.95f));
+				}
 				g2d.drawImage(lineImage, (int) toolsLine.getX() + 2, (int) toolsLine.getY() + 2, null);
+				g2d.setComposite(makeAlpha(0.50f));
+				if (toolType == 2) {
+					g2d.setComposite(makeAlpha(0.95f));
+				}
 				g2d.drawImage(gravityImage, (int) toolsGravity.getX() + 2, (int) toolsGravity.getY() + 2, null);
+				g2d.setComposite(makeAlpha(0.50f));
+				if (toolType == 3) {
+					g2d.setComposite(makeAlpha(0.95f));
+				}
 				g2d.drawImage(repulsorImage, (int) toolsRepulsor.getX() + 2, (int) toolsRepulsor.getY() + 2, null);
 
 				g2d.setComposite(defaultAlpha);

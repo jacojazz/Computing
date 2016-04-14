@@ -12,7 +12,6 @@ import engine.utils.Constants;
 public class Particle extends Circle2D {
 	private Vector2D velocity;
 	private double mass;
-	private boolean colliding;
 	private boolean active = true;
 	private Point2D oldPosition;
 
@@ -44,6 +43,9 @@ public class Particle extends Circle2D {
 			if (l.distance(center()) <= radius()) {
 				double penetrationDepth = radius() - l.distance(center());
 				Vector2D resolution = l.perpendicular(center()).direction().normalize().times(penetrationDepth);
+				if (velocity.angle() > l.horizontalAngle() && velocity.angle() < (l.horizontalAngle() + Math.PI)) {
+					resolution = resolution.opposite();
+				}
 				setPosition(center().plus(resolution));
 				return true;
 			} else {
@@ -72,6 +74,9 @@ public class Particle extends Circle2D {
 
 	Vector2D reflect(Line2D l) {
 		Vector2D n = l.perpendicular(center()).direction().normalize();
+		if (center().getY() < l.point(l.project(center())).getY()) {
+			n = n.opposite();
+		}
 		Vector2D v = velocity.minus(n.times(2 * (n.dot(velocity))));
 		return new Vector2D(v.getX() * Constants.restitution, v.getY() * Constants.restitution);
 	}
@@ -79,7 +84,6 @@ public class Particle extends Circle2D {
 	public void resolveCollision(Particle p, Particle p2) {
 		p.setActive(true);
 		p2.setActive(true);
-		colliding = true;
 		Vector2D delta = new Vector2D(p.center().minus(p2.center()));
 		double d = delta.norm();
 		Vector2D mtd = delta.times(((p.radius() + p2.radius()) - d) / d);
@@ -152,8 +156,6 @@ public class Particle extends Circle2D {
 			if (inParticleCollisionRange(p2)) {
 				if (checkCollision(this, p2) && !equals(p2)) {
 					resolveCollision(this, p2);
-				} else {
-					colliding = false;
 				}
 			}
 		}
@@ -205,10 +207,6 @@ public class Particle extends Circle2D {
 
 	public void setMass(double mass) {
 		this.mass = mass;
-	}
-
-	public boolean isColliding() {
-		return colliding;
 	}
 
 	public boolean isActive() {

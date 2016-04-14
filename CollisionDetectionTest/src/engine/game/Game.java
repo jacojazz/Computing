@@ -86,10 +86,13 @@ public class Game extends JPanel {
 							break;
 						case 2:
 							if (gravityType == 2) {
-								gList.add(new GravityNode(mouse, 100));
+								gList.add(new GravityNode(mouse, 100, false));
 							}
 							break;
 						case 3:
+							if (gravityType == 2) {
+								gList.add(new GravityNode(mouse, 100, true));
+							}
 							break;
 						default:
 							break;
@@ -144,7 +147,7 @@ public class Game extends JPanel {
 		for (int particleIterator = 0; particleIterator < pList.size(); particleIterator++) {
 			Particle p = pList.get(particleIterator);
 
-			if (Game.gravityType == 2) {
+			if (Game.gravityType == 2 && !Game.gList.isEmpty()) {
 				p.setActive(true);
 			}
 
