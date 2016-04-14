@@ -10,6 +10,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -42,12 +44,26 @@ public class Game extends JPanel {
 	static ArrayList<Particle> pList = new ArrayList<Particle>();
 	static ArrayList<Line2D> lList = new ArrayList<Line2D>();
 	static ArrayList<GravityNode> gList = new ArrayList<GravityNode>();
+	static ArrayList<ModifierMenu> mList = new ArrayList<ModifierMenu>();
 	static double manualSize = 40;
 
 	Game() {
 		addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
 				menu.mouseClicked(e);
+				if (e.getButton() == MouseEvent.BUTTON3) {
+					for (Particle p : pList) {
+						if (p.center().almostEquals(mouse, p.radius())) {
+							mList.add(new ModifierMenu(p));
+						}
+					}
+
+					for (GravityNode gn : gList) {
+						if (gn.almostEquals(mouse, 1)) {
+							mList.add(new ModifierMenu(gn));
+						}
+					}
+				}
 			}
 
 			public void mouseEntered(MouseEvent e) {
@@ -164,6 +180,14 @@ public class Game extends JPanel {
 			Random rand = new Random();
 			pList.add(new Particle(new Point2D(rand.nextInt(width), rand.nextInt(height)), manualSize, manualSize / 20, new Vector2D(0, 0)));
 		}
+
+		for (ModifierMenu m : mList) {
+			if (m.selectedObject instanceof Particle) {
+				if (true) {
+
+				}
+			}
+		}
 	}
 
 	public void paint(Graphics g) {
@@ -228,9 +252,7 @@ public class Game extends JPanel {
 			}
 		}
 
-		for (
-
-		int lineIterator = 0; lineIterator < lList.size(); lineIterator++) {
+		for (int lineIterator = 0; lineIterator < lList.size(); lineIterator++) {
 			Line2D l = lList.get(lineIterator);
 			l.draw(g2d);
 		}
@@ -240,6 +262,10 @@ public class Game extends JPanel {
 		}
 
 		menu.paint(g2d);
+
+		for (ModifierMenu m : mList) {
+			m.paint(g2d);
+		}
 
 		g2d.setColor(Color.BLACK);
 		g2d.drawString(Integer.toString(pList.size()), 0, 10);
