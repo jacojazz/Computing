@@ -10,8 +10,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -51,6 +49,11 @@ public class Game extends JPanel {
 		addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
 				menu.mouseClicked(e);
+
+				for (ModifierMenu m : mList) {
+					m.mouseClicked(e);
+				}
+
 				if (e.getButton() == MouseEvent.BUTTON3) {
 					for (Particle p : pList) {
 						if (p.center().almostEquals(mouse, p.radius())) {
@@ -59,7 +62,7 @@ public class Game extends JPanel {
 					}
 
 					for (GravityNode gn : gList) {
-						if (gn.almostEquals(mouse, 1)) {
+						if (gn.almostEquals(mouse, 3)) {
 							mList.add(new ModifierMenu(gn));
 						}
 					}
@@ -74,7 +77,12 @@ public class Game extends JPanel {
 
 			public void mousePressed(MouseEvent e) {
 				menu.mousePressed(e);
-				if (!menu.baseRect.contains(mouse) && !menu.toolsBaseRect.contains(mouse)) {
+				
+				for (ModifierMenu m : mList) {
+					m.mousePressed(e);
+				}
+				
+				if (!menu.baseRect.contains(mouse) && !menu.toolsBaseRect.contains(mouse) && !ModifierMenu.checkBounds(mouse)) {
 					dragging = true;
 					initial = new Point2D(e.getPoint());
 				}
@@ -82,7 +90,12 @@ public class Game extends JPanel {
 
 			public void mouseReleased(MouseEvent e) {
 				menu.mouseReleased(e);
-				if (!menu.baseRect.contains(mouse) && !menu.toolsBaseRect.contains(mouse)) {
+				
+				for (ModifierMenu m : mList) {
+					m.mouseReleased(e);
+				}
+				
+				if (!menu.baseRect.contains(mouse) && !menu.toolsBaseRect.contains(mouse) && !ModifierMenu.checkBounds(mouse)) {
 					dragging = false;
 					distance = new Vector2D(initial.minus(mouse));
 
@@ -183,8 +196,16 @@ public class Game extends JPanel {
 
 		for (ModifierMenu m : mList) {
 			if (m.selectedObject instanceof Particle) {
-				if (true) {
-
+				if (pList.contains(m.selectedObject)) {
+					m.update();
+				} else {
+					mList.remove(m);
+				}
+			} else if (m.selectedObject instanceof GravityNode) {
+				if (gList.contains(m.selectedObject)) {
+					m.update();
+				} else {
+					mList.remove(m);
 				}
 			}
 		}
