@@ -50,8 +50,8 @@ public class Game extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				menu.mouseClicked(e);
 
-				for (ModifierMenu m : mList) {
-					m.mouseClicked(e);
+				for (int modifierIterator = 0; modifierIterator < mList.size(); modifierIterator++) {
+					mList.get(modifierIterator).mouseClicked(e);
 				}
 
 				if (e.getButton() == MouseEvent.BUTTON3) {
@@ -77,11 +77,11 @@ public class Game extends JPanel {
 
 			public void mousePressed(MouseEvent e) {
 				menu.mousePressed(e);
-				
+
 				for (ModifierMenu m : mList) {
 					m.mousePressed(e);
 				}
-				
+
 				if (!menu.baseRect.contains(mouse) && !menu.toolsBaseRect.contains(mouse) && !ModifierMenu.checkBounds(mouse)) {
 					dragging = true;
 					initial = new Point2D(e.getPoint());
@@ -90,11 +90,11 @@ public class Game extends JPanel {
 
 			public void mouseReleased(MouseEvent e) {
 				menu.mouseReleased(e);
-				
+
 				for (ModifierMenu m : mList) {
 					m.mouseReleased(e);
 				}
-				
+
 				if (!menu.baseRect.contains(mouse) && !menu.toolsBaseRect.contains(mouse) && !ModifierMenu.checkBounds(mouse)) {
 					dragging = false;
 					distance = new Vector2D(initial.minus(mouse));
@@ -173,6 +173,11 @@ public class Game extends JPanel {
 
 	void update() {
 		menu.update();
+
+		if (pList.size() > 150) {
+			pList.remove(0);
+		}
+
 		for (int particleIterator = 0; particleIterator < pList.size(); particleIterator++) {
 			Particle p = pList.get(particleIterator);
 
@@ -196,16 +201,18 @@ public class Game extends JPanel {
 
 		for (ModifierMenu m : mList) {
 			if (m.selectedObject instanceof Particle) {
-				if (pList.contains(m.selectedObject)) {
-					m.update();
-				} else {
+				if (!pList.contains(m.selectedObject)) {
 					mList.remove(m);
+					break;
+				} else {
+					m.update();
 				}
 			} else if (m.selectedObject instanceof GravityNode) {
-				if (gList.contains(m.selectedObject)) {
-					m.update();
-				} else {
+				if (!gList.contains(m.selectedObject)) {
 					mList.remove(m);
+					break;
+				} else {
+					m.update();
 				}
 			}
 		}
@@ -284,8 +291,8 @@ public class Game extends JPanel {
 
 		menu.paint(g2d);
 
-		for (ModifierMenu m : mList) {
-			m.paint(g2d);
+		for (int modifierIterator = 0; modifierIterator < mList.size(); modifierIterator++) {
+			mList.get(modifierIterator).paint(g2d);
 		}
 
 		g2d.setColor(Color.BLACK);

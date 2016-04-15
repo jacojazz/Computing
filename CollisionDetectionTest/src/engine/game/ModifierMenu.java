@@ -14,7 +14,8 @@ import math.geom2d.polygon.Rectangle2D;
 
 public class ModifierMenu {
 	Object selectedObject;
-	Rectangle2D baseRect, moveRect, intensityMinus, intensityRect, intensityPlus, toggle, remove, closeMenu;
+	Rectangle2D baseRect, moveRect, intensityMinus, intensityRect, intensityPlus, toggleRect, removeRect, closeRect;
+	Rectangle2D sizeMinus, sizeRect, sizePlus, massMinus, massRect, massPlus;
 	boolean dragging;
 	Point2D mouseRelation, position;
 	Font textFont;
@@ -33,19 +34,31 @@ public class ModifierMenu {
 
 	void mouseClicked(MouseEvent e) {
 		if (e.getButton() == MouseEvent.BUTTON1) {
+			if (closeRect.contains(Game.mouse)) {
+				Game.mList.remove(this);
+			}
+
 			if (selectedObject instanceof GravityNode) {
 				if (intensityMinus.contains(Game.mouse)) {
-					if (((GravityNode) selectedObject).intensity > 10) {
+					if (((GravityNode) selectedObject).intensity > 0) {
 						((GravityNode) selectedObject).intensity -= 10;
 					}
 				} else if (intensityPlus.contains(Game.mouse)) {
 					((GravityNode) selectedObject).intensity += 10;
-				} else if (toggle.contains(Game.mouse)) {
+				} else if (toggleRect.contains(Game.mouse)) {
 					if (((GravityNode) selectedObject).intensity != 0) {
 						((GravityNode) selectedObject).intensity = 0;
 					} else {
 						((GravityNode) selectedObject).intensity = 100;
 					}
+				} else if (removeRect.contains(Game.mouse)) {
+					Game.gList.remove(selectedObject);
+				}
+			} else if (selectedObject instanceof Particle) {
+				if (sizeMinus.contains(Game.mouse)) {
+
+				} else if (removeRect.contains(Game.mouse)) {
+					Game.pList.remove(selectedObject);
 				}
 			}
 		}
@@ -64,16 +77,24 @@ public class ModifierMenu {
 
 	void setRectangleBounds() {
 		if (selectedObject instanceof Particle) {
-			baseRect = new Rectangle2D(((Particle) selectedObject).center().getX(), ((Particle) selectedObject).center().getY() - 100, 200, 100);
+			baseRect = new Rectangle2D(((Particle) selectedObject).center().getX(), ((Particle) selectedObject).center().getY() - 120, 200, 120);
+			sizeMinus = new Rectangle2D(baseRect.getX() + 10, baseRect.getY() + 30, 20, 20);
+			sizeRect = new Rectangle2D(baseRect.getX() + 35, baseRect.getY() + 30, baseRect.getWidth() - 70, 20);
+			sizePlus = new Rectangle2D(baseRect.getX() + 170, baseRect.getY() + 30, 20, 20);
+			massMinus = new Rectangle2D(baseRect.getX() + 10, baseRect.getY() + 60, 20, 20);
+			massRect = new Rectangle2D(baseRect.getX() + 35, baseRect.getY() + 60, baseRect.getWidth() - 70, 20);
+			massPlus = new Rectangle2D(baseRect.getX() + 170, baseRect.getY() + 60, 20, 20);
 		} else if (selectedObject instanceof GravityNode) {
-			baseRect = new Rectangle2D(((GravityNode) selectedObject).getX(), ((GravityNode) selectedObject).getY() - 100, 200, 100);
+			baseRect = new Rectangle2D(((GravityNode) selectedObject).getX(), ((GravityNode) selectedObject).getY() - 120, 200, 120);
 			intensityMinus = new Rectangle2D(baseRect.getX() + 10, baseRect.getY() + 30, 20, 20);
 			intensityRect = new Rectangle2D(baseRect.getX() + 35, baseRect.getY() + 30, baseRect.getWidth() - 70, 20);
 			intensityPlus = new Rectangle2D(baseRect.getX() + 170, baseRect.getY() + 30, 20, 20);
-			toggle = new Rectangle2D(baseRect.getX() + 10, baseRect.getY() + 60, baseRect.getWidth() - 20, 20);
+			toggleRect = new Rectangle2D(baseRect.getX() + 10, baseRect.getY() + 60, 180, 20);
 		}
 
 		moveRect = new Rectangle2D(baseRect.getX(), baseRect.getY(), 200, 20);
+		closeRect = new Rectangle2D(baseRect.getX() + 180, baseRect.getY(), 20, 20);
+		removeRect = new Rectangle2D(baseRect.getX() + 10, baseRect.getY() + baseRect.getHeight() - 30, 180, 20);
 	}
 
 	public static boolean checkBounds(Point2D p) {
@@ -98,6 +119,8 @@ public class ModifierMenu {
 		baseRect.fill(g2d);
 		g2d.setColor(Color.GRAY);
 		moveRect.fill(g2d);
+		g2d.setColor(Color.RED);
+		closeRect.fill(g2d);
 
 		FontMetrics fmT = g2d.getFontMetrics(textFont);
 		g2d.setFont(textFont);
@@ -122,14 +145,21 @@ public class ModifierMenu {
 			} else {
 				g2d.setColor(Color.RED);
 			}
-			toggle.fill(g2d);
+
+			toggleRect.fill(g2d);
 			g2d.setColor(Color.WHITE);
 
 			if (((GravityNode) selectedObject).intensity != 0) {
-				g2d.drawString("ON", (int) (toggle.getX() + (toggle.getWidth() / 2) - (fmT.stringWidth("ON") / 2)), (int) (toggle.getY() + (toggle.getHeight() / 2)) + (fmT.getHeight() / 4));
+				g2d.drawString("ON", (int) (toggleRect.getX() + (toggleRect.getWidth() / 2) - (fmT.stringWidth("ON") / 2)), (int) (toggleRect.getY() + (toggleRect.getHeight() / 2)) + (fmT.getHeight() / 4));
 			} else {
-				g2d.drawString("OFF", (int) (toggle.getX() + (toggle.getWidth() / 2) - (fmT.stringWidth("OFF") / 2)), (int) (toggle.getY() + (toggle.getHeight() / 2)) + (fmT.getHeight() / 4));
+				g2d.drawString("OFF", (int) (toggleRect.getX() + (toggleRect.getWidth() / 2) - (fmT.stringWidth("OFF") / 2)), (int) (toggleRect.getY() + (toggleRect.getHeight() / 2)) + (fmT.getHeight() / 4));
 			}
 		}
+
+		g2d.setColor(Color.RED);
+		removeRect.fill(g2d);
+
+		g2d.setColor(Color.WHITE);
+		g2d.drawString("Delete", (int) (removeRect.getX() + (removeRect.getWidth() / 2) - (fmT.stringWidth("Delete") / 2)), (int) (removeRect.getY() + (removeRect.getHeight() / 2)) + (fmT.getHeight() / 4));
 	}
 }
