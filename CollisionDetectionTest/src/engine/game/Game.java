@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import math.geom2d.Box2D;
 import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
+import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
 
 public class Game extends JPanel {
@@ -49,10 +50,6 @@ public class Game extends JPanel {
 		addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
 				menu.mouseClicked(e);
-
-				for (int modifierIterator = 0; modifierIterator < mList.size(); modifierIterator++) {
-					mList.get(modifierIterator).mouseClicked(e);
-				}
 
 				if (e.getButton() == MouseEvent.BUTTON3) {
 					for (Particle p : pList) {
@@ -229,6 +226,19 @@ public class Game extends JPanel {
 			for (int nodeIterator = 0; nodeIterator < gList.size(); nodeIterator++) {
 				GravityNode gn = gList.get(nodeIterator);
 				gn.draw(g2d, 3);
+				if (debug) {
+					if (gn.repulsor) {
+						g2d.setColor(Color.RED);
+					} else {
+						g2d.setColor(Color.GREEN);
+					}
+
+					for (int nodeDebug = 2; nodeDebug <= 20; nodeDebug += 2) {
+						new Circle2D(gn, nodeDebug * nodeDebug).draw(g2d);
+					}
+
+					g2d.setColor(Color.BLACK);
+				}
 			}
 		}
 
@@ -264,16 +274,6 @@ public class Game extends JPanel {
 					if (p.inLineCollisionRange(l2)) {
 						g2d.setColor(Color.GREEN);
 						new Line2D(p.center(), l2.point(l2.project(p.center()))).draw(g2d);
-						g2d.setColor(Color.BLACK);
-					}
-				}
-
-				if (gravityType == 2) {
-					for (int nodeIterator = 0; nodeIterator < gList.size(); nodeIterator++) {
-						GravityNode gn = gList.get(nodeIterator);
-						gn.draw(g2d, 3);
-						g2d.setColor(Color.GREEN);
-						new Line2D(p.center(), gn).draw(g2d);
 						g2d.setColor(Color.BLACK);
 					}
 				}

@@ -216,4 +216,8 @@ public class Particle extends Circle2D {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
+
+	public void setRadius(double radius) {
+		r = radius;
+	}
 }

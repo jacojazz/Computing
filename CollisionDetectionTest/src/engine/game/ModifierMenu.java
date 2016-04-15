@@ -32,7 +32,8 @@ public class ModifierMenu {
 		}
 	}
 
-	void mouseClicked(MouseEvent e) {
+	void mouseReleased(MouseEvent e) {
+		dragging = false;
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			if (closeRect.contains(Game.mouse)) {
 				Game.mList.remove(this);
@@ -56,10 +57,21 @@ public class ModifierMenu {
 				}
 			} else if (selectedObject instanceof Particle) {
 				if (sizeMinus.contains(Game.mouse)) {
-
+					if (((Particle) selectedObject).radius() > 10) {
+						((Particle) selectedObject).setRadius(((Particle) selectedObject).radius() - 2);
+					}
+				} else if (sizePlus.contains(Game.mouse)) {
+					((Particle) selectedObject).setRadius(((Particle) selectedObject).radius() + 2);
+				} else if (massMinus.contains(Game.mouse)) {
+					if (((Particle) selectedObject).getMass() > 0.5) {
+						((Particle) selectedObject).setMass(((Particle) selectedObject).getMass() - 0.5);
+					}
+				} else if (massPlus.contains(Game.mouse)) {
+					((Particle) selectedObject).setMass(((Particle) selectedObject).getMass() + 0.5);
 				} else if (removeRect.contains(Game.mouse)) {
 					Game.pList.remove(selectedObject);
 				}
+				((Particle) selectedObject).update();
 			}
 		}
 	}
@@ -69,10 +81,6 @@ public class ModifierMenu {
 			dragging = true;
 			mouseRelation = Game.mouse.minus(new Point2D(baseRect.getX(), baseRect.getY()));
 		}
-	}
-
-	void mouseReleased(MouseEvent e) {
-		dragging = false;
 	}
 
 	void setRectangleBounds() {
@@ -128,6 +136,25 @@ public class ModifierMenu {
 
 		if (selectedObject instanceof Particle) {
 			g2d.drawString("Particle " + Game.pList.indexOf(selectedObject), (int) moveRect.getX() + 5, (int) (moveRect.getY() + (moveRect.getHeight() / 2)) + (fmT.getHeight() / 4));
+			g2d.setColor(new Color(51, 51, 51));
+			sizeMinus.fill(g2d);
+			sizeRect.fill(g2d);
+			sizePlus.fill(g2d);
+
+			g2d.setColor(new Color(51, 51, 51));
+			massMinus.fill(g2d);
+			massRect.fill(g2d);
+			massPlus.fill(g2d);
+
+			g2d.setColor(Color.GRAY);
+			g2d.drawString("-", (int) (sizeMinus.getX() + (sizeMinus.getWidth() / 2) - (fmT.stringWidth("-") / 2)), (int) (sizeMinus.getY() + (sizeMinus.getHeight() / 2)) + (fmT.getHeight() / 4));
+			g2d.drawString("Size (" + ((Particle) selectedObject).radius() + ")", (int) (sizeRect.getX() + (sizeRect.getWidth() / 2) - (fmT.stringWidth("Size (" + ((Particle) selectedObject).radius() + ")") / 2)), (int) (sizeRect.getY() + (sizeRect.getHeight() / 2)) + (fmT.getHeight() / 4));
+			g2d.drawString("+", (int) (sizePlus.getX() + (sizePlus.getWidth() / 2) - (fmT.stringWidth("+") / 2)), (int) (sizePlus.getY() + (sizePlus.getHeight() / 2)) + (fmT.getHeight() / 4));
+
+			g2d.setColor(Color.GRAY);
+			g2d.drawString("-", (int) (massMinus.getX() + (massMinus.getWidth() / 2) - (fmT.stringWidth("-") / 2)), (int) (massMinus.getY() + (massMinus.getHeight() / 2)) + (fmT.getHeight() / 4));
+			g2d.drawString("Mass (" + ((Particle) selectedObject).getMass() + ")", (int) (massRect.getX() + (massRect.getWidth() / 2) - (fmT.stringWidth("Mass (" + ((Particle) selectedObject).getMass() + ")") / 2)), (int) (massRect.getY() + (massRect.getHeight() / 2)) + (fmT.getHeight() / 4));
+			g2d.drawString("+", (int) (massPlus.getX() + (massPlus.getWidth() / 2) - (fmT.stringWidth("+") / 2)), (int) (massPlus.getY() + (massPlus.getHeight() / 2)) + (fmT.getHeight() / 4));
 		} else if (selectedObject instanceof GravityNode) {
 			g2d.drawString("Gravity Node " + Game.gList.indexOf(selectedObject), (int) moveRect.getX() + 5, (int) (moveRect.getY() + (moveRect.getHeight() / 2)) + (fmT.getHeight() / 4));
 			g2d.setColor(new Color(51, 51, 51));
