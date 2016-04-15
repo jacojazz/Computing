@@ -32,8 +32,7 @@ public class ModifierMenu {
 		}
 	}
 
-	void mouseReleased(MouseEvent e) {
-		dragging = false;
+	void mouseClicked(MouseEvent e) {
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			if (closeRect.contains(Game.mouse)) {
 				Game.mList.remove(this);
@@ -74,6 +73,10 @@ public class ModifierMenu {
 				((Particle) selectedObject).update();
 			}
 		}
+	}
+
+	void mouseReleased(MouseEvent e) {
+		dragging = false;
 	}
 
 	void mousePressed(MouseEvent e) {

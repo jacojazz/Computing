@@ -51,6 +51,12 @@ public class Game extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				menu.mouseClicked(e);
 
+				for (ModifierMenu m : mList) {
+					if (m.baseRect.contains(mouse)) {
+						m.mouseClicked(e);
+					}
+				}
+
 				if (e.getButton() == MouseEvent.BUTTON3) {
 					for (Particle p : pList) {
 						if (p.center().almostEquals(mouse, p.radius())) {
@@ -76,7 +82,9 @@ public class Game extends JPanel {
 				menu.mousePressed(e);
 
 				for (ModifierMenu m : mList) {
-					m.mousePressed(e);
+					if (ModifierMenu.checkBounds(mouse)) {
+						m.mouseClicked(e);
+					}
 				}
 
 				if (!menu.baseRect.contains(mouse) && !menu.toolsBaseRect.contains(mouse) && !ModifierMenu.checkBounds(mouse)) {
@@ -89,7 +97,9 @@ public class Game extends JPanel {
 				menu.mouseReleased(e);
 
 				for (ModifierMenu m : mList) {
-					m.mouseReleased(e);
+					if (ModifierMenu.checkBounds(mouse)) {
+						m.mouseReleased(e);
+					}
 				}
 
 				if (!menu.baseRect.contains(mouse) && !menu.toolsBaseRect.contains(mouse) && !ModifierMenu.checkBounds(mouse)) {
