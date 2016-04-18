@@ -114,7 +114,8 @@ public class Particle extends Circle2D {
 			}
 			for (int pNodeIterator = 0; pNodeIterator < Game.pList.size(); pNodeIterator++) {
 				Particle p2 = Game.pList.get(pNodeIterator);
-				if (!p.equals(p2)) {
+				double distanceRegulator = p.radius() + p2.radius();
+				if (!p.equals(p2) && !(p.distance(p2.center()) <= distanceRegulator)) {
 					temp = temp.plus(p2.gnp.gravityAtParticle(p));
 				}
 			}
