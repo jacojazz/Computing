@@ -194,7 +194,6 @@ public class Game extends JPanel {
 
 		for (int particleIterator = 0; particleIterator < pList.size(); particleIterator++) {
 			Particle p = pList.get(particleIterator);
-
 			if (Game.gravityType == 2 && !Game.gList.isEmpty()) {
 				p.setActive(true);
 			}

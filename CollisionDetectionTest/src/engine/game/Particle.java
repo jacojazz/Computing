@@ -14,44 +14,39 @@ public class Particle extends Circle2D {
 	private double mass;
 	private boolean active = true;
 	private Point2D oldPosition;
+	GravityNodeParticle gnp;
 
 	Particle(Point2D center, double radius, double mass) {
 		super(center, radius);
 		this.mass = mass;
+		gnp = new GravityNodeParticle(center(), 1);
 	}
 
 	Particle(Point2D center, double radius, double mass, Vector2D velocity) {
 		super(center, radius);
 		this.mass = mass;
 		this.velocity = velocity;
+		gnp = new GravityNodeParticle(center(), 1);
 	}
 
 	boolean checkCollision(Particle p, Particle p2) {
-		try {
-			double xDif = p.center().getX() - p2.center().getX();
-			double yDif = p.center().getY() - p2.center().getY();
-			double distanceSquared = (xDif * xDif) + (yDif * yDif);
-			boolean collision = distanceSquared <= (p.radius() + p2.radius()) * (p.radius() + p2.radius());
-			return collision;
-		} catch (Exception e) {
-			return false;
-		}
+		double xDif = p.center().getX() - p2.center().getX();
+		double yDif = p.center().getY() - p2.center().getY();
+		double distanceSquared = (xDif * xDif) + (yDif * yDif);
+		boolean collision = distanceSquared <= (p.radius() + p2.radius()) * (p.radius() + p2.radius());
+		return collision;
 	}
 
 	boolean inLineCollisionRange(Line2D l) {
-		try {
-			if (l.distance(center()) <= radius()) {
-				double penetrationDepth = radius() - l.distance(center());
-				Vector2D resolution = l.perpendicular(center()).direction().normalize().times(penetrationDepth);
-				if (velocity.angle() > l.horizontalAngle() && velocity.angle() < (l.horizontalAngle() + Math.PI)) {
-					resolution = resolution.opposite();
-				}
-				setPosition(center().plus(resolution));
-				return true;
-			} else {
-				return false;
+		if (l.distance(center()) <= radius()) {
+			double penetrationDepth = radius() - l.distance(center());
+			Vector2D resolution = l.perpendicular(center()).direction().normalize().times(penetrationDepth);
+			if (velocity.angle() > l.horizontalAngle() && velocity.angle() < (l.horizontalAngle() + Math.PI)) {
+				resolution = resolution.opposite();
 			}
-		} catch (NullPointerException e) {
+			setPosition(center().plus(resolution));
+			return true;
+		} else {
 			return false;
 		}
 	}
@@ -117,6 +112,12 @@ public class Particle extends Circle2D {
 				GravityNode g = Game.gList.get(gNodeIterator);
 				temp = temp.plus(g.gravityAtParticle(p));
 			}
+			for (int pNodeIterator = 0; pNodeIterator < Game.pList.size(); pNodeIterator++) {
+				Particle p2 = Game.pList.get(pNodeIterator);
+				if (!p.equals(p2)) {
+					temp = temp.plus(p2.gnp.gravityAtParticle(p));
+				}
+			}
 			return temp;
 		} else {
 			return Game.getGravity();
@@ -151,6 +152,7 @@ public class Particle extends Circle2D {
 	}
 
 	void update() {
+		gnp.update(center(), mass / 10);
 		for (int particle2Iterator = 0; particle2Iterator < Game.pList.size(); particle2Iterator++) {
 			Particle p2 = Game.pList.get(particle2Iterator);
 			if (inParticleCollisionRange(p2)) {
