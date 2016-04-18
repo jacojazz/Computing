@@ -116,7 +116,7 @@ public class Game extends JPanel {
 					if (e.getButton() == MouseEvent.BUTTON1) {
 						switch (menu.toolType) {
 						case 0:
-							pList.add(new Particle(initial, manualSize, manualSize / 20, distance.times(0.125)));
+							pList.add(new Particle(initial, manualSize, distance.times(0.125)));
 							break;
 						case 1:
 							if (!initial.equals(mouse)) {
@@ -209,7 +209,7 @@ public class Game extends JPanel {
 
 		if (flood) {
 			Random rand = new Random();
-			pList.add(new Particle(new Point2D(rand.nextInt(width), rand.nextInt(height)), manualSize, manualSize / 20, new Vector2D(0, 0)));
+			pList.add(new Particle(new Point2D(rand.nextInt(width), rand.nextInt(height)), manualSize, new Vector2D(0, 0)));
 		}
 
 		for (int modifierIterator = 0; modifierIterator < mList.size(); modifierIterator++) {

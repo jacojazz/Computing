@@ -9,7 +9,7 @@ public class GravityNodeParticle extends Point2D {
 
 	GravityNodeParticle(Point2D center, double intensity) {
 		super(center.getX(), center.getY());
-		this.intensity = intensity;
+		this.intensity = intensity / 100;
 	}
 
 	Vector2D gravityAtParticle(Particle p) {
@@ -33,7 +33,7 @@ public class GravityNodeParticle extends Point2D {
 	}
 
 	void update(Point2D center, double intensity) {
-		this.intensity = intensity;
+		this.intensity = intensity / 100;
 		x = center.getX();
 		y = center.getY();
 	}

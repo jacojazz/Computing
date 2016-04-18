@@ -1,5 +1,6 @@
 package engine.game;
 
+import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -15,18 +16,23 @@ public class Particle extends Circle2D {
 	private boolean active = true;
 	private Point2D oldPosition;
 	GravityNodeParticle gnp;
+	double areaDensity = 1;
 
-	Particle(Point2D center, double radius, double mass) {
+	Particle(Point2D center, double radius) {
 		super(center, radius);
-		this.mass = mass;
-		gnp = new GravityNodeParticle(center(), 1);
+		DecimalFormat oneDigit = new DecimalFormat("#,##0.0");
+		double temp = areaDensity * (Math.PI * ((radius / 100) * (radius / 100)));
+		this.mass = Double.valueOf(oneDigit.format(temp));
+		gnp = new GravityNodeParticle(center(), mass);
 	}
 
-	Particle(Point2D center, double radius, double mass, Vector2D velocity) {
+	Particle(Point2D center, double radius, Vector2D velocity) {
 		super(center, radius);
-		this.mass = mass;
+		DecimalFormat oneDigit = new DecimalFormat("#,##0.0");
+		double temp = areaDensity * (Math.PI * ((radius / 100) * (radius / 100)));
+		this.mass = Double.valueOf(oneDigit.format(temp));
 		this.velocity = velocity;
-		gnp = new GravityNodeParticle(center(), 1);
+		gnp = new GravityNodeParticle(center(), mass);
 	}
 
 	boolean checkCollision(Particle p, Particle p2) {
@@ -115,7 +121,7 @@ public class Particle extends Circle2D {
 			for (int pNodeIterator = 0; pNodeIterator < Game.pList.size(); pNodeIterator++) {
 				Particle p2 = Game.pList.get(pNodeIterator);
 				double distanceRegulator = p.radius() + p2.radius();
-				if (!p.equals(p2) && !(p.distance(p2.center()) <= distanceRegulator)) {
+				if (!p.equals(p2) && p.distance(p2.center()) > distanceRegulator) {
 					temp = temp.plus(p2.gnp.gravityAtParticle(p));
 				}
 			}
@@ -153,7 +159,7 @@ public class Particle extends Circle2D {
 	}
 
 	void update() {
-		gnp.update(center(), mass / 10);
+		gnp.update(center(), mass);
 		for (int particle2Iterator = 0; particle2Iterator < Game.pList.size(); particle2Iterator++) {
 			Particle p2 = Game.pList.get(particle2Iterator);
 			if (inParticleCollisionRange(p2)) {
