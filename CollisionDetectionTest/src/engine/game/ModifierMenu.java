@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 
 import math.geom2d.Point2D;
+import math.geom2d.Vector2D;
 import math.geom2d.polygon.Rectangle2D;
 
 public class ModifierMenu {
@@ -82,7 +83,11 @@ public class ModifierMenu {
 	void mousePressed(MouseEvent e) {
 		if (moveRect.contains(Game.mouse)) {
 			dragging = true;
-			mouseRelation = Game.mouse.minus(new Point2D(baseRect.getX(), baseRect.getY()));
+			if (selectedObject instanceof Particle) {
+				mouseRelation = Game.mouse.minus(((Particle) selectedObject).center());
+			} else if (selectedObject instanceof GravityNode) {
+				mouseRelation = Game.mouse.minus((GravityNode) selectedObject);
+			}
 		}
 	}
 
@@ -120,6 +125,13 @@ public class ModifierMenu {
 	void update() {
 		if (dragging == true) {
 			position = Game.mouse.minus(mouseRelation);
+			if (selectedObject instanceof Particle) {
+				((Particle) selectedObject).setPosition(position);
+				((Particle) selectedObject).setVelocity(new Vector2D(0, 0));
+				;
+			} else if (selectedObject instanceof GravityNode) {
+				((GravityNode) selectedObject).setPosition(position);
+			}
 		}
 
 		setRectangleBounds();

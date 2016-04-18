@@ -51,22 +51,29 @@ public class Game extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				menu.mouseClicked(e);
 
-				for (ModifierMenu m : mList) {
+				for (int modifierIterator = 0; modifierIterator < mList.size(); modifierIterator++) {
+					ModifierMenu m = mList.get(modifierIterator);
 					if (m.baseRect.contains(mouse)) {
 						m.mouseClicked(e);
 					}
 				}
 
 				if (e.getButton() == MouseEvent.BUTTON3) {
-					for (Particle p : pList) {
-						if (p.center().almostEquals(mouse, p.radius())) {
-							mList.add(new ModifierMenu(p));
-						}
-					}
-
+					boolean mMenuCreated = false;
 					for (GravityNode gn : gList) {
 						if (gn.almostEquals(mouse, 3)) {
 							mList.add(new ModifierMenu(gn));
+							mMenuCreated = true;
+							break;
+						}
+					}
+
+					if (!mMenuCreated) {
+						for (Particle p : pList) {
+							if (p.center().almostEquals(mouse, p.radius())) {
+								mList.add(new ModifierMenu(p));
+								break;
+							}
 						}
 					}
 				}
@@ -82,8 +89,8 @@ public class Game extends JPanel {
 				menu.mousePressed(e);
 
 				for (ModifierMenu m : mList) {
-					if (ModifierMenu.checkBounds(mouse)) {
-						m.mouseClicked(e);
+					if (m.baseRect.contains(mouse)) {
+						m.mousePressed(e);
 					}
 				}
 
@@ -102,7 +109,7 @@ public class Game extends JPanel {
 					}
 				}
 
-				if (!menu.baseRect.contains(mouse) && !menu.toolsBaseRect.contains(mouse) && !ModifierMenu.checkBounds(mouse)) {
+				if (!menu.baseRect.contains(mouse) && !menu.toolsBaseRect.contains(mouse) && !ModifierMenu.checkBounds(mouse) && dragging) {
 					dragging = false;
 					distance = new Vector2D(initial.minus(mouse));
 
@@ -206,7 +213,8 @@ public class Game extends JPanel {
 			pList.add(new Particle(new Point2D(rand.nextInt(width), rand.nextInt(height)), manualSize, manualSize / 20, new Vector2D(0, 0)));
 		}
 
-		for (ModifierMenu m : mList) {
+		for (int modifierIterator = 0; modifierIterator < mList.size(); modifierIterator++) {
+			ModifierMenu m = mList.get(modifierIterator);
 			if (m.selectedObject instanceof Particle) {
 				if (!pList.contains(m.selectedObject)) {
 					mList.remove(m);

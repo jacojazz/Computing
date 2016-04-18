@@ -48,4 +48,9 @@ public class GravityNode extends Point2D {
 			return 0;
 		}
 	}
+
+	void setPosition(Point2D p) {
+		x = p.getX();
+		y = p.getY();
+	}
 }
