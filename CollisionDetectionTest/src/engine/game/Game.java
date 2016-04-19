@@ -1,6 +1,8 @@
 package engine.game;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
@@ -265,6 +267,10 @@ public class Game extends JPanel {
 			if (debug) {
 				if (p.isActive()) {
 					p.draw(g2d);
+					g2d.setFont(new Font("System", Font.PLAIN, 10));
+					FontMetrics fm = g2d.getFontMetrics();
+					String coords = "X: " + p.center().getX() + " | Y: " + p.center().getY();
+					g2d.drawString(coords, (int) (p.center().getX() - (fm.stringWidth(coords) / 2)), (int) (p.center().getY() - p.radius()));
 				} else {
 					p.fill(g2d);
 				}
