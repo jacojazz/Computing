@@ -269,8 +269,11 @@ public class Game extends JPanel {
 					p.draw(g2d);
 					g2d.setFont(new Font("System", Font.PLAIN, 10));
 					FontMetrics fm = g2d.getFontMetrics();
-					String coords = "X: " + p.center().getX() + " | Y: " + p.center().getY();
-					g2d.drawString(coords, (int) (p.center().getX() - (fm.stringWidth(coords) / 2)), (int) (p.center().getY() - p.radius()));
+					String xCoord = "X: " + p.center().getX();
+					String yCoord = "Y: " + p.center().getY();
+					g2d.drawString(xCoord, (int) (p.center().getX() - fm.stringWidth(xCoord) - fm.stringWidth("  ")), (int) (p.center().getY() - p.radius()));
+					g2d.drawString(" | ", (int) (p.center().getX() - (fm.stringWidth(" | ") / 2)), (int) (p.center().getY() - p.radius()));
+					g2d.drawString(yCoord, (int) (p.center().getX() + fm.stringWidth("  ")), (int) (p.center().getY() - p.radius()));
 				} else {
 					p.fill(g2d);
 				}
