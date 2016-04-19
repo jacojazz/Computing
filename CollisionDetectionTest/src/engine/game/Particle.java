@@ -1,6 +1,8 @@
 package engine.game;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,6 +35,15 @@ public class Particle extends Circle2D {
 		this.mass = Double.valueOf(oneDigit.format(temp));
 		this.velocity = velocity;
 		gnp = new GravityNodeParticle(center(), mass);
+	}
+
+	Collection<Point2D> getPointsOnCircle(int divisions) {
+		Collection<Point2D> temp = new ArrayList<Point2D>();
+		for (int i = 0; i < divisions; i++) {
+			double angle = ((2 * Math.PI) / divisions) * i;
+			temp.add(point(angle));
+		}
+		return temp;
 	}
 
 	boolean checkCollision(Particle p, Particle p2) {

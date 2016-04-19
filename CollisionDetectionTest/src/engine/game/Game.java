@@ -11,8 +11,11 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -23,7 +26,6 @@ import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
 import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
-import math.geom2d.point.PointArray2D;
 import math.geom2d.polygon.Polygon2D;
 import math.geom2d.polygon.convhull.GrahamScan2D;
 
@@ -40,7 +42,7 @@ public class Game extends JPanel {
 	static Box2D bounds = new Box2D(new Point2D(-100, -100), width + 200, height + 200);
 	static Point2D mouse, initial;
 	static Vector2D distance;
-	static boolean dragging = false, debug = false, flood = false;
+	static boolean dragging = false, debug = false, flood = false, grahamScan = true, updating = true;
 	static int gravityType = 1;
 	static Line2D floor = new Line2D(width, height, 0, height);
 	static Line2D leftWall = new Line2D(0, height, 0, 0);
@@ -51,8 +53,8 @@ public class Game extends JPanel {
 	static ArrayList<GravityNode> gList = new ArrayList<GravityNode>();
 	static ArrayList<ModifierMenu> mList = new ArrayList<ModifierMenu>();
 	static double manualSize = 40;
-	static PointArray2D pArray = new PointArray2D();
-	static GrahamScan2D test = new GrahamScan2D();
+	static Collection<Point2D> pArray = new ArrayList<Point2D>();
+	static GrahamScan2D scan = new GrahamScan2D();
 	static Polygon2D boundary;
 
 	Game() {
@@ -164,6 +166,31 @@ public class Game extends JPanel {
 			}
 		});
 
+		frame.addWindowListener(new WindowListener() {
+			public void windowActivated(WindowEvent e) {
+				updating = true;
+			}
+
+			public void windowClosed(WindowEvent e) {
+			}
+
+			public void windowClosing(WindowEvent e) {
+			}
+
+			public void windowDeactivated(WindowEvent e) {
+				updating = false;
+			}
+
+			public void windowDeiconified(WindowEvent e) {
+			}
+
+			public void windowIconified(WindowEvent e) {
+			}
+
+			public void windowOpened(WindowEvent e) {
+			}
+		});
+
 		setFocusable(true);
 
 		lList.add(floor);
@@ -195,57 +222,58 @@ public class Game extends JPanel {
 	}
 
 	void update() {
-		menu.update();
+		if (updating) {
+			menu.update();
 
-		// if (frames % (TARGET_FPS / 16) == 0) {
-		try {
-			boundary = test.convexHull(pArray.points());
-		} catch (Exception e) {
-		}
-		// }
-
-		if (pList.size() > 150) {
-			pList.remove(0);
-		}
-
-		pArray.clear();
-		for (int particleIterator = 0; particleIterator < pList.size(); particleIterator++) {
-			Particle p = pList.get(particleIterator);
-			pArray.add(p.center());
-			System.out.println(p.vertices());
-			if (!bounds.containsBounds(p)) {
-				pList.remove(particleIterator);
+			if (grahamScan) {
+				boundary = scan.convexHull(pArray);
 			}
 
-			if (Game.gravityType == 2 && !Game.gList.isEmpty()) {
-				p.setActive(true);
+			if (pList.size() > 150) {
+				pList.remove(0);
 			}
 
-			if (p.isActive()) {
-				p.update();
-			}
-		}
-
-		if (flood) {
-			Random rand = new Random();
-			pList.add(new Particle(new Point2D(rand.nextInt(width), rand.nextInt(height)), manualSize, new Vector2D(0, 0)));
-		}
-
-		for (int modifierIterator = 0; modifierIterator < mList.size(); modifierIterator++) {
-			ModifierMenu m = mList.get(modifierIterator);
-			if (m.selectedObject instanceof Particle) {
-				if (!pList.contains(m.selectedObject)) {
-					mList.remove(m);
-					break;
-				} else {
-					m.update();
+			pArray.clear();
+			for (int particleIterator = 0; particleIterator < pList.size(); particleIterator++) {
+				Particle p = pList.get(particleIterator);
+				if (grahamScan) {
+					pArray.addAll(p.getPointsOnCircle(30));
 				}
-			} else if (m.selectedObject instanceof GravityNode) {
-				if (!gList.contains(m.selectedObject)) {
-					mList.remove(m);
-					break;
-				} else {
-					m.update();
+
+				if (!bounds.containsBounds(p)) {
+					pList.remove(particleIterator);
+				}
+
+				if (Game.gravityType == 2 && !Game.gList.isEmpty()) {
+					p.setActive(true);
+				}
+
+				if (p.isActive()) {
+					p.update();
+				}
+			}
+
+			if (flood) {
+				Random rand = new Random();
+				pList.add(new Particle(new Point2D(rand.nextInt(width), rand.nextInt(height)), manualSize, new Vector2D(0, 0)));
+			}
+
+			for (int modifierIterator = 0; modifierIterator < mList.size(); modifierIterator++) {
+				ModifierMenu m = mList.get(modifierIterator);
+				if (m.selectedObject instanceof Particle) {
+					if (!pList.contains(m.selectedObject)) {
+						mList.remove(m);
+						break;
+					} else {
+						m.update();
+					}
+				} else if (m.selectedObject instanceof GravityNode) {
+					if (!gList.contains(m.selectedObject)) {
+						mList.remove(m);
+						break;
+					} else {
+						m.update();
+					}
 				}
 			}
 		}
@@ -301,9 +329,11 @@ public class Game extends JPanel {
 				}
 			} else {
 				p.draw(g2d);
-				g2d.setColor(Color.BLUE);
-				boundary.fill(g2d);
-				g2d.setColor(Color.BLACK);
+				if (grahamScan) {
+					g2d.setColor(Color.BLUE);
+					boundary.draw(g2d);
+					g2d.setColor(Color.BLACK);
+				}
 			}
 
 			if (debug) {
