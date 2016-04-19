@@ -11,6 +11,7 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -96,7 +97,7 @@ public class Game extends JPanel {
 					}
 				}
 
-				if (!menu.baseRect.contains(mouse) && !menu.toolsBaseRect.contains(mouse) && !ModifierMenu.checkBounds(mouse)) {
+				if (!menu.baseRect.contains(mouse) && !menu.toolsBaseRect.contains(mouse) && !ModifierMenu.checkBounds(mouse) && e.getButton() == MouseEvent.BUTTON1) {
 					dragging = true;
 					initial = new Point2D(e.getPoint());
 				}
@@ -196,6 +197,7 @@ public class Game extends JPanel {
 
 		for (int particleIterator = 0; particleIterator < pList.size(); particleIterator++) {
 			Particle p = pList.get(particleIterator);
+
 			if (Game.gravityType == 2 && !Game.gList.isEmpty()) {
 				p.setActive(true);
 			}
@@ -263,17 +265,22 @@ public class Game extends JPanel {
 
 		for (int particleIterator = 0; particleIterator < pList.size(); particleIterator++) {
 			Particle p = pList.get(particleIterator);
-
 			if (debug) {
 				if (p.isActive()) {
 					p.draw(g2d);
-					g2d.setFont(new Font("System", Font.PLAIN, 10));
-					FontMetrics fm = g2d.getFontMetrics();
-					String xCoord = "X: " + p.center().getX();
-					String yCoord = "Y: " + p.center().getY();
-					g2d.drawString(xCoord, (int) (p.center().getX() - fm.stringWidth(xCoord) - fm.stringWidth("  ")), (int) (p.center().getY() - p.radius()));
-					g2d.drawString(" | ", (int) (p.center().getX() - (fm.stringWidth(" | ") / 2)), (int) (p.center().getY() - p.radius()));
-					g2d.drawString(yCoord, (int) (p.center().getX() + fm.stringWidth("  ")), (int) (p.center().getY() - p.radius()));
+					if (p.isInside(mouse)) {
+						g2d.setFont(new Font("System", Font.PLAIN, 10));
+						FontMetrics fm = g2d.getFontMetrics();
+						String xCoord = "X: " + p.center().getX();
+						String yCoord = "Y: " + p.center().getY();
+						DecimalFormat digit = new DecimalFormat("#,##0.00");
+						String velocity = "V: " + Double.valueOf(digit.format(p.getVelocity().norm()));
+						g2d.drawString(xCoord, (int) (p.center().getX() - fm.stringWidth(xCoord) - fm.stringWidth("  ")), (int) (p.center().getY() - p.radius() - fm.getAscent()));
+						g2d.drawString(" | ", (int) (p.center().getX() - (fm.stringWidth(" | ") / 2)), (int) (p.center().getY() - p.radius() - fm.getAscent()));
+						g2d.drawString(yCoord, (int) (p.center().getX() + fm.stringWidth("  ")), (int) (p.center().getY() - p.radius() - fm.getAscent()));
+						g2d.drawString(velocity, (int) (p.center().getX() - (fm.stringWidth(velocity) / 2)), (int) (p.center().getY() - p.radius()));
+					}
+					new Line2D(p.center(), p.point(p.position(p.getVelocity().angle()))).draw(g2d);
 				} else {
 					p.fill(g2d);
 				}

@@ -39,6 +39,6 @@ public class GravityNodeParticle extends Point2D {
 	}
 
 	double intensityCalc(double intensity) {
-		return intensity / 50;
+		return intensity / 100;
 	}
 }
