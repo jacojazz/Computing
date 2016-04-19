@@ -98,10 +98,8 @@ public class Particle extends Circle2D {
 			return;
 		double i = ((-(1.0f + Constants.restitution) * vn) / (im1 + im2));
 		Vector2D impulse = mtd.normalize().times(i);
-		double p1pd = p2.radius() - p2.distance(p.point(p.project(p2.center())));
-		double p2pd = p.radius() - p.distance(p2.point(p2.project(p.center())));
-		p.setVelocity(p.getVelocity().plus(impulse.times(im1).times(tolerance(p1pd, p2.radius()))));
-		p2.setVelocity(p2.getVelocity().minus(impulse.times(im2).times(tolerance(p2pd, p.radius()))));
+		p.setVelocity(p.getVelocity().plus(impulse.times(im1)));
+		p2.setVelocity(p2.getVelocity().minus(impulse.times(im2)));
 	}
 
 	double tolerance(double penetrationDepth, double radius) {
