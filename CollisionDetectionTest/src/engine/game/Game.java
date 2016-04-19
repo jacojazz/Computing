@@ -23,6 +23,9 @@ import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
 import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
+import math.geom2d.point.PointArray2D;
+import math.geom2d.polygon.Polygon2D;
+import math.geom2d.polygon.convhull.GrahamScan2D;
 
 public class Game extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -34,7 +37,7 @@ public class Game extends JPanel {
 	static int width = gd.getDisplayMode().getWidth();
 	static int height = gd.getDisplayMode().getHeight();
 	Menu menu = new Menu();
-	static Box2D bounds = new Box2D(0, width, 0, height);
+	static Box2D bounds = new Box2D(new Point2D(-100, -100), width + 200, height + 200);
 	static Point2D mouse, initial;
 	static Vector2D distance;
 	static boolean dragging = false, debug = false, flood = false;
@@ -48,6 +51,9 @@ public class Game extends JPanel {
 	static ArrayList<GravityNode> gList = new ArrayList<GravityNode>();
 	static ArrayList<ModifierMenu> mList = new ArrayList<ModifierMenu>();
 	static double manualSize = 40;
+	static PointArray2D pArray = new PointArray2D();
+	static GrahamScan2D test = new GrahamScan2D();
+	static Polygon2D boundary;
 
 	Game() {
 		addMouseListener(new MouseListener() {
@@ -191,12 +197,25 @@ public class Game extends JPanel {
 	void update() {
 		menu.update();
 
+		// if (frames % (TARGET_FPS / 16) == 0) {
+		try {
+			boundary = test.convexHull(pArray.points());
+		} catch (Exception e) {
+		}
+		// }
+
 		if (pList.size() > 150) {
 			pList.remove(0);
 		}
 
+		pArray.clear();
 		for (int particleIterator = 0; particleIterator < pList.size(); particleIterator++) {
 			Particle p = pList.get(particleIterator);
+			pArray.add(p.center());
+			System.out.println(p.vertices());
+			if (!bounds.containsBounds(p)) {
+				pList.remove(particleIterator);
+			}
 
 			if (Game.gravityType == 2 && !Game.gList.isEmpty()) {
 				p.setActive(true);
@@ -204,10 +223,6 @@ public class Game extends JPanel {
 
 			if (p.isActive()) {
 				p.update();
-			}
-
-			if (p.center().getY() > height + p.radius() || p.center().getX() > width + p.radius() || p.center().getX() < 0 - p.radius()) {
-				pList.remove(particleIterator);
 			}
 		}
 
@@ -286,6 +301,9 @@ public class Game extends JPanel {
 				}
 			} else {
 				p.draw(g2d);
+				g2d.setColor(Color.BLUE);
+				boundary.fill(g2d);
+				g2d.setColor(Color.BLACK);
 			}
 
 			if (debug) {

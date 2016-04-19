@@ -107,7 +107,6 @@ public class Particle extends Circle2D {
 		if (result > 1) {
 			return 1;
 		} else {
-			System.out.println(Math.abs(result));
 			return Math.abs(result);
 		}
 	}
