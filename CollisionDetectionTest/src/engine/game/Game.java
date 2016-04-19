@@ -28,6 +28,7 @@ import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
 import math.geom2d.polygon.Polygon2D;
 import math.geom2d.polygon.convhull.GrahamScan2D;
+import math.geom2d.polygon.convhull.JarvisMarch2D;
 
 public class Game extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -42,7 +43,7 @@ public class Game extends JPanel {
 	static Box2D bounds = new Box2D(new Point2D(-100, -100), width + 200, height + 200);
 	static Point2D mouse, initial;
 	static Vector2D distance;
-	static boolean dragging = false, debug = false, flood = false, grahamScan = true, updating = true;
+	static boolean dragging = false, debug = false, flood = false, giftWrapping = false, updating = true;
 	static int gravityType = 1;
 	static Line2D floor = new Line2D(width, height, 0, height);
 	static Line2D leftWall = new Line2D(0, height, 0, 0);
@@ -54,7 +55,7 @@ public class Game extends JPanel {
 	static ArrayList<ModifierMenu> mList = new ArrayList<ModifierMenu>();
 	static double manualSize = 40;
 	static Collection<Point2D> pArray = new ArrayList<Point2D>();
-	static GrahamScan2D scan = new GrahamScan2D();
+	static JarvisMarch2D scan = new JarvisMarch2D();
 	static Polygon2D boundary;
 
 	Game() {
@@ -109,6 +110,10 @@ public class Game extends JPanel {
 					dragging = true;
 					initial = new Point2D(e.getPoint());
 				}
+
+				if (e.getButton() == MouseEvent.BUTTON2) {
+					giftWrapping = true;
+				}
 			}
 
 			public void mouseReleased(MouseEvent e) {
@@ -152,6 +157,10 @@ public class Game extends JPanel {
 							break;
 						}
 					}
+				}
+
+				if (e.getButton() == MouseEvent.BUTTON2) {
+					giftWrapping = false;
 				}
 			}
 		});
@@ -197,6 +206,8 @@ public class Game extends JPanel {
 		lList.add(leftWall);
 		lList.add(rightWall);
 		lList.add(roof);
+
+		boundary = bounds.asRectangle();
 	}
 
 	static Vector2D getGravity() {
@@ -225,8 +236,11 @@ public class Game extends JPanel {
 		if (updating) {
 			menu.update();
 
-			if (grahamScan) {
-				boundary = scan.convexHull(pArray);
+			if (giftWrapping) {
+				try {
+					boundary = scan.convexHull(pArray);
+				} catch (Exception e) {
+				}
 			}
 
 			if (pList.size() > 150) {
@@ -236,7 +250,7 @@ public class Game extends JPanel {
 			pArray.clear();
 			for (int particleIterator = 0; particleIterator < pList.size(); particleIterator++) {
 				Particle p = pList.get(particleIterator);
-				if (grahamScan) {
+				if (giftWrapping) {
 					pArray.addAll(p.getPointsOnCircle(30));
 				}
 
@@ -329,7 +343,7 @@ public class Game extends JPanel {
 				}
 			} else {
 				p.draw(g2d);
-				if (grahamScan) {
+				if (giftWrapping) {
 					g2d.setColor(Color.BLUE);
 					boundary.draw(g2d);
 					g2d.setColor(Color.BLACK);

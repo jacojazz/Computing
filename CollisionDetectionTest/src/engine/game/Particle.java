@@ -24,7 +24,14 @@ public class Particle extends Circle2D {
 		super(center, radius);
 		DecimalFormat oneDigit = new DecimalFormat("#,##0.0");
 		double temp = areaDensity * (Math.PI * ((radius / 100) * (radius / 100)));
-		this.mass = Double.valueOf(oneDigit.format(temp));
+		double formatted = Double.valueOf(oneDigit.format(temp));
+
+		if (formatted != 0) {
+			this.mass = formatted;
+		} else {
+			this.mass = 0.1;
+		}
+
 		gnp = new GravityNodeParticle(center(), mass);
 	}
 
@@ -32,9 +39,16 @@ public class Particle extends Circle2D {
 		super(center, radius);
 		DecimalFormat oneDigit = new DecimalFormat("#,##0.0");
 		double temp = areaDensity * (Math.PI * ((radius / 100) * (radius / 100)));
-		this.mass = Double.valueOf(oneDigit.format(temp));
-		this.velocity = velocity;
+		double formatted = Double.valueOf(oneDigit.format(temp));
+
+		if (formatted != 0) {
+			this.mass = formatted;
+		} else {
+			this.mass = 0.1;
+		}
+
 		gnp = new GravityNodeParticle(center(), mass);
+		this.velocity = velocity;
 	}
 
 	Collection<Point2D> getPointsOnCircle(int divisions) {
