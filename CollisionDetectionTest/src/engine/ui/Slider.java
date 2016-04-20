@@ -13,15 +13,14 @@ public class Slider extends Rectangle2D {
 	Rectangle2D inner, mover;
 	int sliderValue;
 	static boolean dragging = false;
-	static double moverX;
-	double initial = getX() + 5;
+	static double moverXDifference;
 	static Point2D mouseRelation;
 
 	Slider(Point2D position, double width, double height) {
 		super(position, new Point2D(position.getX() + width, position.getY() + height));
 		sliderValue = 0;
 		setRectangleBounds();
-		moverX = initial;
+		moverXDifference = 0;
 	}
 
 	void mousePressed(MouseEvent e) {
@@ -37,26 +36,23 @@ public class Slider extends Rectangle2D {
 
 	private void setRectangleBounds() {
 		inner = new Rectangle2D(getX() + 5, getY() + 5, getWidth() - 10, getHeight() - 10);
-		mover = new Rectangle2D(moverX, inner.getY(), inner.getHeight(), inner.getHeight());
+		mover = new Rectangle2D(inner.getX() + moverXDifference, inner.getY(), inner.getHeight(), inner.getHeight());
 	}
 
 	void update() {
 		if (dragging) {
-			double calc = Game.mouse.minus(mouseRelation).getX() - getX();
-			double max = inner.getX() + inner.getWidth() - mover.getWidth();
-			double min = inner.getX();
-			double calc2 = calc + inner.getX();
+			double calc = Game.mouse.minus(mouseRelation).getX() - inner.getX();
+			double max = inner.getWidth() - mover.getWidth();
+			double min = 0;
 
-			if (calc2 <= max && calc2 >= min) {
-				moverX = calc2;
+			if (calc <= max && calc >= min) {
+				moverXDifference = calc;
 			} else if (calc > max) {
-				moverX = max;
+				moverXDifference = max;
 			} else if (calc < min) {
-				moverX = min;
+				moverXDifference = min;
 			}
 		}
-
-		getX();
 
 		sliderValue = (int) ((mover.getX() - inner.getX()) / (inner.getWidth() - mover.getWidth()) * 100);
 		setRectangleBounds();
@@ -83,7 +79,7 @@ public class Slider extends Rectangle2D {
 		FontMetrics fm = g2d.getFontMetrics();
 		g2d.setColor(new Color(20, 20, 20, 250));
 		this.fill(g2d);
-		g2d.setColor(new Color(20, 20, 20, 255));
+		g2d.setColor(Color.BLACK);
 		inner.fill(g2d);
 		g2d.setColor(new Color(51, 51, 51));
 		mover.fill(g2d);
