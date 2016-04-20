@@ -111,7 +111,7 @@ public class Game extends JPanel {
 					}
 				}
 
-				if (!menu.baseRect.contains(mouse) && !menu.toolsBaseRect.contains(mouse) && !ModifierMenu.checkBounds(mouse) && e.getButton() == MouseEvent.BUTTON1) {
+				if (!menu.checkBounds() && !ModifierMenu.checkBounds(mouse) && e.getButton() == MouseEvent.BUTTON1) {
 					dragging = true;
 					initial = new Point2D(e.getPoint());
 				}
@@ -130,7 +130,7 @@ public class Game extends JPanel {
 					}
 				}
 
-				if (!menu.baseRect.contains(mouse) && !menu.toolsBaseRect.contains(mouse) && !ModifierMenu.checkBounds(mouse) && dragging) {
+				if (!menu.checkBounds() && !ModifierMenu.checkBounds(mouse) && dragging) {
 					dragging = false;
 					distance = new Vector2D(initial.minus(mouse));
 

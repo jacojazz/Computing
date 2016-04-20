@@ -29,27 +29,29 @@ public class Menu {
 	public int toolType = 0;
 	boolean dragging = false;
 	boolean toolsPopOut = false;
+	boolean sizeSliderOut = true;
 
-	public Rectangle2D baseRect = new Rectangle2D(position.getX(), position.getY(), width, height);
-	Rectangle2D minRect = new Rectangle2D((position.getX() + width) - 18, position.getY() + 15, 16, 3);
-	Rectangle2D minHandler = new Rectangle2D((position.getX() + width) - 20, position.getY(), 20, 20);
-	Rectangle2D moveRect = new Rectangle2D(position.getX(), position.getY(), width, 20);
-	Rectangle2D sizeMinus = new Rectangle2D(position.getX() + 10, position.getY() + 40, 20, 20);
-	Rectangle2D sizeRect = new Rectangle2D(position.getX() + 35, position.getY() + 40, width - 70, 20);
-	Rectangle2D sizePlus = new Rectangle2D(position.getX() + 170, position.getY() + 40, 20, 20);
-	Rectangle2D floodRect = new Rectangle2D(position.getX() + 10, position.getY() + 70, width - 20, 20);
-	Rectangle2D gravityRect = new Rectangle2D(position.getX() + 10, position.getY() + 100, width - 20, 20);
-	Rectangle2D toolsRect = new Rectangle2D(position.getX() + 10, position.getY() + 130, width - 20, 20);
-	public Rectangle2D toolsBaseRect = new Rectangle2D(position.getX() + width + 10, position.getY() + 120, 145, 40);
-	Rectangle2D toolsParticle = new Rectangle2D(position.getX() + width + 15, position.getY() + 125, 30, 30);
-	Rectangle2D toolsLine = new Rectangle2D(position.getX() + width + 50, position.getY() + 125, 30, 30);
-	Rectangle2D toolsGravity = new Rectangle2D(position.getX() + width + 85, position.getY() + 125, 30, 30);
-	Rectangle2D toolsRepulsor = new Rectangle2D(position.getX() + width + 120, position.getY() + 125, 30, 30);
-	Rectangle2D debugRect = new Rectangle2D(position.getX() + 10, position.getY() + 160, width - 20, 20);
-	Rectangle2D clearLines = new Rectangle2D(position.getX() + 10, position.getY() + 190, width - 20, 20);
-	Rectangle2D clearParticles = new Rectangle2D(position.getX() + 10, position.getY() + 220, width - 20, 20);
-	Rectangle2D clearNodes = new Rectangle2D(position.getX() + 10, position.getY() + 250, width - 20, 20);
-	Rectangle2D exitRect = new Rectangle2D(position.getX() + 10, position.getY() + 280, width - 20, 20);
+	public Rectangle2D baseRect;
+	Rectangle2D minRect;
+	Rectangle2D minHandler;
+	Rectangle2D moveRect;
+	Rectangle2D sizeMinus;
+	Rectangle2D sizeRect;
+	Rectangle2D sizePlus;
+	Rectangle2D floodRect;
+	Rectangle2D gravityRect;
+	Rectangle2D toolsRect;
+	Rectangle2D toolsBaseRect;
+	Rectangle2D toolsParticle;
+	Rectangle2D toolsLine;
+	Rectangle2D toolsGravity;
+	Rectangle2D toolsRepulsor;
+	Rectangle2D debugRect;
+	Rectangle2D clearLines;
+	Rectangle2D clearParticles;
+	Rectangle2D clearNodes;
+	Rectangle2D exitRect;
+	Slider sizeSlider;
 
 	Image particleImage, lineImage, gravityImage, repulsorImage;
 
@@ -62,6 +64,16 @@ public class Menu {
 			repulsorImage = ImageIO.read(new File("src/engine/res/images/outwards.png"));
 		} catch (FontFormatException | IOException e) {
 			e.printStackTrace();
+		}
+
+		setRectangleBounds();
+	}
+
+	public boolean checkBounds() {
+		if (baseRect.contains(Game.mouse) || toolsBaseRect.contains(Game.mouse) || sizeSlider.contains(Game.mouse)) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -118,13 +130,21 @@ public class Menu {
 			dragging = true;
 			mouseRelation = Game.mouse.minus(new Point2D(baseRect.getX(), baseRect.getY()));
 		}
+
+		if (sizeSliderOut && sizeSlider.contains(Game.mouse)) {
+			sizeSlider.mousePressed(e);
+		}
 	}
 
 	public void mouseReleased(MouseEvent e) {
 		dragging = false;
+
+		if (sizeSliderOut) {
+			sizeSlider.mouseReleased(e);
+		}
 	}
 
-	public void update() {
+	void setRectangleBounds() {
 		baseRect = new Rectangle2D(position.getX(), position.getY(), width, height);
 		minRect = new Rectangle2D((position.getX() + width) - 18, position.getY() + 15, 16, 3);
 		minHandler = new Rectangle2D((position.getX() + width) - 20, position.getY(), 20, 20);
@@ -145,6 +165,15 @@ public class Menu {
 		clearParticles = new Rectangle2D(position.getX() + 10, position.getY() + 220, width - 20, 20);
 		clearNodes = new Rectangle2D(position.getX() + 10, position.getY() + 250, width - 20, 20);
 		exitRect = new Rectangle2D(position.getX() + 10, position.getY() + 280, width - 20, 20);
+		sizeSlider = new Slider(new Point2D(position.getX() + width + 10, position.getY() + 30), 145, 40);
+	}
+
+	public void update() {
+		setRectangleBounds();
+
+		if (sizeSliderOut) {
+			sizeSlider.update();
+		}
 
 		if (dragging == true) {
 			position = Game.mouse.minus(mouseRelation);
@@ -152,8 +181,7 @@ public class Menu {
 	}
 
 	private AlphaComposite makeAlpha(float alpha) {
-		int type = AlphaComposite.SRC_OVER;
-		return (AlphaComposite.getInstance(type, alpha));
+		return (AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
 	}
 
 	public void paint(Graphics2D g2d) {
@@ -163,6 +191,10 @@ public class Menu {
 
 			if (toolsPopOut) {
 				toolsBaseRect.fill(g2d);
+			}
+
+			if (sizeSliderOut) {
+				sizeSlider.paint(g2d);
 			}
 		}
 
