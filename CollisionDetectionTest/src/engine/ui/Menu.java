@@ -1,4 +1,4 @@
-package engine.game;
+package engine.ui;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -14,6 +14,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import engine.game.Game;
 import engine.utils.Reference;
 import math.geom2d.Point2D;
 import math.geom2d.polygon.Rectangle2D;
@@ -25,11 +26,11 @@ public class Menu {
 	boolean visible = true;
 	Point2D mouseRelation;
 	Font textFont;
-	int toolType = 0;
+	public int toolType = 0;
 	boolean dragging = false;
 	boolean toolsPopOut = false;
 
-	Rectangle2D baseRect = new Rectangle2D(position.getX(), position.getY(), width, height);
+	public Rectangle2D baseRect = new Rectangle2D(position.getX(), position.getY(), width, height);
 	Rectangle2D minRect = new Rectangle2D((position.getX() + width) - 18, position.getY() + 15, 16, 3);
 	Rectangle2D minHandler = new Rectangle2D((position.getX() + width) - 20, position.getY(), 20, 20);
 	Rectangle2D moveRect = new Rectangle2D(position.getX(), position.getY(), width, 20);
@@ -39,7 +40,7 @@ public class Menu {
 	Rectangle2D floodRect = new Rectangle2D(position.getX() + 10, position.getY() + 70, width - 20, 20);
 	Rectangle2D gravityRect = new Rectangle2D(position.getX() + 10, position.getY() + 100, width - 20, 20);
 	Rectangle2D toolsRect = new Rectangle2D(position.getX() + 10, position.getY() + 130, width - 20, 20);
-	Rectangle2D toolsBaseRect = new Rectangle2D(position.getX() + width + 10, position.getY() + 120, 145, 40);
+	public Rectangle2D toolsBaseRect = new Rectangle2D(position.getX() + width + 10, position.getY() + 120, 145, 40);
 	Rectangle2D toolsParticle = new Rectangle2D(position.getX() + width + 15, position.getY() + 125, 30, 30);
 	Rectangle2D toolsLine = new Rectangle2D(position.getX() + width + 50, position.getY() + 125, 30, 30);
 	Rectangle2D toolsGravity = new Rectangle2D(position.getX() + width + 85, position.getY() + 125, 30, 30);

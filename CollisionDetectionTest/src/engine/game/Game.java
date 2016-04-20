@@ -21,6 +21,8 @@ import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import engine.ui.Menu;
+import engine.ui.ModifierMenu;
 import math.geom2d.Box2D;
 import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
@@ -32,7 +34,6 @@ import math.geom2d.polygon.convhull.GrahamScan2D;
 public class Game extends JPanel {
 	private static final long serialVersionUID = 1L;
 	static final int TARGET_FPS = 60;
-	static final double EARTH_GRAVITY = 0.5;
 	static JFrame frame = new JFrame("Collision");
 	static int frames = 0;
 	static GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
@@ -40,19 +41,24 @@ public class Game extends JPanel {
 	static int height = gd.getDisplayMode().getHeight();
 	Menu menu = new Menu();
 	static Box2D bounds = new Box2D(new Point2D(-100, -100), width + 200, height + 200);
-	static Point2D mouse, initial;
+	public static Point2D mouse;
+	static Point2D initial;
 	static Vector2D distance;
-	static boolean dragging = false, debug = false, flood = false, giftWrapping = false, updating = true;
-	static int gravityType = 1;
-	static Line2D floor = new Line2D(width, height, 0, height);
-	static Line2D leftWall = new Line2D(0, height, 0, 0);
-	static Line2D rightWall = new Line2D(width, 0, width, height);
-	static Line2D roof = new Line2D(0, 0, width, 0);
-	static ArrayList<Particle> pList = new ArrayList<Particle>();
-	static ArrayList<Line2D> lList = new ArrayList<Line2D>();
-	static ArrayList<GravityNode> gList = new ArrayList<GravityNode>();
-	static ArrayList<ModifierMenu> mList = new ArrayList<ModifierMenu>();
-	static double manualSize = 40;
+	static boolean dragging = false;
+	public static boolean debug = false;
+	public static boolean flood = false;
+	static boolean giftWrapping = false;
+	static boolean updating = true;
+	public static int gravityType = 1;
+	public static Line2D floor = new Line2D(width, height, 0, height);
+	public static Line2D leftWall = new Line2D(0, height, 0, 0);
+	public static Line2D rightWall = new Line2D(width, 0, width, height);
+	public static Line2D roof = new Line2D(0, 0, width, 0);
+	public static ArrayList<Particle> pList = new ArrayList<Particle>();
+	public static ArrayList<Line2D> lList = new ArrayList<Line2D>();
+	public static ArrayList<GravityNode> gList = new ArrayList<GravityNode>();
+	public static ArrayList<ModifierMenu> mList = new ArrayList<ModifierMenu>();
+	public static double manualSize = 20;
 	static Collection<Point2D> pArray = new ArrayList<Point2D>();
 	static GrahamScan2D scan = new GrahamScan2D();
 	static Polygon2D boundary;
@@ -220,7 +226,7 @@ public class Game extends JPanel {
 		}
 	}
 
-	static String getGravityString() {
+	public static String getGravityString() {
 		switch (gravityType) {
 		case 1:
 			return "Normal";

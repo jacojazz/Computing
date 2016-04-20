@@ -1,4 +1,4 @@
-package engine.game;
+package engine.ui;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -9,19 +9,29 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 
+import engine.game.Game;
+import engine.game.GravityNode;
+import engine.game.Particle;
 import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
 import math.geom2d.polygon.Rectangle2D;
 
 public class ModifierMenu {
-	Object selectedObject;
-	Rectangle2D baseRect, moveRect, intensityMinus, intensityRect, intensityPlus, toggleRect, removeRect, closeRect;
+	public Object selectedObject;
+	public Rectangle2D baseRect;
+	Rectangle2D moveRect;
+	Rectangle2D intensityMinus;
+	Rectangle2D intensityRect;
+	Rectangle2D intensityPlus;
+	Rectangle2D toggleRect;
+	Rectangle2D removeRect;
+	Rectangle2D closeRect;
 	Rectangle2D sizeMinus, sizeRect, sizePlus, massMinus, massRect, massPlus;
 	boolean dragging;
 	Point2D mouseRelation, position;
 	Font textFont;
 
-	ModifierMenu(Object selectedObject) {
+	public ModifierMenu(Object selectedObject) {
 		this.selectedObject = selectedObject;
 
 		setRectangleBounds();
@@ -33,7 +43,7 @@ public class ModifierMenu {
 		}
 	}
 
-	void mouseClicked(MouseEvent e) {
+	public void mouseClicked(MouseEvent e) {
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			if (closeRect.contains(Game.mouse)) {
 				Game.mList.remove(this);
@@ -76,11 +86,11 @@ public class ModifierMenu {
 		}
 	}
 
-	void mouseReleased(MouseEvent e) {
+	public void mouseReleased(MouseEvent e) {
 		dragging = false;
 	}
 
-	void mousePressed(MouseEvent e) {
+	public void mousePressed(MouseEvent e) {
 		if (moveRect.contains(Game.mouse)) {
 			dragging = true;
 			if (selectedObject instanceof Particle) {
@@ -122,7 +132,7 @@ public class ModifierMenu {
 		return false;
 	}
 
-	void update() {
+	public void update() {
 		if (dragging == true) {
 			position = Game.mouse.minus(mouseRelation);
 			if (selectedObject instanceof Particle) {
@@ -137,12 +147,12 @@ public class ModifierMenu {
 		setRectangleBounds();
 	}
 
-	void paint(Graphics2D g2d) {
+	public void paint(Graphics2D g2d) {
 		g2d.setColor(new Color(20, 20, 20, 250));
 		baseRect.fill(g2d);
 		g2d.setColor(Color.GRAY);
 		moveRect.fill(g2d);
-		g2d.setColor(Color.RED);
+		g2d.setColor(new Color(0x521616));
 		closeRect.fill(g2d);
 
 		FontMetrics fmT = g2d.getFontMetrics(textFont);

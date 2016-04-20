@@ -71,7 +71,7 @@ public class Particle extends Circle2D {
 	boolean inLineCollisionRange(Line2D l) {
 		if (l.distance(center()) <= radius()) {
 			double penetrationDepth = radius() - l.distance(center());
-			Vector2D resolution = l.perpendicular(center()).direction().normalize().times(penetrationDepth);
+			Vector2D resolution = l.perpendicular(center()).direction().normalize().times(penetrationDepth * 1.1);
 			if (velocity.angle() > l.horizontalAngle() && velocity.angle() < (l.horizontalAngle() + Math.PI)) {
 				resolution = resolution.opposite();
 			}
@@ -183,7 +183,7 @@ public class Particle extends Circle2D {
 		}
 	}
 
-	void update() {
+	public void update() {
 		gnp.update(center(), mass);
 		for (int particle2Iterator = 0; particle2Iterator < Game.pList.size(); particle2Iterator++) {
 			Particle p2 = Game.pList.get(particle2Iterator);

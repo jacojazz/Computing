@@ -5,7 +5,7 @@ import math.geom2d.Vector2D;
 import math.geom2d.line.Line2D;
 
 public class GravityNode extends Point2D {
-	double intensity;
+	public double intensity;
 	boolean repulsor;
 
 	GravityNode(Point2D center, double intensity, boolean repulsor) {
@@ -49,7 +49,7 @@ public class GravityNode extends Point2D {
 		}
 	}
 
-	void setPosition(Point2D p) {
+	public void setPosition(Point2D p) {
 		x = p.getX();
 		y = p.getY();
 	}
