@@ -27,7 +27,7 @@ import math.geom2d.Vector2D;
 import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
 import math.geom2d.polygon.Polygon2D;
-import math.geom2d.polygon.convhull.JarvisMarch2D;
+import math.geom2d.polygon.convhull.GrahamScan2D;
 
 public class Game extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -54,7 +54,7 @@ public class Game extends JPanel {
 	static ArrayList<ModifierMenu> mList = new ArrayList<ModifierMenu>();
 	static double manualSize = 40;
 	static Collection<Point2D> pArray = new ArrayList<Point2D>();
-	static JarvisMarch2D scan = new JarvisMarch2D();
+	static GrahamScan2D scan = new GrahamScan2D();
 	static Polygon2D boundary;
 
 	Game() {
