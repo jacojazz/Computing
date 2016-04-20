@@ -23,13 +23,21 @@ public class Slider extends Rectangle2D {
 		mover = new Rectangle2D(moverX, inner.getY(), inner.getHeight(), inner.getHeight());
 	}
 
+	boolean checkBounds(Point2D p) {
+		if (this.contains(Game.mouse)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	void mousePressed(MouseEvent e) {
 		if (mover.contains(Game.mouse)) {
-
+			dragging = true;
 		}
 	}
 
 	void mouseReleased(MouseEvent e) {
-
+		dragging = false;
 	}
 }
