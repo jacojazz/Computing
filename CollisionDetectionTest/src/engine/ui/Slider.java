@@ -11,20 +11,23 @@ import engine.game.Game;
 
 public class Slider extends Rectangle2D {
 	Rectangle2D inner, mover;
-	double sliderValue;
+	int sliderValue;
 	static boolean dragging = false;
-	double moverX, mouseRelation;
+	static double moverX;
+	double initial = getX() + 5;
+	static Point2D mouseRelation;
 
 	Slider(Point2D position, double width, double height) {
 		super(position, new Point2D(position.getX() + width, position.getY() + height));
 		sliderValue = 0;
 		setRectangleBounds();
+		moverX = initial;
 	}
 
 	void mousePressed(MouseEvent e) {
 		if (mover.contains(Game.mouse)) {
-			mouseRelation = Game.mouse.getX();
 			dragging = true;
+			mouseRelation = Game.mouse.minus(new Point2D(mover.getX(), mover.getY()));
 		}
 	}
 
@@ -34,19 +37,38 @@ public class Slider extends Rectangle2D {
 
 	private void setRectangleBounds() {
 		inner = new Rectangle2D(getX() + 5, getY() + 5, getWidth() - 10, getHeight() - 10);
-		if (moverX != 0) {
-			mover = new Rectangle2D(moverX, inner.getY(), inner.getHeight(), inner.getHeight());
-		} else {
-			mover = new Rectangle2D(inner.getX(), inner.getY(), inner.getHeight(), inner.getHeight());
-		}
+		mover = new Rectangle2D(moverX, inner.getY(), inner.getHeight(), inner.getHeight());
 	}
 
 	void update() {
 		if (dragging) {
-			moverX = Game.mouse.getX() - mouseRelation;
+			double calc = Game.mouse.minus(mouseRelation).getX() - getX();
+			double max = inner.getX() + inner.getWidth() - mover.getWidth();
+			double min = inner.getX();
+			double calc2 = calc + inner.getX();
+
+			if (calc2 <= max && calc2 >= min) {
+				moverX = calc2;
+			} else if (calc > max) {
+				moverX = max;
+			} else if (calc < min) {
+				moverX = min;
+			}
 		}
 
+		getX();
+
+		sliderValue = (int) ((mover.getX() - inner.getX()) / (inner.getWidth() - mover.getWidth()) * 100);
 		setRectangleBounds();
+	}
+
+	int getValue() {
+		return sliderValue;
+	}
+
+	void setPosition(Point2D position) {
+		x0 = position.getX();
+		y0 = position.getY();
 	}
 
 	boolean checkBounds(Point2D p) {
@@ -66,6 +88,6 @@ public class Slider extends Rectangle2D {
 		g2d.setColor(new Color(51, 51, 51));
 		mover.fill(g2d);
 		g2d.setColor(Color.GRAY);
-		g2d.drawString(String.valueOf(Game.manualSize), (int) (mover.getX() + (mover.getWidth() / 2) - (fm.stringWidth(String.valueOf(Game.manualSize)) / 2)), (int) (mover.getY() + (mover.getHeight() / 2)) + (fm.getHeight() / 4));
+		g2d.drawString(String.valueOf(sliderValue), (int) (mover.getX() + (mover.getWidth() / 2) - (fm.stringWidth(String.valueOf(sliderValue)) / 2)), (int) (mover.getY() + (mover.getHeight() / 2)) + (fm.getHeight() / 4));
 	}
 }

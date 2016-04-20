@@ -24,20 +24,18 @@ public class Menu {
 	int width = 200;
 	int height = 310;
 	boolean visible = true;
-	Point2D mouseRelation;
+	Point2D mouseRelation, sizeSliderPosition;
 	Font textFont;
 	public int toolType = 0;
 	boolean dragging = false;
 	boolean toolsPopOut = false;
-	boolean sizeSliderOut = true;
+	boolean sizeSliderOut = false;
 
 	public Rectangle2D baseRect;
 	Rectangle2D minRect;
 	Rectangle2D minHandler;
 	Rectangle2D moveRect;
-	Rectangle2D sizeMinus;
 	Rectangle2D sizeRect;
-	Rectangle2D sizePlus;
 	Rectangle2D floodRect;
 	Rectangle2D gravityRect;
 	Rectangle2D toolsRect;
@@ -66,6 +64,9 @@ public class Menu {
 			e.printStackTrace();
 		}
 
+		sizeSliderPosition = new Point2D(position.getX() + width + 10, position.getY() + 30);
+		sizeSlider = new Slider(sizeSliderPosition, 145, 40);
+
 		setRectangleBounds();
 	}
 
@@ -81,14 +82,8 @@ public class Menu {
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			if (minHandler.contains(Game.mouse)) {
 				visible = !visible;
-			} else if (sizePlus.contains(Game.mouse)) {
-				Game.manualSize += 2;
 			} else if (sizeRect.contains(Game.mouse)) {
-				Game.manualSize = 40;
-			} else if (sizeMinus.contains(Game.mouse)) {
-				if (Game.manualSize >= 12) {
-					Game.manualSize -= 2;
-				}
+				sizeSliderOut = !sizeSliderOut;
 			} else if (floodRect.contains(Game.mouse)) {
 				Game.flood = !Game.flood;
 			} else if (gravityRect.contains(Game.mouse)) {
@@ -131,7 +126,7 @@ public class Menu {
 			mouseRelation = Game.mouse.minus(new Point2D(baseRect.getX(), baseRect.getY()));
 		}
 
-		if (sizeSliderOut && sizeSlider.contains(Game.mouse)) {
+		if (sizeSlider.contains(Game.mouse)) {
 			sizeSlider.mousePressed(e);
 		}
 	}
@@ -149,9 +144,7 @@ public class Menu {
 		minRect = new Rectangle2D((position.getX() + width) - 18, position.getY() + 15, 16, 3);
 		minHandler = new Rectangle2D((position.getX() + width) - 20, position.getY(), 20, 20);
 		moveRect = new Rectangle2D(position.getX(), position.getY(), width, 20);
-		sizeMinus = new Rectangle2D(position.getX() + 10, position.getY() + 40, 20, 20);
-		sizeRect = new Rectangle2D(position.getX() + 35, position.getY() + 40, width - 70, 20);
-		sizePlus = new Rectangle2D(position.getX() + 170, position.getY() + 40, 20, 20);
+		sizeRect = new Rectangle2D(position.getX() + 10, position.getY() + 40, width - 20, 20);
 		floodRect = new Rectangle2D(position.getX() + 10, position.getY() + 70, width - 20, 20);
 		gravityRect = new Rectangle2D(position.getX() + 10, position.getY() + 100, width - 20, 20);
 		toolsRect = new Rectangle2D(position.getX() + 10, position.getY() + 130, width - 20, 20);
@@ -165,7 +158,8 @@ public class Menu {
 		clearParticles = new Rectangle2D(position.getX() + 10, position.getY() + 220, width - 20, 20);
 		clearNodes = new Rectangle2D(position.getX() + 10, position.getY() + 250, width - 20, 20);
 		exitRect = new Rectangle2D(position.getX() + 10, position.getY() + 280, width - 20, 20);
-		sizeSlider = new Slider(new Point2D(position.getX() + width + 10, position.getY() + 30), 145, 40);
+		sizeSliderPosition = new Point2D(position.getX() + width + 10, position.getY() + 30);
+		sizeSlider.setPosition(sizeSliderPosition);
 	}
 
 	public void update() {
@@ -173,6 +167,7 @@ public class Menu {
 
 		if (sizeSliderOut) {
 			sizeSlider.update();
+			Game.manualSize = 10 + sizeSlider.getValue();
 		}
 
 		if (dragging == true) {
@@ -211,14 +206,10 @@ public class Menu {
 
 		if (visible) {
 			g2d.setColor(new Color(51, 51, 51));
-			sizePlus.fill(g2d);
 			sizeRect.fill(g2d);
-			sizeMinus.fill(g2d);
 
 			g2d.setColor(Color.GRAY);
-			g2d.drawString("+", (int) (sizePlus.getX() + (sizePlus.getWidth() / 2) - (fmT.stringWidth("+") / 2)), (int) (sizePlus.getY() + (sizePlus.getHeight() / 2)) + (fmT.getHeight() / 4));
 			g2d.drawString("Change Size (" + Game.manualSize + ")", (int) (sizeRect.getX() + (sizeRect.getWidth() / 2) - (fmT.stringWidth("Change Size (" + Game.manualSize + ")") / 2)), (int) (sizeRect.getY() + (sizeRect.getHeight() / 2)) + (fmT.getHeight() / 4));
-			g2d.drawString("-", (int) (sizeMinus.getX() + (sizeMinus.getWidth() / 2) - (fmT.stringWidth("-") / 2)), (int) (sizeMinus.getY() + (sizeMinus.getHeight() / 2)) + (fmT.getHeight() / 4));
 
 			g2d.setColor(new Color(51, 51, 51));
 			floodRect.fill(g2d);

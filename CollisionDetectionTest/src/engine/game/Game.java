@@ -58,7 +58,7 @@ public class Game extends JPanel {
 	public static ArrayList<Line2D> lList = new ArrayList<Line2D>();
 	public static ArrayList<GravityNode> gList = new ArrayList<GravityNode>();
 	public static ArrayList<ModifierMenu> mList = new ArrayList<ModifierMenu>();
-	public static double manualSize = 20;
+	public static double manualSize = 10;
 	static Collection<Point2D> pArray = new ArrayList<Point2D>();
 	static GrahamScan2D scan = new GrahamScan2D();
 	static Polygon2D boundary;
