@@ -1,7 +1,11 @@
 package engine.game;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
+import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
 
 public class GravityNode extends Point2D {
@@ -12,6 +16,15 @@ public class GravityNode extends Point2D {
 		super(center.getX(), center.getY());
 		this.intensity = intensity;
 		this.repulsor = repulsor;
+	}
+
+	Collection<Point2D> getPointsAroundPoint(int divisions, int radius) {
+		Collection<Point2D> temp = new ArrayList<Point2D>();
+		for (int i = 0; i < divisions; i++) {
+			double angle = ((2 * Math.PI) / divisions) * i;
+			temp.add(new Circle2D(this, radius).point(angle));
+		}
+		return temp;
 	}
 
 	Vector2D gravityAtParticle(Particle p) {

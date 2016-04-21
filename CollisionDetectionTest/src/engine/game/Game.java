@@ -21,15 +21,14 @@ import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import engine.ui.Menu;
-import engine.ui.ModifierMenu;
 import math.geom2d.Box2D;
 import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
-import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
 import math.geom2d.polygon.Polygon2D;
 import math.geom2d.polygon.convhull.GrahamScan2D;
+import engine.ui.Menu;
+import engine.ui.ModifierMenu;
 
 public class Game extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -308,20 +307,18 @@ public class Game extends JPanel {
 		if (gravityType == 2) {
 			for (int nodeIterator = 0; nodeIterator < gList.size(); nodeIterator++) {
 				GravityNode gn = gList.get(nodeIterator);
-				gn.draw(g2d, 3);
 				if (debug) {
 					if (gn.repulsor) {
 						g2d.setColor(Color.RED);
 					} else {
 						g2d.setColor(Color.GREEN);
 					}
-
-					for (int nodeDebug = 2; nodeDebug <= 20; nodeDebug += 2) {
-						new Circle2D(gn, nodeDebug * nodeDebug).draw(g2d);
+					for (Point2D p : gn.getPointsAroundPoint(40, 800)) {
+						new Line2D(p, gn).draw(g2d);
 					}
-
 					g2d.setColor(Color.BLACK);
 				}
+				gn.draw(g2d, 3);
 			}
 		}
 

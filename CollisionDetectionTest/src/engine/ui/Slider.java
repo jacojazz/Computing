@@ -1,11 +1,11 @@
 package engine.ui;
 
 import java.awt.Color;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 
 import math.geom2d.Point2D;
+import math.geom2d.line.Line2D;
 import math.geom2d.polygon.Rectangle2D;
 import engine.game.Game;
 
@@ -76,14 +76,14 @@ public class Slider extends Rectangle2D {
 	}
 
 	void paint(Graphics2D g2d) {
-		FontMetrics fm = g2d.getFontMetrics();
 		g2d.setColor(new Color(20, 20, 20, 250));
 		this.fill(g2d);
-		g2d.setColor(Color.BLACK);
+		int colorValue = (getValue() * 255) / 100;
+		g2d.setColor(new Color(colorValue, colorValue, colorValue));
 		inner.fill(g2d);
+		g2d.setColor(Color.GRAY);
+		new Line2D(inner.getX(), inner.getY() + (inner.getHeight() / 2), inner.getX() + inner.getWidth(), inner.getY() + (inner.getHeight() / 2)).draw(g2d);
 		g2d.setColor(new Color(51, 51, 51));
 		mover.fill(g2d);
-		g2d.setColor(Color.GRAY);
-		g2d.drawString(String.valueOf(sliderValue), (int) (mover.getX() + (mover.getWidth() / 2) - (fm.stringWidth(String.valueOf(sliderValue)) / 2)), (int) (mover.getY() + (mover.getHeight() / 2)) + (fm.getHeight() / 4));
 	}
 }
