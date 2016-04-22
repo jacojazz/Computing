@@ -15,7 +15,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -26,7 +25,7 @@ import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
 import math.geom2d.line.Line2D;
 import math.geom2d.polygon.Polygon2D;
-import math.geom2d.polygon.convhull.GrahamScan2D;
+import engine.ui.ConvexHull;
 import engine.ui.Menu;
 import engine.ui.ModifierMenu;
 
@@ -58,8 +57,7 @@ public class Game extends JPanel {
 	public static ArrayList<GravityNode> gList = new ArrayList<GravityNode>();
 	public static ArrayList<ModifierMenu> mList = new ArrayList<ModifierMenu>();
 	public static double manualSize = 10;
-	static Collection<Point2D> pArray = new ArrayList<Point2D>();
-	static GrahamScan2D scan = new GrahamScan2D();
+	static ArrayList<Point2D> pArray = new ArrayList<Point2D>();
 	static Polygon2D boundary;
 
 	Game() {
@@ -242,7 +240,7 @@ public class Game extends JPanel {
 
 			if (giftWrapping) {
 				try {
-					boundary = scan.convexHull(pArray);
+					boundary = ConvexHull.convexHull(pArray);
 				} catch (Exception e) {
 				}
 			}
@@ -391,9 +389,6 @@ public class Game extends JPanel {
 		for (int modifierIterator = 0; modifierIterator < mList.size(); modifierIterator++) {
 			mList.get(modifierIterator).paint(g2d);
 		}
-
-		g2d.setColor(Color.BLACK);
-		g2d.drawString(Integer.toString(pList.size()), 0, 10);
 	}
 
 	public static void applyQualityRenderingHints(Graphics2D g2d) {
