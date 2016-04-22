@@ -25,7 +25,7 @@ import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
 import math.geom2d.line.Line2D;
 import math.geom2d.polygon.Polygon2D;
-import engine.ui.ConvexHull;
+import math.geom2d.polygon.convhull.GrahamScan2D;
 import engine.ui.Menu;
 import engine.ui.ModifierMenu;
 
@@ -45,7 +45,7 @@ public class Game extends JPanel {
 	static boolean dragging = false;
 	public static boolean debug = false;
 	public static boolean flood = false;
-	static boolean giftWrapping = false;
+	static boolean giftWrapping = true;
 	static boolean updating = true;
 	public static int gravityType = 1;
 	public static Line2D floor = new Line2D(width, height, 0, height);
@@ -57,6 +57,7 @@ public class Game extends JPanel {
 	public static ArrayList<GravityNode> gList = new ArrayList<GravityNode>();
 	public static ArrayList<ModifierMenu> mList = new ArrayList<ModifierMenu>();
 	public static double manualSize = 10;
+	static GrahamScan2D scan = new GrahamScan2D();
 	static ArrayList<Point2D> pArray = new ArrayList<Point2D>();
 	static Polygon2D boundary;
 
@@ -239,10 +240,7 @@ public class Game extends JPanel {
 			menu.update();
 
 			if (giftWrapping) {
-				try {
-					boundary = ConvexHull.convexHull(pArray);
-				} catch (Exception e) {
-				}
+				boundary = scan.convexHull(pArray);
 			}
 
 			if (pList.size() > 150) {
@@ -253,7 +251,9 @@ public class Game extends JPanel {
 			for (int particleIterator = 0; particleIterator < pList.size(); particleIterator++) {
 				Particle p = pList.get(particleIterator);
 				if (giftWrapping) {
-					pArray.addAll(p.getPointsOnCircle(30));
+					for (Point2D gwP : p.getPointsOnCircle(30)) {
+						pArray.add(gwP);
+					}
 				}
 
 				if (!bounds.containsBounds(p)) {
