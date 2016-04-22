@@ -38,14 +38,15 @@ public class Game extends JPanel {
 	static int width = gd.getDisplayMode().getWidth();
 	static int height = gd.getDisplayMode().getHeight();
 	Menu menu = new Menu();
-	static Box2D bounds = new Box2D(new Point2D(-100, -100), width + 200, height + 200);
+	static Box2D bounds = new Box2D(new Point2D(0, 0), width, height);
+	static Box2D pBounds = new Box2D(new Point2D(-100, -100), width + 200, height + 200);
 	public static Point2D mouse;
 	static Point2D initial;
 	static Vector2D distance;
 	static boolean dragging = false;
 	public static boolean debug = false;
 	public static boolean flood = false;
-	static boolean giftWrapping = true;
+	static boolean giftWrapping = false;
 	static boolean updating = true;
 	public static int gravityType = 1;
 	public static Line2D floor = new Line2D(width, height, 0, height);
@@ -210,7 +211,7 @@ public class Game extends JPanel {
 		lList.add(rightWall);
 		lList.add(roof);
 
-		boundary = bounds.asRectangle();
+		boundary = pBounds.asRectangle();
 	}
 
 	static Vector2D getGravity() {
@@ -251,12 +252,10 @@ public class Game extends JPanel {
 			for (int particleIterator = 0; particleIterator < pList.size(); particleIterator++) {
 				Particle p = pList.get(particleIterator);
 				if (giftWrapping) {
-					for (Point2D gwP : p.getPointsOnCircle(30)) {
-						pArray.add(gwP);
-					}
+					pArray.addAll(p.getPointsOnCircle(16));
 				}
 
-				if (!bounds.containsBounds(p)) {
+				if (!pBounds.containsBounds(p)) {
 					pList.remove(particleIterator);
 				}
 
