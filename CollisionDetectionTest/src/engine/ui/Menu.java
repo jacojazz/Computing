@@ -9,15 +9,14 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import engine.game.Game;
-import engine.utils.Reference;
 import math.geom2d.Point2D;
 import math.geom2d.polygon.Rectangle2D;
+import engine.game.Game;
+import engine.utils.Reference;
 
 public class Menu {
 	Point2D position = new Point2D(10, 10);
@@ -55,12 +54,12 @@ public class Menu {
 
 	public Menu() {
 		try {
-			textFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/engine/res/fonts/Abel-Regular.ttf")).deriveFont(15f);
-			particleImage = ImageIO.read(new File("src/engine/res/images/particle.png"));
-			lineImage = ImageIO.read(new File("src/engine/res/images/line.png"));
-			gravityImage = ImageIO.read(new File("src/engine/res/images/inwards.png"));
-			repulsorImage = ImageIO.read(new File("src/engine/res/images/outwards.png"));
-		} catch (FontFormatException | IOException e) {
+			textFont = Font.createFont(Font.TRUETYPE_FONT, Menu.class.getResourceAsStream("/engine/res/fonts/Abel-Regular.ttf")).deriveFont(15f);
+			particleImage = ImageIO.read(Menu.class.getResource("/engine/res/images/particle.png"));
+			lineImage = ImageIO.read(Menu.class.getResource("/engine/res/images/line.png"));
+			gravityImage = ImageIO.read(Menu.class.getResource("/engine/res/images/inwards.png"));
+			repulsorImage = ImageIO.read(Menu.class.getResource("/engine/res/images/outwards.png"));
+		} catch (IOException | FontFormatException e) {
 			e.printStackTrace();
 		}
 

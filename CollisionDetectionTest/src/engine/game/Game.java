@@ -37,7 +37,7 @@ public class Game extends JPanel {
 	static GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 	static int width = gd.getDisplayMode().getWidth();
 	static int height = gd.getDisplayMode().getHeight();
-	Menu menu = new Menu();
+	public static Menu menu = new Menu();
 	static Box2D bounds = new Box2D(new Point2D(0, 0), width, height);
 	static Box2D pBounds = new Box2D(new Point2D(-100, -100), width + 200, height + 200);
 	public static Point2D mouse;
