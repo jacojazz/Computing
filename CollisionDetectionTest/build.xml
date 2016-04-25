@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="run" name="CollisionDetectionTest">
+	<property environment="env" />
+	<property name="ECLIPSE_HOME" value="C:/Program Files/Eclipse 4.3" />
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="target" value="1.7" />
+	<property name="source" value="1.7" />
+	<property name="jar.dir" value="deploy" />
+	<property name="jar.file" value="${jar.dir}/${ant.project.name}.jar" />
+	<property name="lib.dir" value="lib" />
+	<property name="Geom2D.location" location="N:/Geom2D/" />
+
+	<path id="Geom2D.userclasspath">
+		<pathelement location="../../../../bc-ns-1/Students_2009$/09-jglass/09-jglass/Geom2D/javaGeom-0.11.2.jar" />
+	</path>
+
+	<path id="CollisionDetectionTest.classpath">
+		<pathelement location="bin" />
+		<path refid="Geom2D.userclasspath" />
+	</path>
+
+	<target name="init" depends="clean">
+		<mkdir dir="bin" />
+		<copy includeemptydirs="false" todir="bin">
+			<fileset dir="src">
+				<exclude name="**/*.ucls" />
+				<exclude name="**/*.useq" />
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="clean">
+		<delete dir="bin" />
+		<delete dir="deploy" />
+	</target>
+
+	<target name="build" depends="init">
+		<path id="jars">
+			<fileset dir="${lib.dir}" includes="**/*.jar" />
+		</path>
+
+		<copy todir="${lib.dir}">
+			<fileset dir="${Geom2D.location}" includes="**/*.jar" />
+		</copy>
+
+		<echo message="${ant.project.name}: ${ant.file}" />
+		<javac debug="true" debuglevel="${debuglevel}" destdir="bin" classpathref="jars" includeantruntime="false" source="${source}" target="${target}">
+			<src path="src" />
+			<classpath refid="CollisionDetectionTest.classpath" />
+		</javac>
+	</target>
+
+	<target name="run" depends="build">
+		<java classname="engine.game.Game" failonerror="true" fork="yes" classpathref="jars">
+			<classpath refid="CollisionDetectionTest.classpath" />
+		</java>
+	</target>
+
+	<target name="deploy" depends="build">
+		<mkdir dir="deploy" />
+		<jar destfile="${jar.file}">
+			<manifest>
+				<attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader" />
+				<attribute name="Rsrc-Main-Class" value="engine.game.Game" />
+				<attribute name="Class-Path" value="." />
+				<attribute name="Rsrc-Class-Path" value="./ javaGeom-0.11.2.jar" />
+			</manifest>
+			<zipfileset src="lib/jar-in-jar-loader.zip" />
+			<fileset dir="bin" />
+			<zipfileset dir="lib" includes="**/*.jar" />
+		</jar>
+	</target>
+</project>
