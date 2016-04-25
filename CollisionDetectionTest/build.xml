@@ -28,6 +28,7 @@
 				<exclude name="**/*.java" />
 			</fileset>
 		</copy>
+		<mkdir dir="deploy" />
 	</target>
 
 	<target name="clean">
@@ -58,13 +59,16 @@
 	</target>
 
 	<target name="deploy" depends="build">
-		<mkdir dir="deploy" />
+		<tstamp>
+			<format property="builtat" pattern="MM/dd/yyyy hh:mm aa" timezone="America/New_York" />
+		</tstamp>
 		<jar destfile="${jar.file}">
 			<manifest>
 				<attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader" />
 				<attribute name="Rsrc-Main-Class" value="engine.game.Game" />
 				<attribute name="Class-Path" value="." />
 				<attribute name="Rsrc-Class-Path" value="./ javaGeom-0.11.2.jar" />
+				<attribute name="Implementation-Version" value="${builtat}" />
 			</manifest>
 			<zipfileset src="lib/jar-in-jar-loader.zip" />
 			<fileset dir="bin" />
