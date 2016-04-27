@@ -67,6 +67,14 @@ public class QuestionEditor extends JPanel implements ListSelectionListener {
 			public void actionPerformed(ActionEvent arg0) {
 				int index = list.getSelectedIndex();
 				list.remove(index);
+
+				List<String> convertedList = new ArrayList<String>();
+				for (Object arrayData : listModel.toArray()) {
+					convertedList.add((String) arrayData);
+				}
+
+				QuestionManager.setQuestions(convertedList);
+				QuestionManager.saveLists();
 			}
 		});
 

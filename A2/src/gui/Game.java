@@ -34,7 +34,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 public class Game extends JPanel {
-
 	private static final long serialVersionUID = 1L;
 	static boolean running = false;
 	static JFrame frame = new JFrame("Music Madness");
