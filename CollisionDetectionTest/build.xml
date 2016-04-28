@@ -8,10 +8,9 @@
 	<property name="jar.dir" value="deploy" />
 	<property name="jar.file" value="${jar.dir}/${ant.project.name}.jar" />
 	<property name="lib.dir" value="lib" />
-	<property name="Geom2D.location" location="N:/Geom2D/" />
 
 	<path id="Geom2D.userclasspath">
-		<pathelement location="../../../../bc-ns-1/Students_2009$/09-jglass/09-jglass/Geom2D/javaGeom-0.11.2.jar" />
+		<pathelement location="${lib.dir}/javaGeom-0.11.2.jar" />
 	</path>
 
 	<path id="CollisionDetectionTest.classpath">
@@ -28,22 +27,18 @@
 				<exclude name="**/*.java" />
 			</fileset>
 		</copy>
-		<mkdir dir="deploy" />
+		<mkdir dir="${jar.dir}" />
 	</target>
 
 	<target name="clean">
 		<delete dir="bin" />
-		<delete dir="deploy" />
+		<delete dir="${jar.dir}" />
 	</target>
 
 	<target name="build" depends="init">
 		<path id="jars">
 			<fileset dir="${lib.dir}" includes="**/*.jar" />
 		</path>
-
-		<copy todir="${lib.dir}">
-			<fileset dir="${Geom2D.location}" includes="**/*.jar" />
-		</copy>
 
 		<echo message="${ant.project.name}: ${ant.file}" />
 		<javac debug="true" debuglevel="${debuglevel}" destdir="bin" classpathref="jars" includeantruntime="false" source="${source}" target="${target}">
@@ -59,8 +54,14 @@
 	</target>
 
 	<target name="deploy" depends="build">
+		<delete>
+			<fileset dir="${jar.dir}">
+				<include name="**/*.java" />
+			</fileset>
+		</delete>
+
 		<tstamp>
-			<format property="builtat" pattern="MM/dd/yyyy hh:mm aa" timezone="America/New_York" />
+			<format property="builtat" pattern="dd/MM/yyyy" timezone="Europe/London" />
 		</tstamp>
 		<jar destfile="${jar.file}">
 			<manifest>
@@ -68,7 +69,7 @@
 				<attribute name="Rsrc-Main-Class" value="engine.game.Game" />
 				<attribute name="Class-Path" value="." />
 				<attribute name="Rsrc-Class-Path" value="./ javaGeom-0.11.2.jar" />
-				<attribute name="Implementation-Version" value="${builtat}" />
+				<attribute name="Implementation-Date" value="${builtat}" />
 			</manifest>
 			<zipfileset src="lib/jar-in-jar-loader.zip" />
 			<fileset dir="bin" />
