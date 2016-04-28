@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="run" name="CollisionDetectionTest">
 	<property environment="env" />
-	<property name="ECLIPSE_HOME" value="C:/Program Files/Eclipse 4.3" />
 	<property name="debuglevel" value="source,lines,vars" />
 	<property name="target" value="1.7" />
 	<property name="source" value="1.7" />
