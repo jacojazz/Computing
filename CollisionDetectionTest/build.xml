@@ -60,7 +60,8 @@
 		</delete>
 
 		<tstamp>
-			<format property="builtat" pattern="dd/MM/yyyy" timezone="Europe/London" />
+			<format property="builtatdate" pattern="dd/MM/yyyy" timezone="Europe/London" />
+			<format property="builtattime" pattern="HH:mm" timezone="Europe/London" />
 		</tstamp>
 		<jar destfile="${jar.file}">
 			<manifest>
@@ -68,7 +69,7 @@
 				<attribute name="Rsrc-Main-Class" value="engine.game.Game" />
 				<attribute name="Class-Path" value="." />
 				<attribute name="Rsrc-Class-Path" value="./ javaGeom-0.11.2.jar" />
-				<attribute name="Implementation-Date" value="${builtat}" />
+				<attribute name="Implementation-Date" value="${builtatdate} at ${builtattime}" />
 			</manifest>
 			<zipfileset src="lib/jar-in-jar-loader.zip" />
 			<fileset dir="bin" />
