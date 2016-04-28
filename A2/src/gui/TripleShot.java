@@ -16,19 +16,9 @@ public class TripleShot {
 	TripleShot(int xInitial, int yInitial) {
 		this.x = xInitial + 8;
 		this.y = yInitial;
-		/*
-		Game.bulletList.add(new Bullet(x, y, -4, -4, false));
-		Game.bulletList.add(new Bullet(x, y, -3, -4, false));
-		Game.bulletList.add(new Bullet(x, y, -2, -4, false));
-		*/
 		Game.bulletList.add(new Bullet(x, y, -1, -4, false));
 		Game.bulletList.add(new Bullet(x, y, 0, -4, false));
 		Game.bulletList.add(new Bullet(x, y, 1, -4, false));
-		/*
-		Game.bulletList.add(new Bullet(x, y, 2, -4, false));
-		Game.bulletList.add(new Bullet(x, y, 3, -4, false));
-		Game.bulletList.add(new Bullet(x, y, 4, -4, false));
-		*/
 		
 		try {
 			AudioInputStream ais = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("music/tripleshot.wav"));
