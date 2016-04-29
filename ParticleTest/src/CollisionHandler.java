@@ -37,7 +37,9 @@ public class CollisionHandler implements Runnable {
 		double im1 = (1 / p.mass.getMass());
 		double im2 = (1 / p2.mass.getMass());
 		p.setPosition(p.center().plus(mtd.times(im1 / (im1 + im2))));
+		System.out.println(p.center());
 		p2.setPosition(p2.center().minus(mtd.times(im2 / (im1 + im2))));
+		System.out.println(p2.center());
 		Vector2D v = (p.getVelocity().minus(p2.getVelocity()));
 		double vn = v.dot(mtd.normalize());
 		if (vn > 0.0f)
