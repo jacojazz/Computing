@@ -3,9 +3,13 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import math.geom2d.Point2D;
+import math.geom2d.Vector2D;
 
 public class Game extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -15,13 +19,17 @@ public class Game extends JPanel {
 	static GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 	static int width = gd.getDisplayMode().getWidth();
 	static int height = gd.getDisplayMode().getHeight();
+	CollisionHandler ch = new CollisionHandler();
+	static ArrayList<Particle> pList = new ArrayList<Particle>();
 
 	Game() {
-
+		pList.add(new Particle(new Point2D(0, height / 2), 40, new Vector2D(2, 0)));
+		pList.add(new Particle(new Point2D(width, height / 2), 40, new Vector2D(-2, 0)));
 	}
 
 	void update() {
-
+		ch.update();
+		UpdateHandler.update();
 	}
 
 	public void paint(Graphics g) {
@@ -29,6 +37,10 @@ public class Game extends JPanel {
 		Graphics2D g2d = (Graphics2D) g;
 		applyQualityRenderingHints(g2d);
 
+		for (int particleIterator = 0; particleIterator < Game.pList.size(); particleIterator++) {
+			Particle p = Game.pList.get(particleIterator);
+			p.draw(g2d);
+		}
 	}
 
 	public static void applyQualityRenderingHints(Graphics2D g2d) {

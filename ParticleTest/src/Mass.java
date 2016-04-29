@@ -4,7 +4,7 @@ public class Mass {
 	private double mass;
 
 	Mass(Circle2D c, double density) {
-		new Mass(Math.PI * (c.radius() * c.radius()), density);
+		this(Math.PI * ((c.radius() / 100) * (c.radius() / 100)), density);
 	}
 
 	Mass(double area, double density) {
