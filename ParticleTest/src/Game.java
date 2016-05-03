@@ -20,16 +20,17 @@ public class Game extends JPanel {
 	static int width = gd.getDisplayMode().getWidth();
 	static int height = gd.getDisplayMode().getHeight();
 	CollisionHandler ch = new CollisionHandler();
+	UpdateHandler uh = new UpdateHandler();
 	static ArrayList<Particle> pList = new ArrayList<Particle>();
 
 	Game() {
-		pList.add(new Particle(new Point2D(0, height / 2), 40, new Vector2D(2, 0)));
-		pList.add(new Particle(new Point2D(width, height / 2), 40, new Vector2D(-2, 0)));
+		pList.add(new Particle(new Point2D(0, height / 2), 40, new Vector2D(20, -10)));
+		pList.add(new Particle(new Point2D(width, height / 2), 40, new Vector2D(-19, -10)));
 	}
 
 	void update() {
 		ch.update();
-		UpdateHandler.update();
+		uh.update();
 	}
 
 	public void paint(Graphics g) {
@@ -76,9 +77,9 @@ public class Game extends JPanel {
 			while (delta >= 1) {
 				frames++;
 				game.update();
-				game.repaint();
 				delta--;
 			}
+			game.repaint();
 		}
 	}
 }

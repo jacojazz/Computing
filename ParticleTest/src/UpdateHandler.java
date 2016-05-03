@@ -1,17 +1,21 @@
-public class UpdateHandler {
-	public static void update() {
-		updateAllParticles();
+import java.util.Iterator;
+
+public class UpdateHandler implements Runnable {
+	Thread t;
+
+	UpdateHandler() {
+		t = new Thread(this);
+		t.start();
 	}
 
-	static void updateAllParticles() {
-		Thread t = new Thread(new Runnable() {
-			public void run() {
-				for (int particleIterator = 0; particleIterator < Game.pList.size(); particleIterator++) {
-					Particle p = Game.pList.get(particleIterator);
-					p.update();
-				}
-			}
-		});
+	public void update() {
 		t.run();
+	}
+
+	public void run() {
+		for (Iterator<Particle> pIterator = Game.pList.iterator(); pIterator.hasNext();) {
+			Particle p = pIterator.next();
+			p.update();
+		}
 	}
 }

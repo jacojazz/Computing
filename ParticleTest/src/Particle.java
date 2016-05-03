@@ -3,25 +3,21 @@ import math.geom2d.Vector2D;
 import math.geom2d.conic.Circle2D;
 
 public class Particle extends Circle2D {
-	Vector2D velocity, force;
 	Mass mass;
+	Vector2D velocity, force;
 
-	Particle(Point2D c, double r) {
-		this(c, r, new Vector2D(0, 0));
+	Particle(Point2D center, double radius) {
+		this(center, radius, new Vector2D(0, 0));
 	}
 
-	Particle(Point2D c, double r, Vector2D v) {
-		this(c, r, v, new Vector2D(0, 0));
+	Particle(Point2D center, double radius, Vector2D velocity) {
+		super(center, radius);
+		this.velocity = velocity;
+		force = Constants.gravity;
+		mass = new Mass(this, 1);
 	}
 
-	Particle(Point2D c, double r, Vector2D v, Vector2D f) {
-		super(c, r);
-		this.velocity = v;
-		this.force = f;
-		this.mass = new Mass(this, 1);
-	}
-
-	void update() {
+	public void update() {
 		velocity = velocity.plus(force);
 		setPosition(center().plus(velocity));
 	}
@@ -29,6 +25,7 @@ public class Particle extends Circle2D {
 	public void setPosition(Point2D c) {
 		xc = c.getX();
 		yc = c.getY();
+		theta = velocity.angle();
 	}
 
 	public Vector2D getVelocity() {
@@ -37,5 +34,13 @@ public class Particle extends Circle2D {
 
 	public void setVelocity(Vector2D velocity) {
 		this.velocity = velocity;
+	}
+
+	public double getMass() {
+		return mass.getMass();
+	}
+
+	public void setRadius(double radius) {
+		r = radius;
 	}
 }

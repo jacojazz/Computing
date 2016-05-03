@@ -187,10 +187,8 @@ public class Particle extends Circle2D {
 		gnp.update(center(), mass);
 		for (int particle2Iterator = 0; particle2Iterator < Game.pList.size(); particle2Iterator++) {
 			Particle p2 = Game.pList.get(particle2Iterator);
-			if (inParticleCollisionRange(p2)) {
-				if (checkCollision(this, p2) && !equals(p2)) {
-					resolveCollision(this, p2);
-				}
+			if (checkCollision(this, p2) && !equals(p2)) {
+				resolveCollision(this, p2);
 			}
 		}
 
@@ -202,8 +200,7 @@ public class Particle extends Circle2D {
 		}
 
 		velocity = velocity.plus(getForceParticle(this));
-		Point2D p = center().plus(velocity);
-		setPosition(p.getX(), p.getY());
+		setPosition(center().plus(velocity));
 		checkActive();
 	}
 

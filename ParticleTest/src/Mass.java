@@ -1,3 +1,5 @@
+import java.text.DecimalFormat;
+
 import math.geom2d.conic.Circle2D;
 
 public class Mass {
@@ -8,7 +10,10 @@ public class Mass {
 	}
 
 	Mass(double area, double density) {
-		this.mass = area * density;
+		DecimalFormat oneDigit = new DecimalFormat("#,##0.0");
+		double temp = area * density;
+		double formatted = Double.valueOf(oneDigit.format(temp));
+		this.mass = formatted;
 	}
 
 	public double getMass() {
