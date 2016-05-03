@@ -7,12 +7,11 @@ public class CollisionHandler implements Runnable {
 	Thread t;
 
 	CollisionHandler() {
-		t = new Thread(this);
-		t.start();
 	}
 
 	public void update() {
-		t.run();
+		t = new Thread(this);
+		t.start();
 	}
 
 	void resolveCollision(Particle p, Particle p2) {

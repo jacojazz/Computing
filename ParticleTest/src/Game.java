@@ -8,24 +8,27 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import math.geom2d.Box2D;
 import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
 
 public class Game extends JPanel {
 	private static final long serialVersionUID = 1L;
 	static final int TARGET_FPS = 60;
-	static JFrame frame = new JFrame("ParticleTest");
+	static JFrame frame = new JFrame("Particle Test");
 	static int frames = 0;
 	static GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 	static int width = gd.getDisplayMode().getWidth();
 	static int height = gd.getDisplayMode().getHeight();
+	static Box2D bounds = new Box2D(new Point2D(0, 0), width, height);
 	CollisionHandler ch = new CollisionHandler();
 	UpdateHandler uh = new UpdateHandler();
+	Cleaner cl = new Cleaner();
 	static ArrayList<Particle> pList = new ArrayList<Particle>();
 
 	Game() {
 		pList.add(new Particle(new Point2D(0, height / 2), 40, new Vector2D(20, -10)));
-		pList.add(new Particle(new Point2D(width, height / 2), 40, new Vector2D(-19, -10)));
+		pList.add(new Particle(new Point2D(width, height / 2), 40, new Vector2D(-20, -10)));
 	}
 
 	void update() {
@@ -35,7 +38,7 @@ public class Game extends JPanel {
 
 	public void paint(Graphics g) {
 		super.paint(g);
-		Graphics2D g2d = (Graphics2D) g;
+		final Graphics2D g2d = (Graphics2D) g;
 		applyQualityRenderingHints(g2d);
 
 		for (int particleIterator = 0; particleIterator < Game.pList.size(); particleIterator++) {
