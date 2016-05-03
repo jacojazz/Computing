@@ -3,7 +3,7 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -24,16 +24,24 @@ public class Game extends JPanel {
 	CollisionHandler ch = new CollisionHandler();
 	UpdateHandler uh = new UpdateHandler();
 	Cleaner cl = new Cleaner();
-	static ArrayList<Particle> pList = new ArrayList<Particle>();
+	static CopyOnWriteArrayList<Particle> pList = new CopyOnWriteArrayList<Particle>();
 
 	Game() {
-		pList.add(new Particle(new Point2D(0, height / 2), 40, new Vector2D(20, -10)));
-		pList.add(new Particle(new Point2D(width, height / 2), 40, new Vector2D(-20, -10)));
+
 	}
 
 	void update() {
 		ch.update();
 		uh.update();
+		cl.update();
+
+		if (frames % (TARGET_FPS / 2) == 0) {
+			pList.add(new Particle(new Point2D(0, height / 2), 40, new Vector2D(20, -10)));
+		}
+
+		if (frames % TARGET_FPS == 0) {
+			pList.add(new Particle(new Point2D(width, height / 2), 40, new Vector2D(-20, -10)));
+		}
 	}
 
 	public void paint(Graphics g) {
