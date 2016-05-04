@@ -10,10 +10,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import engine.utils.Cleaner;
 import math.geom2d.Box2D;
 import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
+import math.geom2d.line.Line2D;
+import engine.utils.Cleaner;
 
 public class Game extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -27,10 +28,14 @@ public class Game extends JPanel {
 	CollisionHandler ch = new CollisionHandler();
 	UpdateHandler uh = new UpdateHandler();
 	Cleaner cl = new Cleaner();
+	InputHandler ih = new InputHandler();
 	public static CopyOnWriteArrayList<Particle> pList = new CopyOnWriteArrayList<Particle>();
+	public static CopyOnWriteArrayList<Line2D> lList = new CopyOnWriteArrayList<Line2D>();
 
 	Game() {
-
+		addMouseListener(ih.ml);
+		addMouseMotionListener(ih.mml);
+		addKeyListener(ih.kl);
 	}
 
 	void update() {
@@ -38,12 +43,13 @@ public class Game extends JPanel {
 		uh.update();
 		cl.update();
 
-		if (frames % (TARGET_FPS / 2) == 0) {
-			pList.add(new Particle(new Point2D(0, height / 2), 40, new Vector2D(20, -10)));
-		}
-
-		if (frames % TARGET_FPS == 0) {
-			pList.add(new Particle(new Point2D(width, height / 2), 40, new Vector2D(-20, -10)));
+		if (false) {
+			if (frames % (TARGET_FPS / 2) == 0) {
+				pList.add(new Particle(new Point2D(0, height / 2), 40, new Vector2D(20, -10)));
+			}
+			if (frames % TARGET_FPS == 0) {
+				pList.add(new Particle(new Point2D(width, height / 2), 40, new Vector2D(-20, -10)));
+			}
 		}
 	}
 
