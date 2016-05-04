@@ -32,15 +32,15 @@ public class Game extends JPanel {
 	CollisionHandler ch = new CollisionHandler();
 	UpdateHandler uh = new UpdateHandler();
 	Cleaner cl = new Cleaner();
-	public static InputHandler ih = new InputHandler();
 	PaintHandler ph = new PaintHandler();
 	public static CopyOnWriteArrayList<Particle> pList = new CopyOnWriteArrayList<Particle>();
 	public static CopyOnWriteArrayList<Line2D> lList = new CopyOnWriteArrayList<Line2D>();
 
 	Game() {
-		addMouseListener(ih.ml);
-		addMouseMotionListener(ih.mml);
-		addKeyListener(ih.kl);
+		addMouseListener(InputHandler.ml);
+		addMouseMotionListener(InputHandler.mml);
+		addKeyListener(InputHandler.kl);
+		setFocusable(true);
 	}
 
 	void update() {

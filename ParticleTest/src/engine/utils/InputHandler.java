@@ -14,11 +14,11 @@ import engine.Game;
 import engine.Particle;
 
 public class InputHandler {
-	Point2D mouse = new Point2D(0, 0);
-	Point2D initial = mouse;
-	boolean dragging = false;
+	static Point2D mouse = new Point2D(0, 0);
+	static Point2D initial = mouse;
+	static boolean dragging = false;
 
-	public MouseListener ml = new MouseListener() {
+	public static MouseListener ml = new MouseListener() {
 		public void mouseClicked(MouseEvent e) {
 
 		}
@@ -48,7 +48,7 @@ public class InputHandler {
 		}
 	};
 
-	public MouseMotionListener mml = new MouseMotionListener() {
+	public static MouseMotionListener mml = new MouseMotionListener() {
 		public void mouseDragged(MouseEvent e) {
 			mouse = new Point2D(e.getPoint());
 		}
@@ -58,9 +58,11 @@ public class InputHandler {
 		}
 	};
 
-	public KeyListener kl = new KeyListener() {
+	public static KeyListener kl = new KeyListener() {
 		public void keyPressed(KeyEvent e) {
-
+			if (e.getKeyCode() == KeyEvent.VK_P) {
+				Game.debug = !Game.debug;
+			}
 		}
 
 		public void keyReleased(KeyEvent e) {
@@ -72,7 +74,7 @@ public class InputHandler {
 		}
 	};
 
-	void paint(Graphics2D g2d) {
+	static void paint(Graphics2D g2d) {
 		if (dragging) {
 			new Line2D(initial, mouse).draw(g2d);
 		}

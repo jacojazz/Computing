@@ -1,5 +1,6 @@
 package engine.utils;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Iterator;
 
@@ -9,24 +10,22 @@ import engine.Particle;
 
 public class PaintHandler {
 	public void paint(Graphics2D g2d) {
-		Game.ih.paint(g2d);
+		InputHandler.paint(g2d);
 
 		particles(g2d);
 		lines(g2d);
-
-		if (Game.debug) {
-			debug(g2d);
-		}
-	}
-
-	private void debug(Graphics2D g2d) {
-
 	}
 
 	private void particles(Graphics2D g2d) {
 		for (Iterator<Particle> particleIterator = Game.pList.iterator(); particleIterator.hasNext();) {
 			Particle p = particleIterator.next();
 			p.draw(g2d);
+
+			if (Game.debug) {
+				g2d.setColor(Color.BLUE);
+				p.boundingBox().draw(g2d);
+				g2d.setColor(Color.BLACK);
+			}
 		}
 	}
 
