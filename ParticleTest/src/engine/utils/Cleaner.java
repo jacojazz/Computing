@@ -1,4 +1,9 @@
+package engine.utils;
+
 import java.util.Iterator;
+
+import engine.Game;
+import engine.Particle;
 
 public class Cleaner implements Runnable {
 	public void update() {

@@ -1,5 +1,8 @@
+package engine;
+
 import java.util.Iterator;
 
+import engine.utils.Constants;
 import math.geom2d.Vector2D;
 import math.geom2d.line.Line2D;
 

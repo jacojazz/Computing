@@ -1,3 +1,5 @@
+package engine;
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
@@ -8,6 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import engine.utils.Cleaner;
 import math.geom2d.Box2D;
 import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
@@ -20,11 +23,11 @@ public class Game extends JPanel {
 	static GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 	static int width = gd.getDisplayMode().getWidth();
 	static int height = gd.getDisplayMode().getHeight();
-	static Box2D bounds = new Box2D(new Point2D(0, 0), width, height);
+	public static Box2D bounds = new Box2D(new Point2D(0, 0), width, height);
 	CollisionHandler ch = new CollisionHandler();
 	UpdateHandler uh = new UpdateHandler();
 	Cleaner cl = new Cleaner();
-	static CopyOnWriteArrayList<Particle> pList = new CopyOnWriteArrayList<Particle>();
+	public static CopyOnWriteArrayList<Particle> pList = new CopyOnWriteArrayList<Particle>();
 
 	Game() {
 
