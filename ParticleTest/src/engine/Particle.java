@@ -1,4 +1,5 @@
 package engine;
+
 import engine.utils.Constants;
 import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
@@ -12,7 +13,7 @@ public class Particle extends Circle2D {
 		this(center, radius, new Vector2D(0, 0));
 	}
 
-	Particle(Point2D center, double radius, Vector2D velocity) {
+	public Particle(Point2D center, double radius, Vector2D velocity) {
 		super(center, radius);
 		this.velocity = velocity;
 		force = Constants.gravity;

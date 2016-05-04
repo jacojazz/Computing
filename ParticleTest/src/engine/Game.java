@@ -12,9 +12,12 @@ import javax.swing.JPanel;
 
 import math.geom2d.Box2D;
 import math.geom2d.Point2D;
-import math.geom2d.Vector2D;
 import math.geom2d.line.Line2D;
 import engine.utils.Cleaner;
+import engine.utils.CollisionHandler;
+import engine.utils.InputHandler;
+import engine.utils.PaintHandler;
+import engine.utils.UpdateHandler;
 
 public class Game extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -25,10 +28,12 @@ public class Game extends JPanel {
 	static int width = gd.getDisplayMode().getWidth();
 	static int height = gd.getDisplayMode().getHeight();
 	public static Box2D bounds = new Box2D(new Point2D(0, 0), width, height);
+	public static boolean debug = false;
 	CollisionHandler ch = new CollisionHandler();
 	UpdateHandler uh = new UpdateHandler();
 	Cleaner cl = new Cleaner();
-	InputHandler ih = new InputHandler();
+	public static InputHandler ih = new InputHandler();
+	PaintHandler ph = new PaintHandler();
 	public static CopyOnWriteArrayList<Particle> pList = new CopyOnWriteArrayList<Particle>();
 	public static CopyOnWriteArrayList<Line2D> lList = new CopyOnWriteArrayList<Line2D>();
 
@@ -42,15 +47,6 @@ public class Game extends JPanel {
 		ch.update();
 		uh.update();
 		cl.update();
-
-		if (false) {
-			if (frames % (TARGET_FPS / 2) == 0) {
-				pList.add(new Particle(new Point2D(0, height / 2), 40, new Vector2D(20, -10)));
-			}
-			if (frames % TARGET_FPS == 0) {
-				pList.add(new Particle(new Point2D(width, height / 2), 40, new Vector2D(-20, -10)));
-			}
-		}
 	}
 
 	public void paint(Graphics g) {
@@ -58,10 +54,7 @@ public class Game extends JPanel {
 		final Graphics2D g2d = (Graphics2D) g;
 		applyQualityRenderingHints(g2d);
 
-		for (int particleIterator = 0; particleIterator < Game.pList.size(); particleIterator++) {
-			Particle p = Game.pList.get(particleIterator);
-			p.draw(g2d);
-		}
+		ph.paint(g2d);
 	}
 
 	public static void applyQualityRenderingHints(Graphics2D g2d) {

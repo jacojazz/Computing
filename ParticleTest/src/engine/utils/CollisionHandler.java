@@ -1,15 +1,16 @@
-package engine;
+package engine.utils;
 
 import java.util.Iterator;
 
-import engine.utils.Constants;
 import math.geom2d.Vector2D;
 import math.geom2d.line.Line2D;
+import engine.Game;
+import engine.Particle;
 
 public class CollisionHandler implements Runnable {
 	Thread t;
 
-	CollisionHandler() {
+	public CollisionHandler() {
 	}
 
 	public void update() {
@@ -39,8 +40,8 @@ public class CollisionHandler implements Runnable {
 	}
 
 	void reflect(Particle p, Line2D l) {
-		Vector2D n = l.perpendicular(p.center()).direction().normalize();
-		if (p.center().getY() < l.point(l.project(p.center())).getY()) {
+		Vector2D n = l.normal(l.project(p.center())).normalize();
+		if (!(p.getVelocity().angle() >= l.horizontalAngle() && p.getVelocity().angle() <= (l.horizontalAngle() + Math.PI))) {
 			n = n.opposite();
 		}
 		Vector2D v = p.getVelocity().minus(n.times(2 * (n.dot(p.getVelocity()))));
@@ -55,11 +56,34 @@ public class CollisionHandler implements Runnable {
 		return collision;
 	}
 
+	boolean inLineCollisionRange(Particle p, Line2D l) {
+		if (l.distance(p.center()) <= p.radius()) {
+			double penetrationDepth = p.radius() - l.distance(p.center());
+			Vector2D resolution;
+			if (p.getVelocity().angle() >= l.horizontalAngle() && p.getVelocity().angle() <= (l.horizontalAngle() + Math.PI)) {
+				resolution = l.perpendicular(p.center()).direction().normalize().times(penetrationDepth * 1);
+			} else {
+				resolution = l.perpendicular(p.center()).direction().opposite().normalize().times(penetrationDepth * 1);
+			}
+			p.setPosition(p.center().plus(resolution));
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public void run() {
-		for (Iterator<Particle> pIterator = Game.pList.iterator(); pIterator.hasNext();) {
-			Particle p = pIterator.next();
-			for (Iterator<Particle> p2Iterator = Game.pList.iterator(); p2Iterator.hasNext();) {
-				Particle p2 = p2Iterator.next();
+		for (Iterator<Particle> particleIterator = Game.pList.iterator(); particleIterator.hasNext();) {
+			Particle p = particleIterator.next();
+			for (Iterator<Line2D> lineIterator = Game.lList.iterator(); lineIterator.hasNext();) {
+				Line2D l = lineIterator.next();
+				if (inLineCollisionRange(p, l)) {
+					reflect(p, l);
+				}
+			}
+
+			for (Iterator<Particle> particle2Iterator = Game.pList.iterator(); particle2Iterator.hasNext();) {
+				Particle p2 = particle2Iterator.next();
 				if (checkCollision(p, p2) && !p.equals(p2)) {
 					resolveCollision(p, p2);
 				}

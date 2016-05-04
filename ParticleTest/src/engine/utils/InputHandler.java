@@ -1,5 +1,6 @@
-package engine;
+package engine.utils;
 
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -8,13 +9,16 @@ import java.awt.event.MouseMotionListener;
 
 import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
+import math.geom2d.line.Line2D;
+import engine.Game;
+import engine.Particle;
 
 public class InputHandler {
 	Point2D mouse = new Point2D(0, 0);
 	Point2D initial = mouse;
 	boolean dragging = false;
 
-	MouseListener ml = new MouseListener() {
+	public MouseListener ml = new MouseListener() {
 		public void mouseClicked(MouseEvent e) {
 
 		}
@@ -35,11 +39,16 @@ public class InputHandler {
 		public void mouseReleased(MouseEvent e) {
 			dragging = false;
 			Vector2D distance = new Vector2D(initial.minus(mouse));
-			Game.pList.add(new Particle(initial, 40, distance.times(0.125)));
+
+			if (e.getButton() == MouseEvent.BUTTON1) {
+				Game.pList.add(new Particle(initial, 40, distance.times(0.125)));
+			} else if (e.getButton() == MouseEvent.BUTTON3) {
+				Game.lList.add(new Line2D(initial, mouse));
+			}
 		}
 	};
 
-	MouseMotionListener mml = new MouseMotionListener() {
+	public MouseMotionListener mml = new MouseMotionListener() {
 		public void mouseDragged(MouseEvent e) {
 			mouse = new Point2D(e.getPoint());
 		}
@@ -49,7 +58,7 @@ public class InputHandler {
 		}
 	};
 
-	KeyListener kl = new KeyListener() {
+	public KeyListener kl = new KeyListener() {
 		public void keyPressed(KeyEvent e) {
 
 		}
@@ -62,4 +71,10 @@ public class InputHandler {
 
 		}
 	};
+
+	void paint(Graphics2D g2d) {
+		if (dragging) {
+			new Line2D(initial, mouse).draw(g2d);
+		}
+	}
 }
