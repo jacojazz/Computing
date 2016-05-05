@@ -1,9 +1,9 @@
-package engine.utils;
+package engine.handler;
 
 import java.util.Iterator;
 
 import engine.Game;
-import engine.Particle;
+import engine.geometry.Particle;
 
 public class UpdateHandler {
 	public void update() {

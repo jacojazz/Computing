@@ -1,11 +1,12 @@
-package engine.utils;
+package engine.collision;
 
 import java.util.Iterator;
 
 import math.geom2d.Vector2D;
 import math.geom2d.line.Line2D;
 import engine.Game;
-import engine.Particle;
+import engine.geometry.Particle;
+import engine.utils.Constants;
 
 public class CollisionHandler implements Runnable {
 	Thread t;

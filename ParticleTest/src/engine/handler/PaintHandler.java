@@ -1,4 +1,4 @@
-package engine.utils;
+package engine.handler;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -6,7 +6,7 @@ import java.util.Iterator;
 
 import math.geom2d.line.Line2D;
 import engine.Game;
-import engine.Particle;
+import engine.geometry.Particle;
 
 public class PaintHandler {
 	public void paint(Graphics2D g2d) {

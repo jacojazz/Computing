@@ -13,11 +13,12 @@ import javax.swing.JPanel;
 import math.geom2d.Box2D;
 import math.geom2d.Point2D;
 import math.geom2d.line.Line2D;
+import engine.collision.CollisionHandler;
+import engine.geometry.Particle;
+import engine.handler.InputHandler;
+import engine.handler.PaintHandler;
+import engine.handler.UpdateHandler;
 import engine.utils.Cleaner;
-import engine.utils.CollisionHandler;
-import engine.utils.InputHandler;
-import engine.utils.PaintHandler;
-import engine.utils.UpdateHandler;
 
 public class Game extends JPanel {
 	private static final long serialVersionUID = 1L;

@@ -1,9 +1,10 @@
-package engine;
+package engine.geometry;
 
-import engine.utils.Constants;
 import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
 import math.geom2d.conic.Circle2D;
+import engine.dynamics.Mass;
+import engine.utils.Constants;
 
 public class Particle extends Circle2D {
 	Mass mass;
