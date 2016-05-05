@@ -11,9 +11,6 @@ import engine.utils.Constants;
 public class CollisionHandler implements Runnable {
 	Thread t;
 
-	public CollisionHandler() {
-	}
-
 	public void update() {
 		t = new Thread(this);
 		t.start();
@@ -41,14 +38,6 @@ public class CollisionHandler implements Runnable {
 	}
 
 	void reflect(Particle p, Line2D l) {
-		double penetrationDepth = 0;
-		if (l.distance(p.center()) < p.radius()) {
-			penetrationDepth = Math.abs(p.radius() - l.distance(p.center()));
-		} else if (l.distance(p.center()) >= p.radius()) {
-			penetrationDepth = 0;
-		}
-		Vector2D resolution = l.normal(l.position(0)).normalize().times(penetrationDepth);
-		p.setPosition(p.center().plus(resolution));
 		Vector2D n = l.normal(l.position(p.center())).normalize();
 		Vector2D v = p.getVelocity().minus(n.times(2 * (n.dot(p.getVelocity()))));
 		p.setVelocity(new Vector2D(v.getX() * Constants.restitution, v.getY() * Constants.restitution));
@@ -62,8 +51,26 @@ public class CollisionHandler implements Runnable {
 		return collision;
 	}
 
-	boolean inLineCollisionRange(Particle p, Line2D l) {
+	boolean inLineCollisionRange(Particle p, Line2D l, boolean setPosition) {
 		if (l.distance(p.center()) <= p.radius()) {
+			if (setPosition) {
+				double penetrationDepth = 0;
+				if (l.distance(p.center()) < p.radius()) {
+					penetrationDepth = Math.abs(p.radius() - l.distance(p.center()));
+				} else if (l.distance(p.center()) >= p.radius()) {
+					penetrationDepth = 0;
+				}
+				Vector2D resolutionVector = l.normal(l.position(p.center()));
+				Vector2D resolution;
+				double dotCalc = new Line2D(p.center(), l.point(l.position(p.center()))).direction().dot(resolutionVector);
+				if (dotCalc > 0) {
+					resolution = resolutionVector.normalize().opposite().times(penetrationDepth);
+					p.setPosition(p.center().plus(resolution));
+				} else if (dotCalc < 0) {
+					resolution = resolutionVector.normalize().times(penetrationDepth);
+					p.setPosition(p.center().plus(resolution));
+				}
+			}
 			return true;
 		} else {
 			return false;
@@ -75,7 +82,7 @@ public class CollisionHandler implements Runnable {
 			Particle p = particleIterator.next();
 			for (Iterator<Line2D> lineIterator = Game.lList.iterator(); lineIterator.hasNext();) {
 				Line2D l = lineIterator.next();
-				if (inLineCollisionRange(p, l)) {
+				if (inLineCollisionRange(p, l, true)) {
 					reflect(p, l);
 				}
 			}

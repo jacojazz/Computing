@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Iterator;
 
-import math.geom2d.Point2D;
 import math.geom2d.line.Line2D;
 import engine.Game;
 import engine.geometry.Particle;
@@ -36,10 +35,6 @@ public class PaintHandler {
 		for (Iterator<Line2D> lineIterator = Game.lList.iterator(); lineIterator.hasNext();) {
 			Line2D l = lineIterator.next();
 			l.draw(g2d);
-			Point2D r = l.point(l.length() / 2);
-			g2d.setColor(Color.RED);
-			new Line2D(r, r.plus(l.normal(l.position(l.length() / 2)).normalize().times(100))).draw(g2d);
-			g2d.setColor(Color.BLACK);
 		}
 	}
 }
