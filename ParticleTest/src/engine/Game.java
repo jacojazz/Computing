@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
+import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JFrame;
@@ -13,6 +14,7 @@ import javax.swing.JPanel;
 import math.geom2d.Box2D;
 import math.geom2d.Point2D;
 import math.geom2d.line.Line2D;
+import math.geom2d.line.StraightLine2D;
 import engine.collision.CollisionHandler;
 import engine.geometry.Particle;
 import engine.handler.InputHandler;
@@ -42,6 +44,9 @@ public class Game extends JPanel {
 		addMouseMotionListener(InputHandler.mml);
 		addKeyListener(InputHandler.kl);
 		setFocusable(true);
+		for (Iterator<StraightLine2D> boundsIterator = bounds.clippingLines().iterator(); boundsIterator.hasNext();) {
+			StraightLine2D l = boundsIterator.next();
+		}
 	}
 
 	void update() {
