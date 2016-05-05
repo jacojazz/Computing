@@ -18,7 +18,7 @@ public class Particle extends Circle2D {
 		super(center, radius);
 		this.velocity = velocity;
 		force = Constants.gravity;
-		mass = new Mass(this, 1);
+		mass = new Mass(this, -1);
 	}
 
 	public void update() {
