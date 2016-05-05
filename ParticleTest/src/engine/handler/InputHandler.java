@@ -43,7 +43,13 @@ public class InputHandler {
 			if (e.getButton() == MouseEvent.BUTTON1) {
 				Game.pList.add(new Particle(initial, 40, distance.times(0.125)));
 			} else if (e.getButton() == MouseEvent.BUTTON3) {
-				Game.lList.add(new Line2D(initial, mouse));
+				Vector2D r = new Vector2D(initial, mouse);
+				System.out.println(r.angle() / Math.PI);
+				if (r.angle() - (Math.PI / 2) < Math.PI && r.angle() - (Math.PI / 2) > 0) {
+					Game.lList.add(new Line2D(mouse, initial));
+				} else {
+					Game.lList.add(new Line2D(initial, mouse));
+				}
 			}
 		}
 	};

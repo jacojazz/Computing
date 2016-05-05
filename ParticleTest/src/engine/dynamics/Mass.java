@@ -13,7 +13,7 @@ public class Mass {
 	}
 
 	Mass(double area, double density) {
-		if (density < 0.0) {
+		if (density <= 0.0) {
 			throw new IllegalArgumentException(Messages.getString("dynamics.mass.invaliddensity"));
 		}
 

@@ -41,10 +41,15 @@ public class CollisionHandler implements Runnable {
 	}
 
 	void reflect(Particle p, Line2D l) {
-		Vector2D n = l.normal(l.project(p.center())).normalize();
-		if (!(p.getVelocity().angle() >= l.horizontalAngle() && p.getVelocity().angle() <= (l.horizontalAngle() + Math.PI))) {
-			n = n.opposite();
+		double penetrationDepth = 0;
+		if (l.distance(p.center()) < p.radius()) {
+			penetrationDepth = Math.abs(p.radius() - l.distance(p.center()));
+		} else if (l.distance(p.center()) >= p.radius()) {
+			penetrationDepth = 0;
 		}
+		Vector2D resolution = l.normal(l.position(0)).normalize().times(penetrationDepth);
+		p.setPosition(p.center().plus(resolution));
+		Vector2D n = l.normal(l.position(p.center())).normalize();
 		Vector2D v = p.getVelocity().minus(n.times(2 * (n.dot(p.getVelocity()))));
 		p.setVelocity(new Vector2D(v.getX() * Constants.restitution, v.getY() * Constants.restitution));
 	}
@@ -59,14 +64,6 @@ public class CollisionHandler implements Runnable {
 
 	boolean inLineCollisionRange(Particle p, Line2D l) {
 		if (l.distance(p.center()) <= p.radius()) {
-			double penetrationDepth = p.radius() - l.distance(p.center());
-			Vector2D resolution;
-			if (p.getVelocity().angle() >= l.horizontalAngle() && p.getVelocity().angle() <= (l.horizontalAngle() + Math.PI)) {
-				resolution = l.perpendicular(p.center()).direction().normalize().times(penetrationDepth * 1);
-			} else {
-				resolution = l.perpendicular(p.center()).direction().opposite().normalize().times(penetrationDepth * 1);
-			}
-			p.setPosition(p.center().plus(resolution));
 			return true;
 		} else {
 			return false;
