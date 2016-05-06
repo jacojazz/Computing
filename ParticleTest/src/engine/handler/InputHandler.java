@@ -10,6 +10,7 @@ import java.awt.event.MouseMotionListener;
 import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
 import math.geom2d.line.Line2D;
+import math.geom2d.line.LineSegment2D;
 import engine.Game;
 import engine.geometry.Particle;
 
@@ -45,9 +46,9 @@ public class InputHandler {
 			} else if (e.getButton() == MouseEvent.BUTTON3) {
 				Vector2D r = new Vector2D(initial, mouse);
 				if (r.angle() - (Math.PI / 2) < Math.PI && r.angle() - (Math.PI / 2) > 0) {
-					Game.lList.add(new Line2D(mouse, initial));
+					Game.lList.add(new LineSegment2D(mouse, initial));
 				} else {
-					Game.lList.add(new Line2D(initial, mouse));
+					Game.lList.add(new LineSegment2D(initial, mouse));
 				}
 			}
 		}

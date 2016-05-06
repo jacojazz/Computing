@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Iterator;
 
-import math.geom2d.line.Line2D;
+import math.geom2d.line.LineSegment2D;
 import engine.Game;
 import engine.geometry.Particle;
 
@@ -24,16 +24,14 @@ public class PaintHandler {
 			if (Game.debug) {
 				g2d.setColor(Color.BLUE);
 				p.boundingBox().draw(g2d);
-				g2d.setColor(Color.RED);
-				new Line2D(p.center(), p.point(p.position(p.getVelocity().angle()))).draw(g2d);
 				g2d.setColor(Color.BLACK);
 			}
 		}
 	}
 
 	private void lines(Graphics2D g2d) {
-		for (Iterator<Line2D> lineIterator = Game.lList.iterator(); lineIterator.hasNext();) {
-			Line2D l = lineIterator.next();
+		for (Iterator<LineSegment2D> lineIterator = Game.lList.iterator(); lineIterator.hasNext();) {
+			LineSegment2D l = lineIterator.next();
 			l.draw(g2d);
 		}
 	}

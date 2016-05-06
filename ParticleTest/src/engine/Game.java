@@ -11,10 +11,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import math.geom2d.Box2D;
 import math.geom2d.Point2D;
-import math.geom2d.line.Line2D;
-import math.geom2d.line.StraightLine2D;
+import math.geom2d.line.LineSegment2D;
+import math.geom2d.polygon.Rectangle2D;
 import engine.collision.CollisionHandler;
 import engine.geometry.Particle;
 import engine.handler.InputHandler;
@@ -30,22 +29,22 @@ public class Game extends JPanel {
 	static GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 	static int width = gd.getDisplayMode().getWidth();
 	static int height = gd.getDisplayMode().getHeight();
-	public static Box2D bounds = new Box2D(new Point2D(0, 0), width, height);
+	public static Rectangle2D bounds = new Rectangle2D(new Point2D(0, 0), new Point2D(width, height));
 	public static boolean debug = false;
 	CollisionHandler ch = new CollisionHandler();
 	UpdateHandler uh = new UpdateHandler();
 	Cleaner cl = new Cleaner();
 	PaintHandler ph = new PaintHandler();
 	public static CopyOnWriteArrayList<Particle> pList = new CopyOnWriteArrayList<Particle>();
-	public static CopyOnWriteArrayList<Line2D> lList = new CopyOnWriteArrayList<Line2D>();
+	public static CopyOnWriteArrayList<LineSegment2D> lList = new CopyOnWriteArrayList<LineSegment2D>();
 
 	Game() {
 		addMouseListener(InputHandler.ml);
 		addMouseMotionListener(InputHandler.mml);
 		addKeyListener(InputHandler.kl);
 		setFocusable(true);
-		for (Iterator<StraightLine2D> boundsIterator = bounds.clippingLines().iterator(); boundsIterator.hasNext();) {
-			StraightLine2D l = boundsIterator.next();
+		for (Iterator<LineSegment2D> lIterator = bounds.edges().iterator(); lIterator.hasNext();) {
+			lList.add(lIterator.next());
 		}
 	}
 

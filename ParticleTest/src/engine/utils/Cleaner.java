@@ -14,7 +14,7 @@ public class Cleaner implements Runnable {
 	public void run() {
 		for (Iterator<Particle> pIterator = Game.pList.iterator(); pIterator.hasNext();) {
 			Particle p = pIterator.next();
-			if (!Game.bounds.asAwtRectangle2D().intersects(p.boundingBox().asAwtRectangle2D())) {
+			if (!Game.bounds.buffer(p.radius()).contains(p.center())) {
 				Game.pList.remove(p);
 			}
 		}

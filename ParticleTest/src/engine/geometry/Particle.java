@@ -29,7 +29,6 @@ public class Particle extends Circle2D {
 	public void setPosition(Point2D c) {
 		xc = c.getX();
 		yc = c.getY();
-		theta = velocity.angle();
 	}
 
 	public Vector2D getVelocity() {

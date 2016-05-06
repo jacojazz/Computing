@@ -1,4 +1,5 @@
 package engine.utils;
+
 import math.geom2d.Vector2D;
 
 public class Constants {
