@@ -51,20 +51,24 @@ public class CollisionHandler implements Runnable {
 	}
 
 	boolean checkCollision(Particle p, Particle p2) {
-		double xDif = p.center().getX() - p2.center().getX();
-		double yDif = p.center().getY() - p2.center().getY();
-		double distanceSquared = (xDif * xDif) + (yDif * yDif);
-		boolean collision = distanceSquared <= (p.radius() + p2.radius()) * (p.radius() + p2.radius());
-		return collision;
+		if (p.equals(p2)) {
+			return false;
+		}
+
+		if (p.center().distance(p2.center()) <= p.radius() + p2.radius()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	boolean inLineCollisionRange(Particle p, LineSegment2D l, boolean setPosition) {
-		if (l.distance(p.center()) <= p.radius()) {
+		if (p.center().distance(l.point(l.positionOnLine(p.center()))) <= p.radius()) {
 			if (setPosition) {
 				double penetrationDepth = 0;
-				if (l.distance(p.center()) < p.radius()) {
-					penetrationDepth = Math.abs(p.radius() - l.distance(p.center()));
-				} else if (l.distance(p.center()) >= p.radius()) {
+				if (p.center().distance(l.point(l.positionOnLine(p.center()))) < p.radius()) {
+					penetrationDepth = Math.abs(p.radius() - p.center().distance(l.point(l.positionOnLine(p.center()))));
+				} else if (p.center().distance(l.point(l.positionOnLine(p.center()))) >= p.radius()) {
 					penetrationDepth = 0;
 				}
 				Vector2D resolutionVector = l.normal(l.positionOnLine(p.center()));
