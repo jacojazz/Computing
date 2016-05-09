@@ -88,6 +88,16 @@ public class CollisionHandler implements Runnable {
 		}
 	}
 
+	boolean runLineCollisionDetection(Particle p) {
+		for (Iterator<LineSegment2D> lineIterator = Game.lList.iterator(); lineIterator.hasNext();) {
+			LineSegment2D l = lineIterator.next();
+			if (inLineCollisionRange(p, l, false)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public void run() {
 		for (Iterator<Particle> particleIterator = Game.pList.iterator(); particleIterator.hasNext();) {
 			Particle p = particleIterator.next();

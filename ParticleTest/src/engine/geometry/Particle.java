@@ -10,7 +10,7 @@ public class Particle extends Circle2D {
 	Mass mass;
 	Vector2D velocity, force;
 
-	Particle(Point2D center, double radius) {
+	public Particle(Point2D center, double radius) {
 		this(center, radius, new Vector2D(0, 0));
 	}
 

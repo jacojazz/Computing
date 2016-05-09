@@ -69,6 +69,9 @@ public class InputHandler {
 			if (e.getKeyCode() == KeyEvent.VK_P) {
 				Game.debug = !Game.debug;
 			}
+			if (e.getKeyCode() == KeyEvent.VK_F) {
+				ToolHandler.flood = !ToolHandler.flood;
+			}
 		}
 
 		public void keyReleased(KeyEvent e) {

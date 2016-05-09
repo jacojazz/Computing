@@ -18,6 +18,7 @@ import engine.collision.CollisionHandler;
 import engine.geometry.Particle;
 import engine.handler.InputHandler;
 import engine.handler.PaintHandler;
+import engine.handler.ToolHandler;
 import engine.handler.UpdateHandler;
 import engine.utils.Cleaner;
 
@@ -27,8 +28,8 @@ public class Game extends JPanel {
 	static JFrame frame = new JFrame("Particle Test");
 	static int frames = 0;
 	static GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-	static int width = gd.getDisplayMode().getWidth();
-	static int height = gd.getDisplayMode().getHeight();
+	public static int width = gd.getDisplayMode().getWidth();
+	public static int height = gd.getDisplayMode().getHeight();
 	public static Rectangle2D bounds = new Rectangle2D(new Point2D(0, 0), new Point2D(width, height));
 	public static boolean debug = false;
 	CollisionHandler ch = new CollisionHandler();
@@ -52,6 +53,7 @@ public class Game extends JPanel {
 		ch.update();
 		uh.update();
 		cl.update();
+		ToolHandler.update();
 	}
 
 	public void paint(Graphics g) {
