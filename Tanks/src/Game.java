@@ -19,6 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import math.geom2d.Point2D;
+import math.geom2d.Vector2D;
 import math.geom2d.line.LineSegment2D;
 import math.geom2d.polygon.SimplePolygon2D;
 
@@ -31,9 +32,13 @@ public class Game extends JPanel {
 	static int width = gd.getDisplayMode().getWidth();
 	static int height = gd.getDisplayMode().getHeight();
 	static Point2D mouse;
-	SimplePolygon2D terrain = new SimplePolygon2D();
-	ArrayList<Tank> tanks = new ArrayList<Tank>();
-	Slider slider = new Slider(new Point2D(20, 20), 200, 50);
+	static SimplePolygon2D terrain = new SimplePolygon2D();
+	static Vector2D gravity = new Vector2D(0, 0.05);
+	Tank p1Tank = new Tank(300, 300, Color.CYAN);
+	Tank p2Tank = new Tank(width - 300, 300, Color.LIGHT_GRAY);
+	Slider leftSlider = new Slider(new Point2D(20, 20), 200, 50);
+	Slider rightSlider = new Slider(new Point2D(width - 220, 20), 200, 50);
+	ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
 	Game() {
 		generateTerrain();
@@ -43,10 +48,13 @@ public class Game extends JPanel {
 				if (e.getKeyCode() == KeyEvent.VK_G) {
 					generateTerrain();
 				}
+				p1Tank.keyPressed(e);
+				p2Tank.keyPressed(e);
 			}
 
 			public void keyReleased(KeyEvent e) {
-
+				p1Tank.keyReleased(e);
+				p2Tank.keyReleased(e);
 			}
 
 			public void keyTyped(KeyEvent e) {
@@ -77,16 +85,16 @@ public class Game extends JPanel {
 			}
 
 			public void mousePressed(MouseEvent e) {
-				slider.mousePressed(e);
+				leftSlider.mousePressed(e);
+				rightSlider.mousePressed(e);
 			}
 
 			public void mouseReleased(MouseEvent e) {
-				slider.mouseReleased(e);
+				leftSlider.mouseReleased(e);
+				rightSlider.mouseReleased(e);
 			}
 		});
 		setFocusable(true);
-
-		tanks.add(new Tank(300, 300, Color.BLUE));
 	}
 
 	void generateTerrain() {
@@ -114,11 +122,20 @@ public class Game extends JPanel {
 	}
 
 	void update() {
-		slider.update();
+		leftSlider.update();
+		rightSlider.update();
+
+		ArrayList<Tank> tanks = new ArrayList<Tank>();
+		tanks.add(p1Tank);
+		tanks.add(p2Tank);
 		for (Iterator<Tank> tankIterator = tanks.iterator(); tankIterator.hasNext();) {
 			Tank t = tankIterator.next();
-			t.turretAngle = ((slider.getValue() * 180) / 100) - 90;
-			if (terrain.contains(t.position)) {
+			if (tanks.indexOf(t) == 0) {
+				t.turretAngle = ((leftSlider.getValue() * 180) / 100) - 90;
+			} else {
+				t.turretAngle = ((rightSlider.getValue() * 180) / 100) - 90;
+			}
+			if (terrain.contains(t.position) || terrain.distance(t.position) < 1) {
 				List<Point2D> pointCollection = new ArrayList<Point2D>();
 				for (Iterator<LineSegment2D> terrainIterator = terrain.edges().iterator(); terrainIterator.hasNext();) {
 					LineSegment2D l = terrainIterator.next();
@@ -127,6 +144,7 @@ public class Game extends JPanel {
 				Collections.sort(pointCollection, new PointDistance(t.position));
 				t.position = pointCollection.get(0);
 				t.onTerrain = true;
+				t.velocity = new Vector2D(0, 0);
 				t.update();
 			} else {
 				t.onTerrain = false;
@@ -144,12 +162,10 @@ public class Game extends JPanel {
 		terrain.fill(g2d);
 
 		g2d.setColor(Color.BLACK);
-		for (Iterator<Tank> tankIterator = tanks.iterator(); tankIterator.hasNext();) {
-			Tank t = tankIterator.next();
-			t.paint(g2d);
-		}
-
-		slider.paint(g2d);
+		p1Tank.paint(g2d);
+		p2Tank.paint(g2d);
+		leftSlider.paint(g2d);
+		rightSlider.paint(g2d);
 	}
 
 	public static void applyQualityRenderingHints(Graphics2D g2d) {

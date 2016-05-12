@@ -7,11 +7,11 @@ import math.geom2d.line.Line2D;
 import math.geom2d.polygon.Rectangle2D;
 
 public class Slider extends Rectangle2D {
-	Rectangle2D inner, mover;
-	int sliderValue;
-	static boolean dragging = false;
-	static double moverXDifference;
-	static Point2D mouseRelation;
+	private Rectangle2D inner, mover;
+	private int sliderValue;
+	private boolean dragging = false;
+	private double moverXDifference;
+	private Point2D mouseRelation;
 
 	Slider(Point2D position, double width, double height) {
 		super(position, new Point2D(position.getX() + width, position.getY() + height));
@@ -75,8 +75,6 @@ public class Slider extends Rectangle2D {
 	void paint(Graphics2D g2d) {
 		g2d.setColor(new Color(20, 20, 20, 250));
 		this.fill(g2d);
-		int colorValue = (getValue() * 255) / 100;
-		g2d.setColor(new Color(colorValue, colorValue, colorValue));
 		inner.fill(g2d);
 		g2d.setColor(Color.GRAY);
 		new Line2D(inner.getX(), inner.getY() + (inner.getHeight() / 2), inner.getX() + inner.getWidth(), inner.getY() + (inner.getHeight() / 2)).draw(g2d);

@@ -36,6 +36,7 @@ public class Ship {
 		} else {
 			yVelocity = 0;
 		}
+		
 		if ((y + yVelocity) < 0) {
 			y = 0;
 		} else if (((y + yVelocity) + 20) > Game.height) {
