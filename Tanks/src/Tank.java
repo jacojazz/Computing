@@ -1,10 +1,10 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
-import java.awt.event.KeyEvent;
 import java.awt.geom.Area;
 
 import math.geom2d.AffineTransform2D;
+import math.geom2d.Box2D;
 import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
 import math.geom2d.conic.Circle2D;
@@ -16,6 +16,7 @@ public class Tank {
 	double turretAngle = 0;
 	double currentAngle = 0;
 	double power = 50;
+	Box2D boundingBox;
 	Rectangle2D tracks;
 	Rectangle2D body;
 	Circle2D turret;
@@ -25,13 +26,12 @@ public class Tank {
 
 	static double barrelRotationSpeed = 1;
 	boolean onTerrain = false;
-	private boolean aDown = false;
-	private boolean dDown = false;
 
 	AffineTransform2D af = new AffineTransform2D();
 
 	Vector2D velocity = new Vector2D(0, 0);
 	Vector2D force = new Vector2D(0, 0.05);
+	boolean dragging = false;
 
 	Tank(Point2D p, Color pColor) {
 		this.position = p;
@@ -43,27 +43,6 @@ public class Tank {
 		this(new Point2D(x, y), pColor);
 	}
 
-	void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_A) {
-			aDown = true;
-		}
-		if (e.getKeyCode() == KeyEvent.VK_D) {
-			dDown = true;
-		}
-		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-			Game.projectiles.add(new Bullet(barrelEnd, new LineSegment2D(turretAxis, barrelEnd).direction().normalize().times(power / 10)));
-		}
-	}
-
-	void keyReleased(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_A) {
-			aDown = false;
-		}
-		if (e.getKeyCode() == KeyEvent.VK_D) {
-			dDown = false;
-		}
-	}
-
 	void setBounds() {
 		tracks = new Rectangle2D(position.getX() - 10, position.getY() - 3, 20, 3);
 		body = new Rectangle2D(position.getX() - 11, position.getY() - 8, 22, 5);
@@ -73,12 +52,16 @@ public class Tank {
 		Circle2D barrelTurn = new Circle2D(turretAxis, 15);
 		barrelEnd = barrelTurn.point(Math.toRadians(currentAngle) - (Math.PI / 2));
 		barrel = new LineSegment2D(turretAxis, barrelEnd);
+
+		boundingBox = new Box2D(new Point2D(position.getX() - 11, position.getY() - 15), new Point2D(position.getX() + 11, position.getY()));
 	}
 
 	void update() {
-		if (aDown) {
-		} else if (dDown) {
-		} else {
+		if (dragging) {
+			Circle2D referenceCircle = new Circle2D(Game.initial, 100);
+			if (referenceCircle.isInside(Game.mouse)) {
+				position = Game.mouse.plus(Game.mouseRelation);
+			}
 		}
 
 		if (currentAngle < turretAngle) {

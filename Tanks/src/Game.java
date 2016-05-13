@@ -4,13 +4,10 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -34,35 +31,19 @@ public class Game extends JPanel {
 	static GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 	static int width = gd.getDisplayMode().getWidth();
 	static int height = gd.getDisplayMode().getHeight();
-	static Point2D mouse;
+	static Point2D mouse, initial, mouseRelation;
 	static SimplePolygon2D terrain = new SimplePolygon2D();
 	static Vector2D gravity = new Vector2D(0, 0.05);
 	Tank p1Tank = new Tank(300, 300, Color.CYAN);
 	Tank p2Tank = new Tank(width - 300, 300, Color.LIGHT_GRAY);
 	Slider leftAim = new Slider(new Point2D(20, 20), 200, 50);
 	Slider rightAim = new Slider(new Point2D(width - 220, 20), 200, 50);
+	Slider leftPower = new Slider(new Point2D(20, 90), 200, 50);
+	Slider rightPower = new Slider(new Point2D(width - 220, 90), 200, 50);
 	static CopyOnWriteArrayList<Projectile> projectiles = new CopyOnWriteArrayList<Projectile>();
 
 	Game() {
-		generateTerrain();
-
-		addKeyListener(new KeyListener() {
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_G) {
-					generateTerrain();
-				}
-				p1Tank.keyPressed(e);
-				p2Tank.keyPressed(e);
-			}
-
-			public void keyReleased(KeyEvent e) {
-				p1Tank.keyReleased(e);
-				p2Tank.keyReleased(e);
-			}
-
-			public void keyTyped(KeyEvent e) {
-			}
-		});
+		generateTerrain(50);
 
 		addMouseMotionListener(new MouseMotionListener() {
 			public void mouseDragged(MouseEvent e) {
@@ -90,26 +71,45 @@ public class Game extends JPanel {
 			public void mousePressed(MouseEvent e) {
 				leftAim.mousePressed(e);
 				rightAim.mousePressed(e);
+				leftPower.mousePressed(e);
+				rightPower.mousePressed(e);
+
+				initial = new Point2D(e.getPoint());
+
+				if (p1Tank.boundingBox.contains(mouse)) {
+					p1Tank.dragging = true;
+					mouseRelation = p1Tank.position.minus(Game.mouse);
+				} else if (p2Tank.boundingBox.contains(mouse)) {
+					p2Tank.dragging = true;
+					mouseRelation = p2Tank.position.minus(Game.mouse);
+				}
 			}
 
 			public void mouseReleased(MouseEvent e) {
 				leftAim.mouseReleased(e);
 				rightAim.mouseReleased(e);
+				leftPower.mouseReleased(e);
+				rightPower.mouseReleased(e);
+				p1Tank.dragging = false;
+				p2Tank.dragging = false;
 			}
 		});
 		setFocusable(true);
 	}
 
-	void generateTerrain() {
+	void generateTerrain(int smoothness) {
+		if (smoothness <= 0) {
+			smoothness = 1;
+		}
 		terrain.clearVertices();
 		Random r = new Random();
 		Point2D previousPoint = new Point2D(0, height / 2);
 		terrain.addVertex(previousPoint);
-		for (int terrainWidth = 100; terrainWidth < width; terrainWidth += 100) {
+		for (int terrainWidth = smoothness; terrainWidth < width; terrainWidth += smoothness) {
 			if (r.nextInt(2) == 0 && previousPoint.getY() < height - 200 && previousPoint.getY() > 200) {
-				terrain.addVertex(new Point2D(terrainWidth, previousPoint.getY() + r.nextInt(100)));
+				terrain.addVertex(new Point2D(terrainWidth, previousPoint.getY() + r.nextInt(smoothness)));
 			} else if (r.nextInt(2) == 1 && previousPoint.getY() < height - 200 && previousPoint.getY() > 200) {
-				terrain.addVertex(new Point2D(terrainWidth, previousPoint.getY() - r.nextInt(100)));
+				terrain.addVertex(new Point2D(terrainWidth, previousPoint.getY() - r.nextInt(smoothness)));
 			} else {
 				terrain.addVertex(new Point2D(terrainWidth, previousPoint.getY()));
 			}
@@ -127,30 +127,12 @@ public class Game extends JPanel {
 	void update() {
 		leftAim.update();
 		rightAim.update();
+		leftPower.update();
+		rightPower.update();
 
 		for (Iterator<Projectile> pIterator = projectiles.iterator(); pIterator.hasNext();) {
 			Projectile p = pIterator.next();
 			if (terrain.contains(p.center())) {
-				int vertexIndex = terrain.closestVertexIndex(p.center());
-				LineSegment2D closestLine = null;
-				for (Iterator<LineSegment2D> terrainIterator = terrain.edges().iterator(); terrainIterator.hasNext();) {
-					LineSegment2D l = terrainIterator.next();
-					if (closestLine == null || (l.point(l.positionOnLine(p.center())).distance(p.center()) < closestLine.point(closestLine.positionOnLine(p.center())).distance(p.center()))) {
-						closestLine = l;
-					}
-				}
-
-				Collection<Point2D> intersections = Circle2D.lineCircleIntersections(closestLine, p);
-				if (intersections.size() == 2) {
-					double leftPoint = p.position((Point2D) intersections.toArray()[0]);
-					double rightPoint = p.position((Point2D) intersections.toArray()[1]);
-					Collection<Point2D> positions = p.getImpact(leftPoint, rightPoint);
-					System.out.println(positions.size());
-					for (Iterator<Point2D> positionIterator = positions.iterator(); positionIterator.hasNext();) {
-						Point2D current = positionIterator.next();
-						terrain.insertVertex(vertexIndex, current);
-					}
-				}
 				projectiles.remove(p);
 			} else {
 				p.update();
@@ -165,8 +147,10 @@ public class Game extends JPanel {
 			Tank t = tankIterator.next();
 			if (tanks.indexOf(t) == 0) {
 				t.turretAngle = ((leftAim.getValue() * 180) / 100) - 90;
+				t.power = leftPower.getValue();
 			} else {
 				t.turretAngle = ((rightAim.getValue() * 180) / 100) - 90;
+				t.power = rightPower.getValue();
 			}
 			if (terrain.contains(t.position) || terrain.distance(t.position) < 1) {
 				List<Point2D> pointCollection = new ArrayList<Point2D>();
@@ -191,6 +175,12 @@ public class Game extends JPanel {
 		Graphics2D g2d = (Graphics2D) g;
 		applyQualityRenderingHints(g2d);
 
+		g2d.setColor(Color.BLACK);
+
+		if (p1Tank.dragging || p2Tank.dragging) {
+			new Circle2D(initial, 100).draw(g2d);
+		}
+
 		g2d.setColor(new Color(0x00cc00));
 		terrain.fill(g2d);
 
@@ -203,6 +193,8 @@ public class Game extends JPanel {
 		p2Tank.paint(g2d);
 		leftAim.paint(g2d);
 		rightAim.paint(g2d);
+		leftPower.paint(g2d);
+		rightPower.paint(g2d);
 	}
 
 	public static void applyQualityRenderingHints(Graphics2D g2d) {

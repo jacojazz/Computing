@@ -38,6 +38,6 @@ public class Projectile extends Circle2D {
 
 	void paint(Graphics2D g2d) {
 		g2d.setColor(Color.BLACK);
-		this.draw(g2d);
+		this.fill(g2d);
 	}
 }
