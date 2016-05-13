@@ -15,10 +15,11 @@ public class Tank {
 	Point2D position = new Point2D(50, 50);
 	double turretAngle = 0;
 	double currentAngle = 0;
+	double power = 50;
 	Rectangle2D tracks;
 	Rectangle2D body;
 	Circle2D turret;
-	Point2D turretAxis;
+	Point2D turretAxis, barrelEnd;
 	LineSegment2D barrel;
 	Color playerColor;
 
@@ -50,7 +51,7 @@ public class Tank {
 			dDown = true;
 		}
 		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-			
+			Game.projectiles.add(new Bullet(barrelEnd, new LineSegment2D(turretAxis, barrelEnd).direction().normalize().times(power / 10)));
 		}
 	}
 
@@ -70,8 +71,8 @@ public class Tank {
 		turretAxis = new Point2D(position.getX(), position.getY() - 10);
 
 		Circle2D barrelTurn = new Circle2D(turretAxis, 15);
-		Point2D barrelEndPoint = barrelTurn.point(Math.toRadians(currentAngle) - (Math.PI / 2));
-		barrel = new LineSegment2D(turretAxis, barrelEndPoint);
+		barrelEnd = barrelTurn.point(Math.toRadians(currentAngle) - (Math.PI / 2));
+		barrel = new LineSegment2D(turretAxis, barrelEnd);
 	}
 
 	void update() {

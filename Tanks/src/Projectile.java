@@ -14,10 +14,12 @@ public class Projectile extends Point2D {
 
 	void update() {
 		velocity = velocity.plus(Game.gravity);
+		x = x + velocity.getX();
+		y = y + velocity.getY();
 	}
 
 	void paint(Graphics2D g2d) {
-		g2d.setColor(Color.YELLOW);
-		this.draw(g2d, 2);
+		g2d.setColor(Color.BLACK);
+		this.draw(g2d, 4);
 	}
 }

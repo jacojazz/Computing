@@ -36,9 +36,9 @@ public class Game extends JPanel {
 	static Vector2D gravity = new Vector2D(0, 0.05);
 	Tank p1Tank = new Tank(300, 300, Color.CYAN);
 	Tank p2Tank = new Tank(width - 300, 300, Color.LIGHT_GRAY);
-	Slider leftSlider = new Slider(new Point2D(20, 20), 200, 50);
-	Slider rightSlider = new Slider(new Point2D(width - 220, 20), 200, 50);
-	ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
+	Slider leftAim = new Slider(new Point2D(20, 20), 200, 50);
+	Slider rightAim = new Slider(new Point2D(width - 220, 20), 200, 50);
+	static ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
 	Game() {
 		generateTerrain();
@@ -85,13 +85,13 @@ public class Game extends JPanel {
 			}
 
 			public void mousePressed(MouseEvent e) {
-				leftSlider.mousePressed(e);
-				rightSlider.mousePressed(e);
+				leftAim.mousePressed(e);
+				rightAim.mousePressed(e);
 			}
 
 			public void mouseReleased(MouseEvent e) {
-				leftSlider.mouseReleased(e);
-				rightSlider.mouseReleased(e);
+				leftAim.mouseReleased(e);
+				rightAim.mouseReleased(e);
 			}
 		});
 		setFocusable(true);
@@ -122,8 +122,13 @@ public class Game extends JPanel {
 	}
 
 	void update() {
-		leftSlider.update();
-		rightSlider.update();
+		leftAim.update();
+		rightAim.update();
+
+		for (Iterator<Projectile> pIterator = projectiles.iterator(); pIterator.hasNext();) {
+			Projectile p = pIterator.next();
+			p.update();
+		}
 
 		ArrayList<Tank> tanks = new ArrayList<Tank>();
 		tanks.add(p1Tank);
@@ -131,9 +136,9 @@ public class Game extends JPanel {
 		for (Iterator<Tank> tankIterator = tanks.iterator(); tankIterator.hasNext();) {
 			Tank t = tankIterator.next();
 			if (tanks.indexOf(t) == 0) {
-				t.turretAngle = ((leftSlider.getValue() * 180) / 100) - 90;
+				t.turretAngle = ((leftAim.getValue() * 180) / 100) - 90;
 			} else {
-				t.turretAngle = ((rightSlider.getValue() * 180) / 100) - 90;
+				t.turretAngle = ((rightAim.getValue() * 180) / 100) - 90;
 			}
 			if (terrain.contains(t.position) || terrain.distance(t.position) < 1) {
 				List<Point2D> pointCollection = new ArrayList<Point2D>();
@@ -162,10 +167,14 @@ public class Game extends JPanel {
 		terrain.fill(g2d);
 
 		g2d.setColor(Color.BLACK);
+		for (Iterator<Projectile> pIterator = projectiles.iterator(); pIterator.hasNext();) {
+			Projectile p = pIterator.next();
+			p.paint(g2d);
+		}
 		p1Tank.paint(g2d);
 		p2Tank.paint(g2d);
-		leftSlider.paint(g2d);
-		rightSlider.paint(g2d);
+		leftAim.paint(g2d);
+		rightAim.paint(g2d);
 	}
 
 	public static void applyQualityRenderingHints(Graphics2D g2d) {
