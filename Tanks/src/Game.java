@@ -10,16 +10,19 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
+import math.geom2d.conic.Circle2D;
 import math.geom2d.line.LineSegment2D;
 import math.geom2d.polygon.SimplePolygon2D;
 
@@ -38,7 +41,7 @@ public class Game extends JPanel {
 	Tank p2Tank = new Tank(width - 300, 300, Color.LIGHT_GRAY);
 	Slider leftAim = new Slider(new Point2D(20, 20), 200, 50);
 	Slider rightAim = new Slider(new Point2D(width - 220, 20), 200, 50);
-	static ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
+	static CopyOnWriteArrayList<Projectile> projectiles = new CopyOnWriteArrayList<Projectile>();
 
 	Game() {
 		generateTerrain();
@@ -127,7 +130,32 @@ public class Game extends JPanel {
 
 		for (Iterator<Projectile> pIterator = projectiles.iterator(); pIterator.hasNext();) {
 			Projectile p = pIterator.next();
-			p.update();
+			if (terrain.contains(p.center())) {
+				int vertexIndex = terrain.closestVertexIndex(p.center());
+				LineSegment2D closestLine = null;
+				for (Iterator<LineSegment2D> terrainIterator = terrain.edges().iterator(); terrainIterator.hasNext();) {
+					LineSegment2D l = terrainIterator.next();
+					if (closestLine == null || (l.point(l.positionOnLine(p.center())).distance(p.center()) < closestLine.point(closestLine.positionOnLine(p.center())).distance(p.center()))) {
+						closestLine = l;
+					}
+				}
+
+				Collection<Point2D> intersections = Circle2D.lineCircleIntersections(closestLine, p);
+				if (intersections.size() == 2) {
+					double leftPoint = p.position((Point2D) intersections.toArray()[0]);
+					double rightPoint = p.position((Point2D) intersections.toArray()[1]);
+					Collection<Point2D> positions = p.getImpact(leftPoint, rightPoint);
+					System.out.println(positions.size());
+					for (Iterator<Point2D> positionIterator = positions.iterator(); positionIterator.hasNext();) {
+						Point2D current = positionIterator.next();
+						terrain.insertVertex(vertexIndex, current);
+					}
+				}
+				projectiles.remove(p);
+			} else {
+				p.update();
+			}
+
 		}
 
 		ArrayList<Tank> tanks = new ArrayList<Tank>();
