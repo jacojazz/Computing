@@ -6,8 +6,6 @@ import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -51,22 +49,13 @@ public class Game extends JPanel {
 
 			}
 		});
-		addMouseMotionListener(new MouseMotionListener() {
-			public void mouseDragged(MouseEvent e) {
-				mouse = new Point2D(e.getPoint());
-			}
-
-			public void mouseMoved(MouseEvent e) {
-				mouse = new Point2D(e.getPoint());
-			}
-		});
 		setFocusable(true);
 		algorithm();
 	}
 
 	void algorithm() {
 		p.clear();
-		for (int x = 0; x < 1000; x++) {
+		for (int x = 0; x < 500; x++) {
 			p.add(new Point2D(200 + r.nextInt(width - 400), 200 + r.nextInt(height - 400)));
 		}
 		convexHull();
@@ -86,8 +75,7 @@ public class Game extends JPanel {
 		applyQualityRenderingHints(g2d);
 
 		p.draw(g2d);
-		ch.draw(g2d);
-		ch.vertex(ch.closestVertexIndex(Game.mouse)).draw(g2d, 5);
+		ch.buffer(1).draw(g2d);
 	}
 
 	public static void applyQualityRenderingHints(Graphics2D g2d) {
