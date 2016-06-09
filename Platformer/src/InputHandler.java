@@ -4,9 +4,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import math.geom2d.Point2D;
+
 public class InputHandler {
 	static boolean left = false;
 	static boolean right = false;
+	static boolean dragging = false;
+	static Point2D mouse, initial;
 	static MouseListener ml = new MouseListener() {
 		@Override
 		public void mouseClicked(MouseEvent e) {
@@ -25,24 +29,28 @@ public class InputHandler {
 
 		@Override
 		public void mousePressed(MouseEvent e) {
-
+			dragging = true;
+			initial = new Point2D(e.getPoint());
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
-
+			dragging = false;
+			if (!initial.equals(mouse)) {
+				Game.platformList.add(new Platform(initial, mouse));
+			}
 		}
 	};
 
 	static MouseMotionListener mml = new MouseMotionListener() {
 		@Override
 		public void mouseDragged(MouseEvent e) {
-
+			mouse = new Point2D(e.getPoint());
 		}
 
 		@Override
 		public void mouseMoved(MouseEvent e) {
-
+			mouse = new Point2D(e.getPoint());
 		}
 	};
 

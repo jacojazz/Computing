@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import math.geom2d.Point2D;
+import math.geom2d.line.LineSegment2D;
 import math.geom2d.polygon.Rectangle2D;
 
 public class Game extends JPanel {
@@ -22,8 +23,8 @@ public class Game extends JPanel {
 	static int width = gd.getDisplayMode().getWidth();
 	static int height = gd.getDisplayMode().getHeight();
 	static Rectangle2D bounds = new Rectangle2D(new Point2D(0, 0), new Point2D(width, height));
-	static Player player = new Player(new Point2D(50, 50), 30);
-	CopyOnWriteArrayList<Platform> platformList = new CopyOnWriteArrayList<Platform>();
+	static Player player = new Player(new Point2D(50, 50), 20);
+	static CopyOnWriteArrayList<Platform> platformList = new CopyOnWriteArrayList<Platform>();
 
 	Game() {
 		addMouseListener(InputHandler.ml);
@@ -36,6 +37,14 @@ public class Game extends JPanel {
 		player.update();
 
 		for (Iterator<Platform> pIterator = platformList.iterator(); pIterator.hasNext();) {
+			Platform currentPlatform = pIterator.next();
+			for (Iterator<LineSegment2D> lsIterator = currentPlatform.edges().iterator(); lsIterator.hasNext();) {
+				LineSegment2D currentLine = lsIterator.next();
+				if (player.inLineCollisionRange(currentLine, true)) {
+					player.lineCollision = true;
+					player.reflect(currentLine);
+				}
+			}
 		}
 	}
 
@@ -45,9 +54,15 @@ public class Game extends JPanel {
 		applyQualityRenderingHints(g2d);
 
 		player.draw(g2d);
-		g2d.setColor(Color.BLUE);
-		player.cBounds.draw(g2d);
-		g2d.setColor(Color.BLACK);
+
+		if (InputHandler.dragging) {
+			new Rectangle2D(InputHandler.initial, InputHandler.mouse).draw(g2d);
+		}
+
+		for (Iterator<Platform> pIterator = platformList.iterator(); pIterator.hasNext();) {
+			Platform currentPlatform = pIterator.next();
+			currentPlatform.fill(g2d);
+		}
 	}
 
 	public static void applyQualityRenderingHints(Graphics2D g2d) {

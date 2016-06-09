@@ -12,6 +12,8 @@ public class Player extends Circle2D {
 	Vector2D force;
 	Box2D cBounds;
 	boolean lineCollision = false;
+	boolean doubleJump = true;
+	int jumpCount = Integer.MAX_VALUE;
 
 	Player(Point2D c, double r) {
 		this(c, r, new Vector2D(0, 0), Constants.NORMAL_GRAVITY);
@@ -49,7 +51,7 @@ public class Player extends Circle2D {
 			LineSegment2D l = lIterator.next();
 			lineCollision = inLineCollisionRange(l, true);
 			if (lineCollision) {
-				velocity = new Vector2D(velocity.getX(), 0);
+				reflect(l);
 			}
 		}
 	}
@@ -74,6 +76,9 @@ public class Player extends Circle2D {
 					setPosition(center().plus(resolution));
 				}
 			}
+			if (new Line2D(center(), l.point(l.position(center()))).horizontalAngle() == (Math.PI / 2)) {
+				jumpCount = 0;
+			}
 			return true;
 		} else {
 			return false;
@@ -81,16 +86,21 @@ public class Player extends Circle2D {
 	}
 
 	void reflect(LineSegment2D l) {
+		double angle = new Line2D(center(), l.point(l.position(center()))).horizontalAngle();
 		Vector2D n = l.normal(l.position(center())).normalize();
 		Vector2D v = velocity.minus(n.times(2 * (n.dot(velocity))));
-		velocity = new Vector2D(v.getX() * Constants.restitution, v.getY() * Constants.restitution);
+		if (angle == 0 || angle == Math.PI) {
+			velocity = new Vector2D(0, Constants.NORMAL_GRAVITY.getY());
+		} else {
+			velocity = new Vector2D(v.getX() * Constants.restitution, v.getY() * Constants.restitution);
+		}
 	}
 
 	void moveLeft(boolean active) {
 		if (active) {
 			velocity = new Vector2D(-5, velocity.getY());
 		} else {
-			velocity = new Vector2D(0, velocity.getY());
+			velocity = new Vector2D(velocity.getX() * 0.965, velocity.getY());
 		}
 	}
 
@@ -98,12 +108,15 @@ public class Player extends Circle2D {
 		if (active) {
 			velocity = new Vector2D(5, velocity.getY());
 		} else {
-			velocity = new Vector2D(0, velocity.getY());
+			velocity = new Vector2D(velocity.getX() * 0.965, velocity.getY());
 		}
 	}
 
 	void jump() {
-		velocity = velocity.plus(new Vector2D(0, -20));
+		if ((jumpCount > 0 && jumpCount < 2 && doubleJump) ^ jumpCount == 0) {
+			jumpCount++;
+			velocity = new Vector2D(0, -15);
+		}
 	}
 
 	void setPosition(Object obj) {
